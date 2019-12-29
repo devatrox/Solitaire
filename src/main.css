@@ -1,0 +1,75 @@
+.solitaire {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+        "stock waste . foundation foundation foundation foundation"
+        "tableau tableau tableau tableau tableau tableau tableau";
+}
+
+.stock {
+    grid-area: stock;
+    position: relative;
+}
+
+.waste {
+    grid-area: waste;
+    position: relative;
+}
+
+.pile {
+    width: 150px;
+    height: 200px;
+}
+
+.foundation {
+    grid-area: foundation;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.foundation-pile {
+    position: relative;
+    background-color: #ddd;
+}
+
+.tableau {
+    grid-area: tableau;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.tableau-pile {
+    position: relative;
+}
+
+.card {
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 10px;
+    font-size: 200px;
+    line-height: 0.9;
+    color: #aaa;
+}
+
+.card[draggable=true] {
+    cursor: grab;
+}
+
+.card.is-dragging {
+    opacity: 0.5;
+}
+
+.card-black:not(.card-flipped) {
+    color: #111;
+}
+
+.card-red:not(.card-flipped) {
+    color: #ff4136;
+}
