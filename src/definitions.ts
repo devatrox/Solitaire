@@ -27,6 +27,16 @@ enum Rank {
 
 type PileName = 'stock' | 'waste' | 'foundation' | 'tableau';
 
+type Color = 'red' | 'black';
+
+enum ActionTypes {
+    MOVE_CARDS = 'move-cards',
+    FLIP_CARD = 'flip-card',
+    FLIP_CARDS = 'flip-cards',
+    RESET = 'reset',
+    REVEAL_CARD = 'reveal-card'
+};
+
 type AppState = {
     stock: Card[][],
     waste: Card[][],
@@ -38,18 +48,9 @@ type AppProps = {
     initialState: AppState
 }
 
-type Color = 'red' | 'black';
-
-enum ActionTypes {
-    MOVE_CARDS = 'move-cards',
-    FLIP_CARD = 'flip-card',
-    FLIP_CARDS = 'flip-cards',
-    RESET = 'reset',
-    REVEAL_CARD = 'reveal-card'
-};
-
 type CardProps = {
     card: Card,
+    source: [PileName, number],
     style?: React.CSSProperties,
     onClick?: (event: React.SyntheticEvent, card: Card) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
@@ -70,6 +71,11 @@ type GroupProps = {
     stackDown?: boolean,
     onClick?: (event: React.SyntheticEvent, card: Card) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
+}
+
+type CardTransferObject = {
+    card: Card,
+    source: [PileName, number]
 }
 
 type ActionPayload = {
@@ -93,6 +99,7 @@ export {
     PileProps,
     GroupProps,
     CardProps,
+    CardTransferObject,
     ActionPayload,
     ActionTypes,
     Action
