@@ -21,7 +21,7 @@ const App = (props: AppProps) => {
         tableau.forEach((pile, i) => {
             const card = _last(pile);
 
-            if (card && !card.revealed) {
+            if (card && !card.isRevealed) {
                 dispatch({
                     type: ActionTypes.REVEAL_CARD,
                     payload: {
@@ -35,7 +35,7 @@ const App = (props: AppProps) => {
     useEffect(() => {
         const card = _last(waste[0]);
 
-        if (card && !card.revealed) {
+        if (card && !card.isRevealed) {
             dispatch({
                 type: ActionTypes.REVEAL_CARD,
                 payload: {

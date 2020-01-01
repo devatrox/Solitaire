@@ -85,7 +85,7 @@ const reducer = (prevState: AppState, action: Action) => {
 
         const card = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
         if (card) {
-            card.revealed = true;
+            card.isRevealed = true;
         }
 
         return {

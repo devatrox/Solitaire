@@ -50,7 +50,7 @@ const getInitialState = (): AppState => {
     for (let pile of state.tableau) {
         const lastCard = _last(pile);
         if (lastCard) {
-            lastCard.revealed = true;
+            lastCard.isRevealed = true;
         }
     }
 

@@ -60,7 +60,8 @@ const Pile = (props: PileProps) => {
                 <CardElement
                     card={card}
                     source={[name, index]}
-                    style={stackDown ? { marginTop: i * 20 + 'px' } : undefined}
+                    style={stackDown ? { marginTop: i * 30 + 'px' } : undefined}
+                    isTop={(cards.length - 1) === i}
                     key={card.id}
                     onClick={onClick}
                     onDoubleClick={onDoubleClick}

@@ -4,14 +4,14 @@ import { Suit, Rank, Color } from './definitions';
 interface CardInterface {
     suit: Suit
     rank: Rank
-    revealed: boolean
+    isRevealed: boolean
     color: Color
 }
 
 class Card implements CardInterface {
     color: Color = Color.BLACK
 
-    constructor(public suit: Suit, public rank: Rank, public revealed: boolean = false) {
+    constructor(public suit: Suit, public rank: Rank, public isRevealed: boolean = false) {
         if (this.suit === Suit.Diamond || this.suit === Suit.Heart) {
             this.color = Color.RED;
         }
@@ -26,7 +26,7 @@ class Card implements CardInterface {
     }
 
     static fromJSON(json: CardInterface): Card {
-        return new Card(json.suit, json.rank, json.revealed);
+        return new Card(json.suit, json.rank, json.isRevealed);
     }
 
     static fromString = (jsonString: string): Card => {

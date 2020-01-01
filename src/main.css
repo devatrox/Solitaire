@@ -32,7 +32,6 @@
 
 .foundation-pile {
     position: relative;
-    background-color: #ddd;
 }
 
 .tableau {
@@ -56,20 +55,62 @@
     font-size: 200px;
     line-height: 0.9;
     color: #aaa;
+    transition: transform 50ms ease-in-out;
 }
 
-.card[draggable=true] {
+.card.is-top {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.card:not(.is-revealed):not(.is-clickable) {
+    cursor: not-allowed;
+}
+
+.card.is-draggable {
     cursor: grab;
+}
+
+.card.is-draggable:hover {
+    transform: scale(1.03);
+}
+
+.card.is-top.is-draggable:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .card.is-dragging {
     opacity: 0.5;
 }
 
-.card-black.is-revealed {
+.card-black .card-front {
     color: #111;
 }
 
-.card-red.is-revealed {
+.card-red .card-front {
     color: #ff4136;
+}
+
+.card-front,
+.card-back {
+    backface-visibility: hidden;
+    transition: transform 300ms ease-in-out;
+}
+
+.card-front {
+    position: relative;
+}
+
+.card-back {
+    position: absolute;
+    top: 0;
+}
+
+.card.is-revealed .card-front,
+.card-back {
+    transform: perspective(800px) rotateX(0deg);
+}
+
+.card.is-revealed .card-back,
+.card-front {
+    transform: perspective(800px) rotateX(180deg);
 }

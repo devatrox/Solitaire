@@ -59,6 +59,7 @@ type AppProps = {
 type CardProps = {
     card: Card,
     source: [PileName, number],
+    isTop: boolean,
     style?: React.CSSProperties,
     onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,

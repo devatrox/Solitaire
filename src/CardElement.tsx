@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import _noop from 'lodash/noop';
-import { CardProps, CardTransferObject } from './definitions';
+import { CardProps, CardTransferObject, PileName } from './definitions';
 
 const backCardSymbol = String.fromCodePoint(Number('0x0001F0A0'));
 
@@ -10,11 +10,14 @@ const CardElement = (props: CardProps) => {
         card,
         source,
         style,
+        isTop = false,
         onClick = _noop,
         onDoubleClick = _noop
     } = props;
 
     const [isDragging, setIsDragging] = useState(false);
+
+    const [sourceName, sourceIndex] = source;
 
     const handleClick = (event: React.SyntheticEvent) => {
         onClick(event, card);
@@ -46,17 +49,24 @@ const CardElement = (props: CardProps) => {
             className={classnames(
                 'card',
                 'card-' + card.color,
+                isTop ? 'is-top' : null,
                 isDragging ? 'is-dragging' : null,
-                card.revealed ? 'is-revealed' : null
+                card.isRevealed ? 'is-revealed is-draggable' : null,
+                card.isRevealed || sourceName === PileName.STOCK ? 'is-clickable' : null
             )}
             style={style}
-            draggable={card.revealed}
+            draggable={card.isRevealed}
             onClick={handleClick}
             onDoubleClick={handleDoubleClick}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            {!card.revealed ? backCardSymbol : card.symbol}
+            <div className="card-front">
+                {card.symbol}
+            </div>
+            <div className="card-back">
+                {backCardSymbol}
+            </div>
         </div>
     )
 }
