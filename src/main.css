@@ -66,10 +66,10 @@
     opacity: 0.5;
 }
 
-.card-black:not(.card-flipped) {
+.card-black.is-revealed {
     color: #111;
 }
 
-.card-red:not(.card-flipped) {
+.card-red.is-revealed {
     color: #ff4136;
 }

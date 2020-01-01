@@ -1,24 +1,27 @@
 import React, { useReducer, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
-import StockPile from './StockPile';
-import WastePile from './WastePile';
-import Foundation from './Foundation';
-import Tableau from './Tableau';
-import { ActionTypes, Action } from './definitions';
-import { initialState } from './setup';
+import Pile from './Pile';
+import PileGroup from './PileGroup';
+import { PileName, AppProps, ActionTypes, Action } from './definitions';
+import { getInitialState } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
 import './main.css'
 import { Card } from './Card';
 
-const App = () => {
-    const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(reducer, initialState());
+const App = (props: AppProps) => {
+    const {
+        initialState
+    } = props;
+
+    const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
     }, []);
 
     const handleStackClick = (event: React.SyntheticEvent, card: Card) => {
+        console.log('handleStackClick', card)
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
@@ -27,37 +30,44 @@ const App = () => {
             }
         });
         dispatch({
-            type: ActionTypes.FLIP_CARD,
+            type: ActionTypes.REVEAL_CARD,
             payload: {
                 target: ['waste', 0, card]
             }
         });
     }
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>, card: Card) => {
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => {
         event.preventDefault();
-        console.log('handleDrop', event.dataTransfer.getData('text/plain'))
-        // const source = Card.fromString(
-        //     event.dataTransfer.getData('text/plain')
-        // );
+        const data = event.dataTransfer.getData('text/plain');
 
-        // dispatch({
-        //     type: ActionTypes.MOVE_CARDS,
-        //     payload: {
-        //         source: ['stock', 0, card],
-        //         target: ['waste', 0]
-        //     }
-        // });
+        try {
+            const json = JSON.parse(data);
+            console.log('handleDrop', json, target)
+
+            const card = Card.fromJSON(json.card);
+            const source = json.source;
+
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    source: [source[0], source[1], card],
+                    target
+                }
+            });
+        } catch (error) {
+            console.error(error)
+        }
     };
 
     return (
         <div className="solitaire">
-            <StockPile cards={stock[0]} onClick={handleStackClick} />
-            <WastePile cards={waste[0]} />
-            <Foundation piles={foundation} onDrop={handleDrop} />
-            <Tableau piles={tableau} onDrop={handleDrop} />
+            <PileGroup name="stock" piles={stock} onClick={handleStackClick} />
+            <PileGroup name="waste" piles={waste} />
+            <PileGroup name="foundation" piles={foundation} onDrop={handleDrop} />
+            <PileGroup name="tableau" piles={tableau} stackDown onDrop={handleDrop} />
         </div>
     )
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App initialState={getInitialState()} />, document.getElementById('app'));

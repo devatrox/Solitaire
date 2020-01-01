@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import _noop from 'lodash/noop';
-import { Suit, Color, CardProps } from './definitions';
+import { Suit, Color, CardProps, CardTransferObject } from './definitions';
 
-const flippedCardSymbol = String.fromCodePoint(Number('0x0001F0A0'));
+const backCardSymbol = String.fromCodePoint(Number('0x0001F0A0'));
 
 interface CardInterface {
     suit: string
     rank: string
-    flipped: boolean
+    revealed: boolean
     color: Color
 }
 
 class Card implements CardInterface {
     color: Color = 'black'
 
-    constructor(public suit: string, public rank: string, public flipped: boolean = true) {
+    constructor(public suit: string, public rank: string, public revealed: boolean = false) {
         if (this.suit === Suit.Diamond || this.suit === Suit.Heart) {
             this.color = 'red';
         }
@@ -30,7 +30,7 @@ class Card implements CardInterface {
     }
 
     static fromJSON(json: CardInterface): Card {
-        return new Card(json.suit, json.rank, json.flipped);
+        return new Card(json.suit, json.rank, json.revealed);
     }
 
     static fromString = (jsonString: string): Card => {
@@ -46,15 +46,12 @@ class Card implements CardInterface {
 const CardElement = (props: CardProps) => {
     const {
         card,
+        source,
         style,
-        onClick = _noop,
-        onDrop = _noop
+        onClick = _noop
     } = props;
 
-    const [isHover, setIsHover] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-
-    let enterTarget: EventTarget | null = null;
 
     const handleClick = (event: React.SyntheticEvent) => {
         onClick(event, card);
@@ -62,7 +59,11 @@ const CardElement = (props: CardProps) => {
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         if (event && event.dataTransfer) {
-            event.dataTransfer.setData('text/plain', JSON.stringify(card));
+            const payload: CardTransferObject = {
+                source: source,
+                card: card
+            };
+            event.dataTransfer.setData('text/plain', JSON.stringify(payload));
             event.dataTransfer.effectAllowed = 'move'; // eslint-disable-line no-param-reassign
         }
 
@@ -73,52 +74,21 @@ const CardElement = (props: CardProps) => {
         setIsDragging(false);
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-        setIsHover(false);
-        onDrop(event, card);
-    };
-
-    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
-        enterTarget = event.target;
-        setIsHover(true);
-    };
-
-    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-        if (enterTarget === event.target) {
-            event.stopPropagation();
-            event.preventDefault();
-            setIsHover(false);
-        }
-    };
-
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-        if ([...event.dataTransfer.types].includes('text/plain')) {
-            // This is necessary so the element works as a drop target
-            event.preventDefault();
-            event.stopPropagation();
-        }
-    };
-
     return (
         <div
             className={classnames(
                 'card',
                 'card-' + card.color,
                 isDragging ? 'is-dragging' : null,
-                isHover ? 'is-hover' : null,
-                card.flipped ? 'card-flipped' : null
+                card.revealed ? 'is-revealed' : null
             )}
             style={style}
-            draggable={!card.flipped}
+            draggable={card.revealed}
             onClick={handleClick}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
         >
-            {card.flipped ? flippedCardSymbol : card.symbol}
+            {!card.revealed ? backCardSymbol : card.symbol}
         </div>
     )
 }

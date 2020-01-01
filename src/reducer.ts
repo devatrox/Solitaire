@@ -5,16 +5,16 @@ import _shuffle from 'lodash/shuffle';
 import _isArray from 'lodash/isArray';
 import _find from 'lodash/find';
 import { Card } from './Card';
-import { AppState, Pile, ActionTypes, ActionPayload, Action } from './definitions';
-import { initialState } from './setup';
+import { AppState, PileName, ActionTypes, ActionPayload, Action } from './definitions';
+import { getInitialState } from './setup';
 
 const reducer = (prevState: AppState, action: Action) => {
     const { type, payload } = action;
 
     if (type === ActionTypes.MOVE_CARDS && payload.source && payload.target) {
-        console.log('MOVE_CARDS')
         const [sourceName, sourceIndex, sourceCards] = payload.source;
         const [targetName, targetIndex] = payload.target;
+        console.log('MOVE_CARDS', sourceName, targetName, sourceCards)
 
         const newSource = [
             ...prevState[sourceName]
@@ -36,6 +36,10 @@ const reducer = (prevState: AppState, action: Action) => {
             newTarget[targetIndex].push(sourceCards);
         }
 
+        if (targetName === sourceName) {
+            newTarget[sourceIndex] = newSource[sourceIndex];
+        }
+
         return {
             ...prevState,
             [sourceName]: newSource,
@@ -43,9 +47,9 @@ const reducer = (prevState: AppState, action: Action) => {
         };
     }
 
-    if (type === ActionTypes.FLIP_CARD && payload.target && payload.target[2]) {
-        console.log('FLIP_CARD')
+    if (type === ActionTypes.REVEAL_CARD && payload.target && payload.target[2]) {
         const [targetName, targetIndex, targetCard] = payload.target;
+        console.log('REVEAL_CARD', targetName, targetCard)
 
         const newTarget = [
             ...prevState[targetName]
@@ -53,7 +57,7 @@ const reducer = (prevState: AppState, action: Action) => {
 
         const card = _find(newTarget[targetIndex], (card: Card) => card.id === targetCard.id);
         if (card) {
-            card.flipped = false;
+            card.revealed = true;
         }
 
         return {
@@ -64,7 +68,7 @@ const reducer = (prevState: AppState, action: Action) => {
 
     if (type === ActionTypes.RESET) {
         return {
-            ...initialState()
+            ...getInitialState()
         }
     }
 

@@ -25,36 +25,18 @@ enum Rank {
     Joker = 'F'
 }
 
+type PileName = 'stock' | 'waste' | 'foundation' | 'tableau';
+
 type AppState = {
     stock: Card[][],
     waste: Card[][],
     foundation: Card[][],
     tableau: Card[][],
-
 }
 
-type CardProps = {
-    card: Card,
-    style?: React.CSSProperties,
-    onClick?: (event: React.SyntheticEvent, card: Card) => void,
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, card: Card) => void
+type AppProps = {
+    initialState: AppState
 }
-
-type PileProps = {
-    cards: Card[],
-    onDrag?: (event: React.SyntheticEvent) => void,
-    onClick?: (event: React.SyntheticEvent, card: Card) => void,
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, card: Card) => void
-}
-
-type GroupProps = {
-    piles: Card[][],
-    onDrag?: (event: React.SyntheticEvent) => void,
-    onClick?: (event: React.SyntheticEvent, card: Card) => void,
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, card: Card) => void
-}
-
-type Pile = 'stock' | 'waste' | 'foundation' | 'tableau';
 
 type Color = 'red' | 'black';
 
@@ -62,13 +44,37 @@ enum ActionTypes {
     MOVE_CARDS = 'move-cards',
     FLIP_CARD = 'flip-card',
     FLIP_CARDS = 'flip-cards',
-    RESET = 'reset'
+    RESET = 'reset',
+    REVEAL_CARD = 'reveal-card'
 };
 
-type ActionPayload = {
-    source?: [Pile, number, Card[] | Card],
-    target: [Pile, number, Card?],
+type CardProps = {
+    card: Card,
+    style?: React.CSSProperties,
+    onClick?: (event: React.SyntheticEvent, card: Card) => void,
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
+}
 
+type PileProps = {
+    cards: Card[],
+    name: PileName,
+    stackDown?: boolean,
+    index?: number,
+    onClick?: (event: React.SyntheticEvent, card: Card) => void,
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
+}
+
+type GroupProps = {
+    piles: Card[][],
+    name: PileName,
+    stackDown?: boolean,
+    onClick?: (event: React.SyntheticEvent, card: Card) => void,
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
+}
+
+type ActionPayload = {
+    source?: [PileName, number, Card[] | Card],
+    target: [PileName, number, Card?],
 }
 
 type Action = {
@@ -79,9 +85,10 @@ type Action = {
 
 export {
     AppState,
+    AppProps,
     Suit,
     Rank,
-    Pile,
+    PileName,
     Color,
     PileProps,
     GroupProps,

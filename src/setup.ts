@@ -28,7 +28,8 @@ const ranks = [
 
 const stack = _flatten(suits.map(suit => ranks.map(rank => new Card(suit, rank))));
 
-const initialState = (): AppState => {
+const getInitialState = (): AppState => {
+    console.log('init')
     const shuffledCards = _shuffle(stack);
 
     const state: AppState = {
@@ -49,7 +50,7 @@ const initialState = (): AppState => {
     for (let pile of state.tableau) {
         const lastCard = _last(pile);
         if (lastCard) {
-            lastCard.flipped = false;
+            lastCard.revealed = true;
         }
     }
 
@@ -57,5 +58,5 @@ const initialState = (): AppState => {
 }
 
 export {
-    initialState
+    getInitialState
 }
