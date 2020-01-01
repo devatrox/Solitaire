@@ -56,7 +56,7 @@ const App = (props: AppProps) => {
         });
     }
 
-    const handleTableauDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => {
+    const handleDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => {
         console.log('handleTableauDoubleClick', card)
         const [sourceName, sourceIndex] = source;
         let targetIndex = 0;
@@ -77,7 +77,7 @@ const App = (props: AppProps) => {
             dispatch({
                 type: ActionTypes.MOVE_CARDS,
                 payload: {
-                    source: [PileName.TABLEAU, sourceIndex, card],
+                    source: [sourceName, sourceIndex, card],
                     target: [PileName.FOUNDATION, targetIndex]
                 }
             });
@@ -125,10 +125,28 @@ const App = (props: AppProps) => {
 
     return (
         <div className="solitaire">
-            <PileGroup name={PileName.STOCK} piles={stock} onClick={handleStackClick} />
-            <PileGroup name={PileName.WASTE} piles={waste} />
-            <PileGroup name={PileName.FOUNDATION} piles={foundation} onDrop={handleDrop} />
-            <PileGroup name={PileName.TABLEAU} piles={tableau} stackDown onDrop={handleDrop} onDoubleClick={handleTableauDoubleClick} />
+            <PileGroup
+                name={PileName.STOCK}
+                piles={stock}
+                onClick={handleStackClick}
+            />
+            <PileGroup
+                name={PileName.WASTE}
+                piles={waste}
+                onDoubleClick={handleDoubleClick}
+            />
+            <PileGroup
+                name={PileName.FOUNDATION}
+                piles={foundation}
+                onDrop={handleDrop}
+            />
+            <PileGroup
+                name={PileName.TABLEAU}
+                piles={tableau}
+                stackDown
+                onDrop={handleDrop}
+                onDoubleClick={handleDoubleClick}
+            />
         </div>
     )
 }
