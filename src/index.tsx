@@ -73,23 +73,18 @@ const App = (props: AppProps) => {
             targetIndex = 3;
         }
 
-        if (foundation[targetIndex].length === ranks.indexOf(card.rank)) {
-            dispatch({
-                type: ActionTypes.MOVE_CARDS,
-                payload: {
-                    source: [sourceName, sourceIndex, card],
-                    target: [PileName.FOUNDATION, targetIndex]
-                }
-            });
-        } else {
-            console.info('Top most card must be of lesser rank')
-        }
+        dispatch({
+            type: ActionTypes.MOVE_CARDS,
+            payload: {
+                source: [sourceName, sourceIndex, card],
+                target: [PileName.FOUNDATION, targetIndex]
+            }
+        });
     }
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => {
         event.preventDefault();
         const data = event.dataTransfer.getData('text/plain');
-        const [targetName, targetIndex] = target;
 
         try {
             const json: CardTransferObject = JSON.parse(data);
@@ -99,25 +94,13 @@ const App = (props: AppProps) => {
             const source = json.source;
             const [sourceName, sourceIndex] = source;
 
-            const topCard = _last(tableau[targetIndex]);
-
-            if (topCard) {
-                if (topCard.color !== card.color) {
-                    if (ranks.indexOf(card.rank) === ranks.indexOf(topCard.rank) - 1) {
-                        dispatch({
-                            type: ActionTypes.MOVE_CARDS,
-                            payload: {
-                                source: [sourceName, sourceIndex, card],
-                                target
-                            }
-                        });
-                    } else {
-                        console.info('Top most card must be of higher rank')
-                    }
-                } else {
-                    console.info('Top most card must be of different color')
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    source: [sourceName, sourceIndex, card],
+                    target
                 }
-            }
+            });
         } catch (error) {
             console.error(error)
         }
