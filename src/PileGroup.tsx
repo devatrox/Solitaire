@@ -8,7 +8,8 @@ const PileGroup = (props: GroupProps) => {
         name,
         stackDown,
         onDrop,
-        onClick
+        onClick,
+        onDoubleClick
     } = props;
 
     return (
@@ -21,6 +22,7 @@ const PileGroup = (props: GroupProps) => {
                     stackDown={stackDown}
                     onDrop={onDrop}
                     onClick={onClick}
+                    onDoubleClick={onDoubleClick}
                     key={i}
                 />
             ))}

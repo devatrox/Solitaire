@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import Pile from './Pile';
 import PileGroup from './PileGroup';
-import { PileName, AppProps, ActionTypes, Action } from './definitions';
+import { PileName, AppProps, ActionTypes, CardTransferObject, Suit } from './definitions';
 import { getInitialState } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
@@ -18,21 +18,65 @@ const App = (props: AppProps) => {
     const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-    }, []);
+        tableau.forEach((pile, i) => {
+            const card = _last(pile);
+
+            if (card && !card.revealed) {
+                dispatch({
+                    type: ActionTypes.REVEAL_CARD,
+                    payload: {
+                        target: [PileName.TABLEAU, i, card]
+                    }
+                });
+            }
+        });
+    }, [tableau]);
+
+    useEffect(() => {
+        const card = _last(waste[0]);
+
+        if (card && !card.revealed) {
+            dispatch({
+                type: ActionTypes.REVEAL_CARD,
+                payload: {
+                    target: [PileName.WASTE, 0, card]
+                }
+            });
+        }
+    }, [waste]);
 
     const handleStackClick = (event: React.SyntheticEvent, card: Card) => {
         console.log('handleStackClick', card)
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: ['stock', 0, card],
-                target: ['waste', 0]
+                source: [PileName.STOCK, 0, card],
+                target: [PileName.WASTE, 0]
             }
         });
+    }
+
+    const handleTableauDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => {
+        console.log('handleTableauDoubleClick', card)
+        let targetIndex = 0;
+
+        if (card.suit === Suit.Heart) {
+            targetIndex = 1;
+        }
+
+        if (card.suit === Suit.Diamond) {
+            targetIndex = 2;
+        }
+
+        if (card.suit === Suit.Club) {
+            targetIndex = 3;
+        }
+
         dispatch({
-            type: ActionTypes.REVEAL_CARD,
+            type: ActionTypes.MOVE_CARDS,
             payload: {
-                target: ['waste', 0, card]
+                source: [PileName.TABLEAU, source[1], card],
+                target: [PileName.FOUNDATION, targetIndex]
             }
         });
     }
@@ -42,7 +86,7 @@ const App = (props: AppProps) => {
         const data = event.dataTransfer.getData('text/plain');
 
         try {
-            const json = JSON.parse(data);
+            const json: CardTransferObject = JSON.parse(data);
             console.log('handleDrop', json, target)
 
             const card = Card.fromJSON(json.card);
@@ -62,10 +106,10 @@ const App = (props: AppProps) => {
 
     return (
         <div className="solitaire">
-            <PileGroup name="stock" piles={stock} onClick={handleStackClick} />
-            <PileGroup name="waste" piles={waste} />
-            <PileGroup name="foundation" piles={foundation} onDrop={handleDrop} />
-            <PileGroup name="tableau" piles={tableau} stackDown onDrop={handleDrop} />
+            <PileGroup name={PileName.STOCK} piles={stock} onClick={handleStackClick} />
+            <PileGroup name={PileName.WASTE} piles={waste} />
+            <PileGroup name={PileName.FOUNDATION} piles={foundation} onDrop={handleDrop} />
+            <PileGroup name={PileName.TABLEAU} piles={tableau} stackDown onDrop={handleDrop} onDoubleClick={handleTableauDoubleClick} />
         </div>
     )
 }

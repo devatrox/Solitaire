@@ -11,7 +11,8 @@ const Pile = (props: PileProps) => {
         index = 0,
         stackDown = false,
         onDrop = _noop,
-        onClick
+        onClick,
+        onDoubleClick
     } = props;
 
     const [isHover, setIsHover] = useState(false);
@@ -62,6 +63,7 @@ const Pile = (props: PileProps) => {
                     style={stackDown ? { marginTop: i * 20 + 'px' } : undefined}
                     key={card.id}
                     onClick={onClick}
+                    onDoubleClick={onDoubleClick}
                 />
             ))}
         </div>

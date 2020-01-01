@@ -13,11 +13,11 @@ interface CardInterface {
 }
 
 class Card implements CardInterface {
-    color: Color = 'black'
+    color: Color = Color.BLACK
 
     constructor(public suit: string, public rank: string, public revealed: boolean = false) {
         if (this.suit === Suit.Diamond || this.suit === Suit.Heart) {
-            this.color = 'red';
+            this.color = Color.RED;
         }
     }
 
@@ -48,13 +48,18 @@ const CardElement = (props: CardProps) => {
         card,
         source,
         style,
-        onClick = _noop
+        onClick = _noop,
+        onDoubleClick = _noop
     } = props;
 
     const [isDragging, setIsDragging] = useState(false);
 
     const handleClick = (event: React.SyntheticEvent) => {
         onClick(event, card);
+    }
+
+    const handleDoubleClick = (event: React.SyntheticEvent) => {
+        onDoubleClick(event, card, source);
     }
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
@@ -85,6 +90,7 @@ const CardElement = (props: CardProps) => {
             style={style}
             draggable={card.revealed}
             onClick={handleClick}
+            onDoubleClick={handleDoubleClick}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >

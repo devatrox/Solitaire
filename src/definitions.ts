@@ -25,9 +25,17 @@ enum Rank {
     Joker = 'F'
 }
 
-type PileName = 'stock' | 'waste' | 'foundation' | 'tableau';
+enum PileName {
+    STOCK = 'stock',
+    WASTE = 'waste',
+    FOUNDATION = 'foundation',
+    TABLEAU = 'tableau'
+};
 
-type Color = 'red' | 'black';
+enum Color {
+    RED = 'red',
+    BLACK = 'black'
+};
 
 enum ActionTypes {
     MOVE_CARDS = 'move-cards',
@@ -52,7 +60,8 @@ type CardProps = {
     card: Card,
     source: [PileName, number],
     style?: React.CSSProperties,
-    onClick?: (event: React.SyntheticEvent, card: Card) => void,
+    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
+    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
 }
 
@@ -61,7 +70,8 @@ type PileProps = {
     name: PileName,
     stackDown?: boolean,
     index?: number,
-    onClick?: (event: React.SyntheticEvent, card: Card) => void,
+    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
+    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
 }
 
@@ -69,7 +79,8 @@ type GroupProps = {
     piles: Card[][],
     name: PileName,
     stackDown?: boolean,
-    onClick?: (event: React.SyntheticEvent, card: Card) => void,
+    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
+    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
 }
 
@@ -79,7 +90,7 @@ type CardTransferObject = {
 }
 
 type ActionPayload = {
-    source?: [PileName, number, Card[] | Card],
+    source?: [PileName, number, (Card[] | Card)],
     target: [PileName, number, Card?],
 }
 
