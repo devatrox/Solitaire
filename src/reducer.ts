@@ -4,7 +4,7 @@ import _filter from 'lodash/filter';
 import _shuffle from 'lodash/shuffle';
 import _isArray from 'lodash/isArray';
 import _find from 'lodash/find';
-import { Card } from './Card';
+import Card from './Card';
 import { AppState, PileName, ActionTypes, ActionPayload, Action } from './definitions';
 import { getInitialState } from './setup';
 

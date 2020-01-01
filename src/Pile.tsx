@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import _noop from 'lodash/noop';
-import CardElement from './Card';
+import CardElement from './CardElement';
 import { PileProps, PileName } from './definitions';
 
 const Pile = (props: PileProps) => {

@@ -1,7 +1,7 @@
 import _flatten from 'lodash/flatten';
 import _shuffle from 'lodash/shuffle';
 import _last from 'lodash/last';
-import { Card } from './Card';
+import Card from './Card';
 import { Suit, Rank, AppState } from './definitions';
 
 const suits = [
@@ -58,5 +58,7 @@ const getInitialState = (): AppState => {
 }
 
 export {
+    suits,
+    ranks,
     getInitialState
 }

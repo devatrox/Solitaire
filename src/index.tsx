@@ -4,11 +4,11 @@ import _last from 'lodash/last';
 import Pile from './Pile';
 import PileGroup from './PileGroup';
 import { PileName, AppProps, ActionTypes, CardTransferObject, Suit } from './definitions';
-import { getInitialState } from './setup';
+import { getInitialState, ranks } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
 import './main.css'
-import { Card } from './Card';
+import Card from './Card';
 
 const App = (props: AppProps) => {
     const {
@@ -58,6 +58,7 @@ const App = (props: AppProps) => {
 
     const handleTableauDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => {
         console.log('handleTableauDoubleClick', card)
+        const [sourceName, sourceIndex] = source;
         let targetIndex = 0;
 
         if (card.suit === Suit.Heart) {
@@ -72,18 +73,23 @@ const App = (props: AppProps) => {
             targetIndex = 3;
         }
 
-        dispatch({
-            type: ActionTypes.MOVE_CARDS,
-            payload: {
-                source: [PileName.TABLEAU, source[1], card],
-                target: [PileName.FOUNDATION, targetIndex]
-            }
-        });
+        if (foundation[targetIndex].length === ranks.indexOf(card.rank)) {
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    source: [PileName.TABLEAU, sourceIndex, card],
+                    target: [PileName.FOUNDATION, targetIndex]
+                }
+            });
+        } else {
+            console.info('Top most card must be of lesser rank')
+        }
     }
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => {
         event.preventDefault();
         const data = event.dataTransfer.getData('text/plain');
+        const [targetName, targetIndex] = target;
 
         try {
             const json: CardTransferObject = JSON.parse(data);
@@ -91,14 +97,27 @@ const App = (props: AppProps) => {
 
             const card = Card.fromJSON(json.card);
             const source = json.source;
+            const [sourceName, sourceIndex] = source;
 
-            dispatch({
-                type: ActionTypes.MOVE_CARDS,
-                payload: {
-                    source: [source[0], source[1], card],
-                    target
+            const topCard = _last(tableau[targetIndex]);
+
+            if (topCard) {
+                if (topCard.color !== card.color) {
+                    if (ranks.indexOf(card.rank) === ranks.indexOf(topCard.rank) - 1) {
+                        dispatch({
+                            type: ActionTypes.MOVE_CARDS,
+                            payload: {
+                                source: [sourceName, sourceIndex, card],
+                                target
+                            }
+                        });
+                    } else {
+                        console.info('Top most card must be of higher rank')
+                    }
+                } else {
+                    console.info('Top most card must be of different color')
                 }
-            });
+            }
         } catch (error) {
             console.error(error)
         }
