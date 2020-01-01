@@ -18,10 +18,8 @@ const Pile = (props: PileProps) => {
 
     let enterTarget: EventTarget | null = null;
 
-    const NAME: PileName = 'foundation';
-
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-        onDrop(event, [NAME, index]);
+        onDrop(event, [name, index]);
     }
 
     const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
