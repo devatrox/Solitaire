@@ -6,7 +6,9 @@
     "scripts": {
         "start": "parcel src/index.html",
         "build": "parcel build src/index.html>",
-        "clean": "rm dist/bundle.js"
+        "clean": "rm dist/bundle.js",
+        "lint": "eslint src/*",
+        "lint-fix": "eslint src/* --fix"
     },
     "author": "",
     "license": "ISC",
@@ -41,6 +43,7 @@
         "eslint-plugin-react": "^7.17.0",
         "eslint-plugin-react-hooks": "^1.7.0",
         "parcel-bundler": "^1.12.4",
+        "sass": "^1.24.2",
         "typescript": "^3.7.4"
     }
 }
