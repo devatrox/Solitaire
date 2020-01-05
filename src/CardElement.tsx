@@ -3,14 +3,13 @@ import classnames from 'classnames';
 import _noop from 'lodash/noop';
 import { CardProps, CardTransferObject, PileName } from './definitions';
 
-const backCardSymbol = String.fromCodePoint(Number('0x0001F0A0'));
-
 const CardElement = (props: CardProps) => {
     const {
         card,
         source,
         style,
         isTop = false,
+        children,
         onClick = _noop,
         onDoubleClick = _noop
     } = props;
@@ -20,7 +19,7 @@ const CardElement = (props: CardProps) => {
     const [sourceName, sourceIndex] = source;
 
     const handleClick = (event: React.SyntheticEvent) => {
-        onClick(event, card);
+        onClick(event, card, source);
     }
 
     const handleDoubleClick = (event: React.SyntheticEvent) => {
@@ -54,6 +53,10 @@ const CardElement = (props: CardProps) => {
                 card.isRevealed ? 'is-revealed is-draggable' : null,
                 card.isRevealed || sourceName === PileName.STOCK ? 'is-clickable' : null
             )}
+            data-rank={card.rank}
+            data-suit={card.suit}
+            data-color={card.color}
+            data-symbol={card.symbol}
             style={style}
             draggable={card.isRevealed}
             onClick={handleClick}
@@ -61,12 +64,7 @@ const CardElement = (props: CardProps) => {
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <div className="card-front">
-                {card.symbol}
-            </div>
-            <div className="card-back">
-                {backCardSymbol}
-            </div>
+            {children}
         </div>
     )
 }

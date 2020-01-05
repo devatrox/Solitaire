@@ -1,4 +1,4 @@
-import Card from './Card';
+import Card, { CardInterface } from './Card';
 
 enum Suit {
     Spade = 'A',
@@ -61,6 +61,7 @@ type CardProps = {
     source: [PileName, number],
     isTop: boolean,
     style?: React.CSSProperties,
+    children?: JSX.Element,
     onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
@@ -71,7 +72,7 @@ type PileProps = {
     name: PileName,
     stackDown?: boolean,
     index?: number,
-    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
+    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void,
     onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
 }
@@ -80,13 +81,13 @@ type GroupProps = {
     piles: Card[][],
     name: PileName,
     stackDown?: boolean,
-    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
+    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void,
     onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
 }
 
 type CardTransferObject = {
-    card: Card,
+    card: CardInterface,
     source: [PileName, number]
 }
 

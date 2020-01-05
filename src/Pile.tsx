@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import _noop from 'lodash/noop';
+import _reverse from 'lodash/reverse';
 import CardElement from './CardElement';
-import { PileProps, PileName } from './definitions';
+import { PileProps, PileName, CardProps } from './definitions';
 
 const Pile = (props: PileProps) => {
     const {
@@ -44,6 +45,43 @@ const Pile = (props: PileProps) => {
         }
     };
 
+    // Put cards into each other
+    const renderStackedDownCards = () => {
+        const stackClone = _reverse([...cards]);
+        let lastCard;
+
+        for (let card of stackClone) {
+            const cardProps: CardProps = {
+                card: card,
+                source: [name, index],
+                isTop: false,
+                onClick: onClick,
+                onDoubleClick: onDoubleClick
+            }
+
+            if (lastCard) {
+                cardProps.children = lastCard;
+            } else {
+                cardProps.isTop = true;
+            }
+
+            lastCard = <CardElement {...cardProps} />;
+        }
+
+        return lastCard;
+    }
+
+    const renderStackedUpCards = () => cards.map((card, i) => (
+        <CardElement
+            card={card}
+            source={[name, index]}
+            isTop={(cards.length - 1) === i}
+            key={card.id}
+            onClick={onClick}
+            onDoubleClick={onDoubleClick}
+        />
+    ))
+
     return (
         <div
             className={classnames(
@@ -56,17 +94,7 @@ const Pile = (props: PileProps) => {
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
         >
-            {cards.map((card, i) => (
-                <CardElement
-                    card={card}
-                    source={[name, index]}
-                    style={stackDown ? { marginTop: i * 30 + 'px' } : undefined}
-                    isTop={(cards.length - 1) === i}
-                    key={card.id}
-                    onClick={onClick}
-                    onDoubleClick={onDoubleClick}
-                />
-            ))}
+            {stackDown ? renderStackedDownCards() : renderStackedUpCards()}
         </div>
     )
 }

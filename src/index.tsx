@@ -7,7 +7,7 @@ import { PileName, AppProps, ActionTypes, CardTransferObject, Suit } from './def
 import { getInitialState, ranks } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
-import './main.css'
+import './main.scss'
 import Card from './Card';
 
 const App = (props: AppProps) => {
@@ -88,11 +88,10 @@ const App = (props: AppProps) => {
 
         try {
             const json: CardTransferObject = JSON.parse(data);
-            console.log('handleDrop', json, target)
 
             const card = Card.fromJSON(json.card);
-            const source = json.source;
-            const [sourceName, sourceIndex] = source;
+            const [sourceName, sourceIndex] = json.source;
+            console.log('handleDrop', card, json.source, target)
 
             dispatch({
                 type: ActionTypes.MOVE_CARDS,

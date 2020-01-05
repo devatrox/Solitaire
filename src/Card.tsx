@@ -5,23 +5,24 @@ interface CardInterface {
     suit: Suit
     rank: Rank
     isRevealed: boolean
-    color: Color
 }
 
 class Card implements CardInterface {
-    color: Color = Color.BLACK
+    constructor(public suit: Suit, public rank: Rank, public isRevealed: boolean = false) { }
 
-    constructor(public suit: Suit, public rank: Rank, public isRevealed: boolean = false) {
+    get color(): Color {
         if (this.suit === Suit.Diamond || this.suit === Suit.Heart) {
-            this.color = Color.RED;
+            return Color.RED;
         }
+
+        return Color.BLACK;
     }
 
-    get id() {
+    get id(): string {
         return this.suit + this.rank;
     }
 
-    get symbol() {
+    get symbol(): string {
         return String.fromCodePoint(Number('0x0001F0' + this.id));
     }
 
@@ -40,3 +41,6 @@ class Card implements CardInterface {
 }
 
 export default Card;
+export {
+    CardInterface
+}

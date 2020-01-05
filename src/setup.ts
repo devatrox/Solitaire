@@ -29,7 +29,6 @@ const ranks = [
 const stack = _flatten(suits.map(suit => ranks.map(rank => new Card(suit, rank))));
 
 const getInitialState = (): AppState => {
-    console.log('init')
     const shuffledCards = _shuffle(stack);
 
     const state: AppState = {
@@ -48,8 +47,9 @@ const getInitialState = (): AppState => {
     }
 
     for (let pile of state.tableau) {
-        const lastCard = _last(pile);
-        if (lastCard) {
+        // const lastCard = _last(pile);
+        // if (lastCard) {
+        for (let lastCard of pile) {
             lastCard.isRevealed = true;
         }
     }
