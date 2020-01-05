@@ -22,7 +22,7 @@ const Pile = (props: PileProps) => {
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         onDrop(event, [name, index]);
-    }
+    };
 
     const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
         enterTarget = event.target;
@@ -50,14 +50,14 @@ const Pile = (props: PileProps) => {
         const stackClone = _reverse([...cards]);
         let lastCard;
 
-        for (let card of stackClone) {
+        for (const card of stackClone) {
             const cardProps: CardProps = {
                 card: card,
                 source: [name, index],
                 isTop: false,
                 onClick: onClick,
                 onDoubleClick: onDoubleClick
-            }
+            };
 
             if (lastCard) {
                 cardProps.children = lastCard;
@@ -69,7 +69,7 @@ const Pile = (props: PileProps) => {
         }
 
         return lastCard;
-    }
+    };
 
     const renderStackedUpCards = () => cards.map((card, i) => (
         <CardElement
@@ -80,14 +80,14 @@ const Pile = (props: PileProps) => {
             onClick={onClick}
             onDoubleClick={onDoubleClick}
         />
-    ))
+    ));
 
     return (
         <div
             className={classnames(
                 `${name}-pile`,
                 'pile',
-                isHover ? 'is-hover' : null,
+                isHover ? 'is-hover' : null
             )}
             onDrop={handleDrop}
             onDragEnter={handleDragEnter}
@@ -96,7 +96,7 @@ const Pile = (props: PileProps) => {
         >
             {stackDown ? renderStackedDownCards() : renderStackedUpCards()}
         </div>
-    )
-}
+    );
+};
 
 export default Pile;

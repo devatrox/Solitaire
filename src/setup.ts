@@ -8,7 +8,7 @@ const suits = [
     Suit.Spade,
     Suit.Heart,
     Suit.Diamond,
-    Suit.Club,
+    Suit.Club
 ];
 const ranks = [
     Rank.Ace,
@@ -26,7 +26,7 @@ const ranks = [
     Rank.King
 ];
 
-const stack = _flatten(suits.map(suit => ranks.map(rank => new Card(suit, rank))));
+const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
 
 const getInitialState = (): AppState => {
     const shuffledCards = _shuffle(stack);
@@ -44,21 +44,21 @@ const getInitialState = (): AppState => {
             shuffledCards.slice(15, 21),
             shuffledCards.slice(21, 28)
         ]
-    }
+    };
 
-    for (let pile of state.tableau) {
+    for (const pile of state.tableau) {
         // const lastCard = _last(pile);
         // if (lastCard) {
-        for (let lastCard of pile) {
+        for (const lastCard of pile) {
             lastCard.isRevealed = true;
         }
     }
 
     return state;
-}
+};
 
 export {
     suits,
     ranks,
     getInitialState
-}
+};

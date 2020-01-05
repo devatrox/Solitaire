@@ -27,7 +27,7 @@ const PileGroup = (props: GroupProps) => {
                 />
             ))}
         </div>
-    )
-}
+    );
+};
 
 export default PileGroup;

@@ -2,9 +2,9 @@ import _noop from 'lodash/noop';
 import { Suit, Rank, Color } from './definitions';
 
 interface CardInterface {
-    suit: Suit
-    rank: Rank
-    isRevealed: boolean
+    suit: Suit;
+    rank: Rank;
+    isRevealed: boolean;
 }
 
 class Card implements CardInterface {
@@ -37,10 +37,10 @@ class Card implements CardInterface {
         } catch (e) {
             throw new Error(e);
         }
-    }
+    };
 }
 
 export default Card;
 export {
     CardInterface
-}
+};

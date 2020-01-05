@@ -30,12 +30,12 @@ enum PileName {
     WASTE = 'waste',
     FOUNDATION = 'foundation',
     TABLEAU = 'tableau'
-};
+}
 
 enum Color {
     RED = 'red',
     BLACK = 'black'
-};
+}
 
 enum ActionTypes {
     MOVE_CARDS = 'move-cards',
@@ -43,64 +43,64 @@ enum ActionTypes {
     FLIP_CARDS = 'flip-cards',
     RESET = 'reset',
     REVEAL_CARD = 'reveal-card'
-};
+}
 
 type AppState = {
-    stock: Card[][],
-    waste: Card[][],
-    foundation: Card[][],
-    tableau: Card[][],
-}
+    stock: Card[][];
+    waste: Card[][];
+    foundation: Card[][];
+    tableau: Card[][];
+};
 
 type AppProps = {
-    initialState: AppState
-}
+    initialState: AppState;
+};
 
 type CardProps = {
-    card: Card,
-    source: [PileName, number],
-    isTop: boolean,
-    style?: React.CSSProperties,
-    children?: JSX.Element,
-    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
-    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
-}
+    card: Card;
+    source: [PileName, number];
+    isTop: boolean;
+    style?: React.CSSProperties;
+    children?: JSX.Element;
+    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
+    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+};
 
 type PileProps = {
-    cards: Card[],
-    name: PileName,
-    stackDown?: boolean,
-    index?: number,
-    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void,
-    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
-}
+    cards: Card[];
+    name: PileName;
+    stackDown?: boolean;
+    index?: number;
+    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
+    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+};
 
 type GroupProps = {
-    piles: Card[][],
-    name: PileName,
-    stackDown?: boolean,
-    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void,
-    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void,
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void
-}
+    piles: Card[][];
+    name: PileName;
+    stackDown?: boolean;
+    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
+    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+};
 
 type CardTransferObject = {
-    card: CardInterface,
-    source: [PileName, number]
-}
+    card: CardInterface;
+    source: [PileName, number];
+};
 
 type ActionPayload = {
-    source?: [PileName, number, (Card[] | Card)],
-    target: [PileName, number, Card?],
-}
+    source?: [PileName, number, (Card[] | Card)];
+    target: [PileName, number, Card?];
+};
 
 type Action = {
-    type: ActionTypes,
-    payload: ActionPayload,
+    type: ActionTypes;
+    payload: ActionPayload;
 
-}
+};
 
 export {
     AppState,
@@ -116,4 +116,4 @@ export {
     ActionPayload,
     ActionTypes,
     Action
-}
+};

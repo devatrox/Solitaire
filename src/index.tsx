@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import Pile from './Pile';
 import PileGroup from './PileGroup';
-import { PileName, AppProps, ActionTypes, CardTransferObject, Suit } from './definitions';
+import {
+    PileName, AppProps, ActionTypes, CardTransferObject, Suit
+} from './definitions';
 import { getInitialState, ranks } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
-import './main.scss'
+import './main.scss';
 import Card from './Card';
 
 const App = (props: AppProps) => {
@@ -15,7 +17,9 @@ const App = (props: AppProps) => {
         initialState
     } = props;
 
-    const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(reducer, initialState);
+    const [{
+        stock, waste, foundation, tableau
+    }, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
         tableau.forEach((pile, i) => {
@@ -46,7 +50,7 @@ const App = (props: AppProps) => {
     }, [waste]);
 
     const handleStackClick = (event: React.SyntheticEvent, card: Card) => {
-        console.log('handleStackClick', card)
+        console.log('handleStackClick', card);
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
@@ -54,10 +58,10 @@ const App = (props: AppProps) => {
                 target: [PileName.WASTE, 0]
             }
         });
-    }
+    };
 
     const handleDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => {
-        console.log('handleTableauDoubleClick', card)
+        console.log('handleTableauDoubleClick', card);
         const [sourceName, sourceIndex] = source;
         let targetIndex = 0;
 
@@ -80,7 +84,7 @@ const App = (props: AppProps) => {
                 target: [PileName.FOUNDATION, targetIndex]
             }
         });
-    }
+    };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => {
         event.preventDefault();
@@ -91,7 +95,7 @@ const App = (props: AppProps) => {
 
             const card = Card.fromJSON(json.card);
             const [sourceName, sourceIndex] = json.source;
-            console.log('handleDrop', card, json.source, target)
+            console.log('handleDrop', card, json.source, target);
 
             dispatch({
                 type: ActionTypes.MOVE_CARDS,
@@ -101,7 +105,7 @@ const App = (props: AppProps) => {
                 }
             });
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
     };
 
@@ -130,7 +134,7 @@ const App = (props: AppProps) => {
                 onDoubleClick={handleDoubleClick}
             />
         </div>
-    )
-}
+    );
+};
 
 ReactDOM.render(<App initialState={getInitialState()} />, document.getElementById('app'));

@@ -20,11 +20,11 @@ const CardElement = (props: CardProps) => {
 
     const handleClick = (event: React.SyntheticEvent) => {
         onClick(event, card, source);
-    }
+    };
 
     const handleDoubleClick = (event: React.SyntheticEvent) => {
         onDoubleClick(event, card, source);
-    }
+    };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         if (event && event.dataTransfer) {
@@ -66,7 +66,7 @@ const CardElement = (props: CardProps) => {
         >
             {children}
         </div>
-    )
-}
+    );
+};
 
 export default CardElement;
