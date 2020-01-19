@@ -9,7 +9,7 @@ import {
 } from './definitions';
 import { getInitialState, ranks } from './setup';
 
-const reducer = (prevState: AppState, action: Action) => {
+const reducer = (prevState: AppState, action: Action): AppState => {
     const { type, payload } = action;
 
     if (type === ActionTypes.MOVE_CARDS && payload.source && payload.target) {

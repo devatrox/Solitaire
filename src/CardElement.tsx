@@ -18,15 +18,15 @@ const CardElement = (props: CardProps) => {
 
     const [sourceName, sourceIndex] = source;
 
-    const handleClick = (event: React.SyntheticEvent) => {
+    const handleClick = (event: React.SyntheticEvent): void => {
         onClick(event, card, source);
     };
 
-    const handleDoubleClick = (event: React.SyntheticEvent) => {
+    const handleDoubleClick = (event: React.SyntheticEvent): void => {
         onDoubleClick(event, card, source);
     };
 
-    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
         if (event && event.dataTransfer) {
             const payload: CardTransferObject = {
                 source: source,
@@ -39,7 +39,7 @@ const CardElement = (props: CardProps) => {
         setIsDragging(true);
     };
 
-    const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragEnd = (event: React.DragEvent<HTMLDivElement>): void => {
         setIsDragging(false);
     };
 

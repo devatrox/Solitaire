@@ -49,7 +49,7 @@ const App = (props: AppProps) => {
         }
     }, [waste]);
 
-    const handleStackClick = (event: React.SyntheticEvent, card: Card) => {
+    const handleStackClick = (event: React.SyntheticEvent, card: CardInterface): void => {
         console.log('handleStackClick', card);
         dispatch({
             type: ActionTypes.MOVE_CARDS,
@@ -60,7 +60,7 @@ const App = (props: AppProps) => {
         });
     };
 
-    const handleDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => {
+    const handleDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
         console.log('handleTableauDoubleClick', card);
         const [sourceName, sourceIndex] = source;
         let targetIndex = 0;
@@ -86,7 +86,7 @@ const App = (props: AppProps) => {
         });
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => {
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]): void => {
         event.preventDefault();
         const data = event.dataTransfer.getData('text/plain');
 

@@ -20,16 +20,16 @@ const Pile = (props: PileProps) => {
 
     let enterTarget: EventTarget | null = null;
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>): void => {
         onDrop(event, [name, index]);
     };
 
-    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>): void => {
         enterTarget = event.target;
         setIsHover(true);
     };
 
-    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>): void => {
         if (enterTarget === event.target) {
             event.stopPropagation();
             event.preventDefault();
@@ -37,7 +37,7 @@ const Pile = (props: PileProps) => {
         }
     };
 
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
         if ([...event.dataTransfer.types].includes('text/plain')) {
             // This is necessary so the element works as a drop target
             event.preventDefault();
@@ -46,7 +46,7 @@ const Pile = (props: PileProps) => {
     };
 
     // Put cards into each other
-    const renderStackedDownCards = () => {
+    const renderStackedDownCards = (): JSX.Element => {
         const stackClone = _reverse([...cards]);
         let lastCard;
 
@@ -71,7 +71,7 @@ const Pile = (props: PileProps) => {
         return lastCard;
     };
 
-    const renderStackedUpCards = () => cards.map((card, i) => (
+    const renderStackedUpCards = (): JSX.Element[] => cards.map((card, i) => (
         <CardElement
             card={card}
             source={[name, index]}

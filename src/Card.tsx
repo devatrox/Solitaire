@@ -5,6 +5,9 @@ interface CardInterface {
     suit: Suit;
     rank: Rank;
     isRevealed: boolean;
+    color?: Color;
+    id?: string;
+    symbol?: string;
 }
 
 class Card implements CardInterface {
