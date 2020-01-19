@@ -2,6 +2,7 @@ import React, { useReducer, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
+import SvgCards from 'svg-cards/svg-cards.svg';
 import PileGroup from './PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, Suit
@@ -140,34 +141,37 @@ const App = (props: AppProps): JSX.Element => {
     };
 
     return (
-        <div className="solitaire">
-            <PileGroup
-                name={PileName.STOCK}
-                piles={stock}
-                onPileClick={handleStockClick}
-                onCardClick={handleStockCardClick}
-            />
-            <PileGroup
-                name={PileName.WASTE}
-                piles={waste}
-                onCardDoubleClick={handleCardDoubleClick}
-            />
-            <PileGroup
-                name={PileName.FOUNDATION}
-                piles={foundation}
-                onDrop={handleDrop}
-            />
-            <PileGroup
-                name={PileName.TABLEAU}
-                piles={tableau}
-                stackDown
-                onDrop={handleDrop}
-                onCardDoubleClick={handleCardDoubleClick}
-            />
-            <div className="menu">
-                <button type="button" onClick={handleReset}>Reset</button>
+        <>
+            <SvgCards id="svg-cards" style={{ display: 'none' }} />
+            <div className="solitaire">
+                <PileGroup
+                    name={PileName.STOCK}
+                    piles={stock}
+                    onPileClick={handleStockClick}
+                    onCardClick={handleStockCardClick}
+                />
+                <PileGroup
+                    name={PileName.WASTE}
+                    piles={waste}
+                    onCardDoubleClick={handleCardDoubleClick}
+                />
+                <PileGroup
+                    name={PileName.FOUNDATION}
+                    piles={foundation}
+                    onDrop={handleDrop}
+                />
+                <PileGroup
+                    name={PileName.TABLEAU}
+                    piles={tableau}
+                    stackDown
+                    onDrop={handleDrop}
+                    onCardDoubleClick={handleCardDoubleClick}
+                />
+                <div className="menu">
+                    <button type="button" onClick={handleReset}>New Game</button>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -93,6 +93,9 @@ const CardElement = (props: CardProps): JSX.Element => {
             onMouseOut={handleMouseLeave}
             onBlur={handleMouseLeave}
         >
+            <svg className="card-svg" viewBox="0 0 140 200">
+                <use href="#svg-cards_svg__alternate-back" x="0" y="0" width="100%" height="100%" />
+            </svg>
             {children}
         </div>
     );
