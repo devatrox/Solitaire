@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
 import CardElement from './CardElement';
+import Card from './Card';
 import { PileProps, PileName, CardProps } from './definitions';
 
 const Pile = (props: PileProps) => {
@@ -46,11 +47,10 @@ const Pile = (props: PileProps) => {
     };
 
     // Put cards into each other
-    const renderStackedDownCards = (): JSX.Element => {
-        const stackClone = _reverse([...cards]);
-        let lastCard;
+    const renderStackedDownCards = (): JSX.Element | null => {
+        const reversedCards = _reverse([...cards]);
 
-        for (const card of stackClone) {
+        return reversedCards.reduce((lastCard: JSX.Element | null, card): JSX.Element => {
             const cardProps: CardProps = {
                 card: card,
                 source: [name, index],
@@ -65,10 +65,8 @@ const Pile = (props: PileProps) => {
                 cardProps.isTop = true;
             }
 
-            lastCard = <CardElement {...cardProps} />;
-        }
-
-        return lastCard;
+            return <CardElement {...cardProps} />;
+        }, null);
     };
 
     const renderStackedUpCards = (): JSX.Element[] => cards.map((card, i) => (
