@@ -21,6 +21,7 @@ module.exports = {
             'error',
             {
                 allow: [
+                    'info',
                     'warn',
                     'error'
                 ]
@@ -70,6 +71,7 @@ module.exports = {
                 scss: 'always'
             }
         ],
+        'import/no-cycle': 'off',
         'react/jsx-indent': ['error', INDENTATION],
         'react/jsx-indent-props': ['error', INDENTATION],
         'react/sort-comp': 'off',
