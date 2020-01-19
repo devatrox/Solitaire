@@ -60,6 +60,7 @@ type CardProps = {
     card: Card;
     source: [PileName, number];
     isTop: boolean;
+    childCards?: Card[];
     style?: React.CSSProperties;
     children?: JSX.Element;
     onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
@@ -87,12 +88,12 @@ type GroupProps = {
 };
 
 type CardTransferObject = {
-    card: CardInterface;
+    cards: CardInterface[];
     source: [PileName, number];
 };
 
 type ActionPayload = {
-    source?: [PileName, number, (Card[] | Card)];
+    source?: [PileName, number, Card[]];
     target: [PileName, number, Card?];
 };
 

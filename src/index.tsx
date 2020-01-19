@@ -1,18 +1,17 @@
 import React, { useReducer, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
-import Pile from './Pile';
 import PileGroup from './PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, Suit
 } from './definitions';
-import { getInitialState, ranks } from './setup';
+import { getInitialState } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
 import './main.scss';
 import Card from './Card';
 
-const App = (props: AppProps) => {
+const App = (props: AppProps): JSX.Element => {
     const {
         initialState
     } = props;
@@ -49,19 +48,17 @@ const App = (props: AppProps) => {
         }
     }, [waste]);
 
-    const handleStackClick = (event: React.SyntheticEvent, card: CardInterface): void => {
-        console.log('handleStackClick', card);
+    const handleStackClick = (event: React.SyntheticEvent, card: Card): void => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [PileName.STOCK, 0, card],
+                source: [PileName.STOCK, 0, [card]],
                 target: [PileName.WASTE, 0]
             }
         });
     };
 
     const handleDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
-        console.log('handleTableauDoubleClick', card);
         const [sourceName, sourceIndex] = source;
         let targetIndex = 0;
 
@@ -80,7 +77,7 @@ const App = (props: AppProps) => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [sourceName, sourceIndex, card],
+                source: [sourceName, sourceIndex, [card]],
                 target: [PileName.FOUNDATION, targetIndex]
             }
         });
@@ -93,14 +90,13 @@ const App = (props: AppProps) => {
         try {
             const json: CardTransferObject = JSON.parse(data);
 
-            const card = Card.fromJSON(json.card);
+            const cards = json.cards.map((card) => Card.fromJSON(card));
             const [sourceName, sourceIndex] = json.source;
-            console.log('handleDrop', card, json.source, target);
 
             dispatch({
                 type: ActionTypes.MOVE_CARDS,
                 payload: {
-                    source: [sourceName, sourceIndex, card],
+                    source: [sourceName, sourceIndex, cards],
                     target
                 }
             });

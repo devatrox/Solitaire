@@ -2,7 +2,7 @@ import React from 'react';
 import Pile from './Pile';
 import { GroupProps } from './definitions';
 
-const PileGroup = (props: GroupProps) => {
+const PileGroup = (props: GroupProps): JSX.Element => {
     const {
         piles = [],
         name,
@@ -23,7 +23,7 @@ const PileGroup = (props: GroupProps) => {
                     onDrop={onDrop}
                     onClick={onClick}
                     onDoubleClick={onDoubleClick}
-                    key={i}
+                    key={i} // eslint-disable-line react/no-array-index-key
                 />
             ))}
         </div>

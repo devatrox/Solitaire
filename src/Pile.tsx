@@ -3,10 +3,9 @@ import classnames from 'classnames';
 import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
 import CardElement from './CardElement';
-import Card from './Card';
-import { PileProps, PileName, CardProps } from './definitions';
+import { PileProps, CardProps } from './definitions';
 
-const Pile = (props: PileProps) => {
+const Pile = (props: PileProps): JSX.Element => {
     const {
         cards,
         name,
@@ -50,9 +49,10 @@ const Pile = (props: PileProps) => {
     const renderStackedDownCards = (): JSX.Element | null => {
         const reversedCards = _reverse([...cards]);
 
-        return reversedCards.reduce((lastCard: JSX.Element | null, card): JSX.Element => {
+        return reversedCards.reduce((lastCard: JSX.Element | null, card, i, cds): JSX.Element => {
             const cardProps: CardProps = {
                 card: card,
+                childCards: cds.slice(0, i),
                 source: [name, index],
                 isTop: false,
                 onClick: onClick,

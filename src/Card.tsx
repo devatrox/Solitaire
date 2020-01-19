@@ -1,4 +1,3 @@
-import _noop from 'lodash/noop';
 import { Suit, Rank, Color } from './definitions';
 
 interface CardInterface {
