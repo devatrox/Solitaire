@@ -105,7 +105,7 @@ type ActionPayload = {
 
 type Action = {
     type: ActionTypes;
-    payload: ActionPayload;
+    payload?: ActionPayload;
 
 };
 

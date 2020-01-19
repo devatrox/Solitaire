@@ -9,20 +9,37 @@
     --comp-card-width: calc(var(--card-height) / 100 * 70);
 }
 
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #2ecc40;
     background-image: radial-gradient(transparent, rgba(black, 0.4));
-    padding: var(--grid-gap);
 }
 
 .solitaire {
+    height: 100vh;
+    padding: var(--grid-gap);
     display: grid;
     grid-gap: var(--grid-gap);
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
         "stock waste . foundation foundation foundation foundation"
-        "tableau tableau tableau tableau tableau tableau tableau";
+        "tableau tableau tableau tableau tableau tableau tableau"
+        "menu menu menu menu menu menu menu";
+}
+
+.menu {
+    grid-area: menu;
+    display: flex;
 }
 
 .stock {

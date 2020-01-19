@@ -26,9 +26,8 @@ const ranks = [
     Rank.King
 ];
 
-const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
-
 const createInitialState = (): AppState => {
+    const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
     const shuffledCards = _shuffle(stack);
 
     const state: AppState = {

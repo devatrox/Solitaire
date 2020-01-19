@@ -83,11 +83,11 @@ const resetAction = (): AppState => createInitialState();
 const reducer = (prevState: AppState, action: Action): AppState => {
     const { type, payload } = action;
 
-    if (type === ActionTypes.MOVE_CARDS && payload.source && payload.target) {
+    if (type === ActionTypes.MOVE_CARDS && payload && payload.source && payload.target) {
         return moveCardsAction(prevState, payload.source, payload.target);
     }
 
-    if (type === ActionTypes.TOGGLE_CARD && payload.target && payload.target[2]) {
+    if (type === ActionTypes.TOGGLE_CARD && payload && payload.target && payload.target[2]) {
         return toggleCardAction(prevState, payload.target);
     }
 

@@ -133,6 +133,12 @@ const App = (props: AppProps): JSX.Element => {
         }
     };
 
+    const handleReset = (event: React.SyntheticEvent): void => {
+        dispatch({
+            type: ActionTypes.RESET
+        });
+    };
+
     return (
         <div className="solitaire">
             <PileGroup
@@ -158,6 +164,9 @@ const App = (props: AppProps): JSX.Element => {
                 onDrop={handleDrop}
                 onCardDoubleClick={handleCardDoubleClick}
             />
+            <div className="menu">
+                <button type="button" onClick={handleReset}>Reset</button>
+            </div>
         </div>
     );
 };
