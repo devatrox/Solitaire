@@ -1,10 +1,11 @@
 :root {
     --grid-gap: 20px;
     --card-height: 200px;
+    --card-border-radius: 10px;
+    --card-stack-amount: 40px;
     --color-red: #ff4136;
     --color-black: #111;
     --color-gray: #aaa;
-    --card-border-radius: 10px;
     --comp-card-width: calc(var(--card-height) / 100 * 70);
 }
 
@@ -75,24 +76,29 @@ body {
     left: 0;
     transition: transform 50ms ease-in-out;
 
-    &.is-top {
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-    }
-
     &:not(.is-revealed):not(.is-clickable) {
         cursor: not-allowed;
     }
 
     &.is-draggable {
         cursor: grab;
+        transform: scale(1);
     }
 
-    &.is-draggable:hover {
+    &.is-draggable.is-hover {
         transform: scale(1.03);
-    }
 
-    &.is-top.is-draggable:hover {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        &:before,
+        &:after {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        &:before,
+        &:after,
+        .card:before,
+        .card:after {
+            border-color: orange;
+        }
     }
 
     &.is-dragging {
@@ -100,7 +106,7 @@ body {
     }
 
     >.card {
-        top: 30px;
+        top: var(--card-stack-amount);
         z-index: 2;
     }
 
