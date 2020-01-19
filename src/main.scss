@@ -1,9 +1,17 @@
 :root {
     --grid-gap: 20px;
-    --card-size: 200px;
+    --card-height: 200px;
     --color-red: #ff4136;
     --color-black: #111;
     --color-gray: #aaa;
+    --card-border-radius: 10px;
+    --comp-card-width: calc(var(--card-height) / 100 * 70);
+}
+
+body {
+    background-color: #2ecc40;
+    background-image: radial-gradient(transparent, rgba(black, 0.4));
+    padding: var(--grid-gap);
 }
 
 .solitaire {
@@ -28,10 +36,13 @@
 
 .pile {
     position: relative;
-    font-size: var(--card-size);
-    line-height: var(--card-size);
-    width: calc(var(--card-size) / 100 * 70);
-    height: var(--card-size);
+    font-size: var(--card-height);
+    line-height: var(--card-height);
+    width: var(--comp-card-width);
+    height: var(--card-height);
+    border: 2px solid rgba(#fff, 0.3);
+    background-color: rgba(#000, 0.1);
+    border-radius: var(--card-border-radius);
 }
 
 .foundation {
@@ -95,10 +106,11 @@
 
     &:before,
     &:after {
+        overflow: hidden;
         pointer-events: none;
         background-color: #fff;
         border: 1px solid #aaa;
-        border-radius: 10px;
+        border-radius: var(--card-border-radius);
         backface-visibility: hidden;
         transition: transform 300ms ease-in-out;
     }
