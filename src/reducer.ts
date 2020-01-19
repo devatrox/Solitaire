@@ -61,14 +61,14 @@ const reducer = (prevState: AppState, action: Action): AppState => {
         };
     }
 
-    if (type === ActionTypes.REVEAL_CARD && payload.target && payload.target[2]) {
+    if (type === ActionTypes.TOGGLE_CARD && payload.target && payload.target[2]) {
         const [targetName, targetIndex, targetCard] = payload.target;
 
         const newTarget = _cloneDeep(prevState[targetName]);
 
-        const cardToBeRevealed = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
-        if (cardToBeRevealed) {
-            cardToBeRevealed.isRevealed = true;
+        const cardToBeToggled = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
+        if (cardToBeToggled) {
+            cardToBeToggled.isRevealed = !cardToBeToggled.isRevealed;
         }
 
         return {

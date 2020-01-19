@@ -42,7 +42,7 @@ enum ActionTypes {
     FLIP_CARD = 'flip-card',
     FLIP_CARDS = 'flip-cards',
     RESET = 'reset',
-    REVEAL_CARD = 'reveal-card'
+    TOGGLE_CARD = 'toggle-card'
 }
 
 type AppState = {
@@ -73,8 +73,9 @@ type PileProps = {
     name: PileName;
     stackDown?: boolean;
     index?: number;
-    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
-    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
+    onClick?: (event: React.SyntheticEvent, name: PileName) => void;
+    onCardClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
+    onCardDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
 };
 
@@ -82,8 +83,9 @@ type GroupProps = {
     piles: Card[][];
     name: PileName;
     stackDown?: boolean;
-    onClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
-    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
+    onPileClick?: (event: React.SyntheticEvent, name: PileName) => void;
+    onCardClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
+    onCardDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
 };
 

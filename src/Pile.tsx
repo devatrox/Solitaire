@@ -12,8 +12,9 @@ const Pile = (props: PileProps): JSX.Element => {
         index = 0,
         stackDown = false,
         onDrop = _noop,
-        onClick,
-        onDoubleClick
+        onCardClick,
+        onCardDoubleClick,
+        onClick = _noop
     } = props;
 
     const [isHover, setIsHover] = useState(false);
@@ -45,6 +46,12 @@ const Pile = (props: PileProps): JSX.Element => {
         }
     };
 
+    const handleClick = (event: React.SyntheticEvent): void => {
+        if (cards.length === 0) {
+            onClick(event, name);
+        }
+    };
+
     // Put cards into each other
     const renderStackedDownCards = (): JSX.Element | null => {
         const reversedCards = _reverse([...cards]);
@@ -55,8 +62,8 @@ const Pile = (props: PileProps): JSX.Element => {
                 childCards: cds.slice(0, i),
                 source: [name, index],
                 isTop: false,
-                onClick: onClick,
-                onDoubleClick: onDoubleClick
+                onClick: onCardClick,
+                onDoubleClick: onCardDoubleClick
             };
 
             if (lastCard) {
@@ -75,8 +82,8 @@ const Pile = (props: PileProps): JSX.Element => {
             source={[name, index]}
             isTop={(cards.length - 1) === i}
             key={card.id}
-            onClick={onClick}
-            onDoubleClick={onDoubleClick}
+            onClick={onCardClick}
+            onDoubleClick={onCardDoubleClick}
         />
     ));
 
@@ -91,6 +98,7 @@ const Pile = (props: PileProps): JSX.Element => {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
+            onClick={handleClick}
         >
             {stackDown ? renderStackedDownCards() : renderStackedUpCards()}
         </div>

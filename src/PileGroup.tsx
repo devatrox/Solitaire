@@ -8,8 +8,9 @@ const PileGroup = (props: GroupProps): JSX.Element => {
         name,
         stackDown,
         onDrop,
-        onClick,
-        onDoubleClick
+        onCardClick,
+        onCardDoubleClick,
+        onPileClick
     } = props;
 
     return (
@@ -20,9 +21,10 @@ const PileGroup = (props: GroupProps): JSX.Element => {
                     cards={pile}
                     index={i}
                     stackDown={stackDown}
+                    onClick={onPileClick}
                     onDrop={onDrop}
-                    onClick={onClick}
-                    onDoubleClick={onDoubleClick}
+                    onCardClick={onCardClick}
+                    onCardDoubleClick={onCardDoubleClick}
                     key={i} // eslint-disable-line react/no-array-index-key
                 />
             ))}

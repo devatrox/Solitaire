@@ -1,6 +1,7 @@
 import React, { useReducer, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
+import _reverse from 'lodash/reverse';
 import PileGroup from './PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, Suit
@@ -26,7 +27,7 @@ const App = (props: AppProps): JSX.Element => {
 
             if (card && !card.isRevealed) {
                 dispatch({
-                    type: ActionTypes.REVEAL_CARD,
+                    type: ActionTypes.TOGGLE_CARD,
                     payload: {
                         target: [PileName.TABLEAU, i, card]
                     }
@@ -40,7 +41,7 @@ const App = (props: AppProps): JSX.Element => {
 
         if (card && !card.isRevealed) {
             dispatch({
-                type: ActionTypes.REVEAL_CARD,
+                type: ActionTypes.TOGGLE_CARD,
                 payload: {
                     target: [PileName.WASTE, 0, card]
                 }
@@ -48,7 +49,34 @@ const App = (props: AppProps): JSX.Element => {
         }
     }, [waste]);
 
-    const handleStackClick = (event: React.SyntheticEvent, card: Card): void => {
+    useEffect(() => {
+        const pile = stock[0];
+
+        for (const card of pile) {
+            if (card.isRevealed) {
+                dispatch({
+                    type: ActionTypes.TOGGLE_CARD,
+                    payload: {
+                        target: [PileName.STOCK, 0, card]
+                    }
+                });
+            }
+        }
+    }, [stock]);
+
+    const handleStockClick = (event: React.SyntheticEvent): void => {
+        const reversedWasteCards = _reverse(waste[0]);
+
+        dispatch({
+            type: ActionTypes.MOVE_CARDS,
+            payload: {
+                source: [PileName.WASTE, 0, reversedWasteCards],
+                target: [PileName.STOCK, 0]
+            }
+        });
+    };
+
+    const handleStockCardClick = (event: React.SyntheticEvent, card: Card): void => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
@@ -58,7 +86,7 @@ const App = (props: AppProps): JSX.Element => {
         });
     };
 
-    const handleDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
+    const handleCardDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
         const [sourceName, sourceIndex] = source;
         let targetIndex = 0;
 
@@ -110,12 +138,13 @@ const App = (props: AppProps): JSX.Element => {
             <PileGroup
                 name={PileName.STOCK}
                 piles={stock}
-                onClick={handleStackClick}
+                onPileClick={handleStockClick}
+                onCardClick={handleStockCardClick}
             />
             <PileGroup
                 name={PileName.WASTE}
                 piles={waste}
-                onDoubleClick={handleDoubleClick}
+                onCardDoubleClick={handleCardDoubleClick}
             />
             <PileGroup
                 name={PileName.FOUNDATION}
@@ -127,7 +156,7 @@ const App = (props: AppProps): JSX.Element => {
                 piles={tableau}
                 stackDown
                 onDrop={handleDrop}
-                onDoubleClick={handleDoubleClick}
+                onCardDoubleClick={handleCardDoubleClick}
             />
         </div>
     );
