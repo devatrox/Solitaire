@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import _noop from 'lodash/noop';
+import _reverse from 'lodash/reverse';
 import { CardProps, CardTransferObject, PileName } from './definitions';
 
-const CardElement = (props: CardProps) => {
+const CardElement = (props: CardProps): JSX.Element => {
     const {
         card,
+        childCards = [],
         source,
         style,
         isTop = false,
@@ -14,29 +16,49 @@ const CardElement = (props: CardProps) => {
         onDoubleClick = _noop
     } = props;
 
+    const ref: React.RefObject<HTMLDivElement> = React.createRef();
+
     const [isDragging, setIsDragging] = useState(false);
 
-    const [sourceName, sourceIndex] = source;
+    const [isHover, setIsHover] = useState(false);
+
+    const [sourceName] = source;
+
+    const handleMouseOver = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.FocusEvent<HTMLDivElement>): void => {
+        if (event && event.target === ref.current) {
+            setIsHover(true);
+        }
+    };
+
+    const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.FocusEvent<HTMLDivElement>): void => {
+        if (event && event.target === ref.current) {
+            setIsHover(false);
+        }
+    };
 
     const handleClick = (event: React.SyntheticEvent): void => {
-        onClick(event, card, source);
+        if (isTop) {
+            onClick(event, card, source);
+        }
     };
 
     const handleDoubleClick = (event: React.SyntheticEvent): void => {
-        onDoubleClick(event, card, source);
+        if (isTop) {
+            onDoubleClick(event, card, source);
+        }
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
-        if (event && event.dataTransfer) {
+        if (event && event.target === ref.current && event.dataTransfer) {
+            const grabbedCards = _reverse([...childCards, card]);
             const payload: CardTransferObject = {
                 source: source,
-                card: card
+                cards: grabbedCards
             };
             event.dataTransfer.setData('text/plain', JSON.stringify(payload));
             event.dataTransfer.effectAllowed = 'move'; // eslint-disable-line no-param-reassign
+            setIsDragging(true);
         }
-
-        setIsDragging(true);
     };
 
     const handleDragEnd = (event: React.DragEvent<HTMLDivElement>): void => {
@@ -50,9 +72,11 @@ const CardElement = (props: CardProps) => {
                 'card-' + card.color,
                 isTop ? 'is-top' : null,
                 isDragging ? 'is-dragging' : null,
+                isHover ? 'is-hover' : null,
                 card.isRevealed ? 'is-revealed is-draggable' : null,
                 card.isRevealed || sourceName === PileName.STOCK ? 'is-clickable' : null
             )}
+            ref={ref}
             data-rank={card.rank}
             data-suit={card.suit}
             data-color={card.color}
@@ -63,6 +87,11 @@ const CardElement = (props: CardProps) => {
             onDoubleClick={handleDoubleClick}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onMouseOver={handleMouseOver}
+            onFocus={handleMouseOver}
+            onMouseLeave={handleMouseLeave}
+            onMouseOut={handleMouseLeave}
+            onBlur={handleMouseLeave}
         >
             {children}
         </div>
