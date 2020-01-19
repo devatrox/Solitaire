@@ -94,9 +94,13 @@ type CardTransferObject = {
     source: [PileName, number];
 };
 
+type ActionPayloadSource = [PileName, number, Card[]];
+
+type ActionPayloadTarget = [PileName, number, Card?];
+
 type ActionPayload = {
-    source?: [PileName, number, Card[]];
-    target: [PileName, number, Card?];
+    source?: ActionPayloadSource;
+    target: ActionPayloadTarget;
 };
 
 type Action = {
@@ -117,6 +121,8 @@ export {
     CardProps,
     CardTransferObject,
     ActionPayload,
+    ActionPayloadSource,
+    ActionPayloadTarget,
     ActionTypes,
     Action
 };

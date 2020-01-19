@@ -6,7 +6,7 @@ import PileGroup from './PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, Suit
 } from './definitions';
-import { getInitialState } from './setup';
+import { createInitialState } from './setup';
 import reducer from './reducer';
 import 'normalize.css';
 import './main.scss';
@@ -162,4 +162,4 @@ const App = (props: AppProps): JSX.Element => {
     );
 };
 
-ReactDOM.render(<App initialState={getInitialState()} />, document.getElementById('app'));
+ReactDOM.render(<App initialState={createInitialState()} />, document.getElementById('app'));

@@ -28,7 +28,7 @@ const ranks = [
 
 const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
 
-const getInitialState = (): AppState => {
+const createInitialState = (): AppState => {
     const shuffledCards = _shuffle(stack);
 
     const state: AppState = {
@@ -59,5 +59,5 @@ const getInitialState = (): AppState => {
 export {
     suits,
     ranks,
-    getInitialState
+    createInitialState
 };
