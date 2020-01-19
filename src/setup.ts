@@ -47,9 +47,8 @@ const getInitialState = (): AppState => {
     };
 
     for (const pile of state.tableau) {
-        // const lastCard = _last(pile);
-        // if (lastCard) {
-        for (const lastCard of pile) {
+        const lastCard = _last(pile);
+        if (lastCard) {
             lastCard.isRevealed = true;
         }
     }
