@@ -88,6 +88,11 @@ type GroupProps = {
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
 };
 
+type ValidationResult = {
+    status: boolean;
+    statusText: string;
+};
+
 type CardTransferObject = {
     cards: CardInterface[];
     source: [PileName, number];
@@ -121,6 +126,7 @@ export {
     PileProps,
     GroupProps,
     CardProps,
+    ValidationResult,
     CardTransferObject,
     MappedCard,
     ActionPayload,

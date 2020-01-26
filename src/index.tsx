@@ -1,4 +1,6 @@
-import React, { useReducer, useEffect, useMemo } from 'react';
+import React, {
+    useReducer, useEffect, useMemo, useState
+} from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
@@ -13,6 +15,9 @@ import reducer, { getFoundationTargetIndex } from './reducer';
 import 'normalize.css';
 import './main.scss';
 import Card from './Card';
+import {
+    isLowerRank, isHigherRank, isDifferentColor, isAllRevealed, hasNoStock
+} from './validate';
 
 const App = (props: AppProps): JSX.Element => {
     const {
@@ -23,11 +28,13 @@ const App = (props: AppProps): JSX.Element => {
         stock, waste, foundation, tableau
     }, dispatch] = useReducer(reducer, initialState);
 
+    const [message, setMessage] = useState('');
+
     const isDone = useMemo((): boolean => {
         const allCards = _flattenDeep([...stock, ...waste, ...foundation]);
-        const isAllRevealed = _every(allCards, (card) => card.isRevealed);
+        const isRevealed = _every(allCards, (card) => card.isRevealed);
         const isStockAndWasteEmpty = stock[0].length === 0 && waste[0].length === 0;
-        return isStockAndWasteEmpty && isAllRevealed;
+        return isStockAndWasteEmpty && isRevealed;
     }, [foundation, stock, waste]);
 
     const isFinished = useMemo((): boolean => {
@@ -117,15 +124,20 @@ const App = (props: AppProps): JSX.Element => {
     const handleCardDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
         const [sourceName, sourceIndex] = source;
         const targetIndex = getFoundationTargetIndex(card);
+        const { status, statusText } = isLowerRank([card], foundation[targetIndex]);
 
-        dispatch({
-            type: ActionTypes.MOVE_CARDS,
-            payload: {
-                cards: [[card, sourceIndex, targetIndex]],
-                sourcePile: sourceName,
-                targetPile: PileName.FOUNDATION
-            }
-        });
+        if (status) {
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    cards: [[card, sourceIndex, targetIndex]],
+                    sourcePile: sourceName,
+                    targetPile: PileName.FOUNDATION
+                }
+            });
+        }
+
+        setMessage(statusText);
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]): void => {
@@ -137,19 +149,36 @@ const App = (props: AppProps): JSX.Element => {
             const json: CardTransferObject = JSON.parse(data);
             const [sourceName, sourceIndex] = json.source;
 
-            const cards: MappedCard[] = json.cards.map((cardJson) => {
-                const card = Card.fromJSON(cardJson);
-                return [card, sourceIndex, targetIndex];
-            });
+            const cards: Card[] = json.cards.map((cardJson) => Card.fromJSON(cardJson));
+            const mappedCards: MappedCard[] = cards.map((card) => [card, sourceIndex, targetIndex]);
+            let validationResult = { status: true, statusText: '' };
 
-            dispatch({
-                type: ActionTypes.MOVE_CARDS,
-                payload: {
-                    cards: cards,
-                    sourcePile: sourceName,
-                    targetPile: targetName
+            if (targetName === PileName.TABLEAU) {
+                validationResult = isHigherRank(cards, tableau[targetIndex]);
+
+                if (validationResult.status) {
+                    validationResult = isDifferentColor(cards, tableau[targetIndex]);
                 }
-            });
+            }
+
+            if (targetName === PileName.FOUNDATION) {
+                validationResult = isLowerRank(cards, foundation[targetIndex]);
+            }
+
+            const { status, statusText } = validationResult;
+
+            if (status) {
+                dispatch({
+                    type: ActionTypes.MOVE_CARDS,
+                    payload: {
+                        cards: mappedCards,
+                        sourcePile: sourceName,
+                        targetPile: targetName
+                    }
+                });
+            }
+
+            setMessage(statusText);
         } catch (error) {
             console.error(error);
         }
@@ -162,9 +191,21 @@ const App = (props: AppProps): JSX.Element => {
     };
 
     const handleFinish = (event: React.SyntheticEvent): void => {
-        dispatch({
-            type: ActionTypes.FINISH
-        });
+        let validationResult = hasNoStock(stock[0], waste[0]);
+
+        if (validationResult.status) {
+            validationResult = isAllRevealed(tableau);
+        }
+
+        const { status, statusText } = validationResult;
+
+        if (status) {
+            dispatch({
+                type: ActionTypes.FINISH
+            });
+        }
+
+        setMessage(statusText);
     };
 
     return (
@@ -195,6 +236,7 @@ const App = (props: AppProps): JSX.Element => {
             <div className="menu">
                 <button type="button" onClick={handleReset}>New Game</button>
                 <button type="button" disabled={!isDone} onClick={handleFinish}>Finish</button>
+                <div className="message">{message}</div>
             </div>
         </div>
     );

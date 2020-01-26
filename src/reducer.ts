@@ -1,15 +1,13 @@
 import _filter from 'lodash/filter';
 import _find from 'lodash/find';
-import _last from 'lodash/last';
 import _cloneDeep from 'lodash/cloneDeep';
 import _flatten from 'lodash/flatten';
 import _sortBy from 'lodash/sortBy';
-import _every from 'lodash/every';
 import {
     Suit, AppState, PileName, ActionTypes, Action, ActionPayloadSourceName, ActionPayloadTargetName, MappedCard
 } from './definitions';
 import Card from './Card';
-import { createInitialState, ranks } from './setup';
+import { createInitialState } from './setup';
 
 const getFoundationTargetIndex = (card: Card): number => {
     let targetIndex = 0;
@@ -36,32 +34,6 @@ const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceN
     for (const mappedCard of mappedCards) {
         const [sourceCard, sourceIndex, targetIndex] = mappedCard;
 
-        if (targetName === PileName.FOUNDATION) {
-            if (newTarget[targetIndex].length !== ranks.indexOf(sourceCard.rank)) {
-                console.info('Top most card must be of lower rank');
-
-                return prevState;
-            }
-        }
-
-        if (targetName === PileName.TABLEAU) {
-            const topCard = _last(newTarget[targetIndex]);
-
-            if (topCard) {
-                if (topCard.color === sourceCard.color) {
-                    console.info('Top most card must be of a different color', topCard, sourceCard);
-
-                    return prevState;
-                }
-
-                if (ranks.indexOf(sourceCard.rank) !== ranks.indexOf(topCard.rank) - 1) {
-                    console.info('Top most card must be of higher rank');
-
-                    return prevState;
-                }
-            }
-        }
-
         newSource[sourceIndex] = _filter(newSource[sourceIndex], (card) => card.id !== sourceCard.id);
 
         newTarget[targetIndex].push(sourceCard);
@@ -79,27 +51,17 @@ const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceN
 };
 
 const finishAction = (prevState: AppState): AppState => {
-    if (prevState.stock[0].length === 0 && prevState.waste[0].length === 0) {
-        const piles = _flatten(prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
-            const targetIndex = getFoundationTargetIndex(card);
-            return [card, pileIndex, targetIndex];
-        })));
-        const sortedCards = _sortBy(piles, (mappedCard) => {
-            const [card] = mappedCard;
+    const piles = _flatten(prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
+        const targetIndex = getFoundationTargetIndex(card);
+        return [card, pileIndex, targetIndex];
+    })));
+    const sortedCards = _sortBy(piles, (mappedCard) => {
+        const [card] = mappedCard;
 
-            return card.rank;
-        });
+        return card.rank;
+    });
 
-        if (_every(sortedCards, (mappedCard) => mappedCard[0].isRevealed)) {
-            return moveCardsAction(prevState, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
-        }
-
-        console.info('You need to reveal all cards on the tableau');
-        return prevState;
-    }
-
-    console.info('There are still cards in the stock and/or waste piles');
-    return prevState;
+    return moveCardsAction(prevState, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
 };
 
 const flipCardAction = (prevState: AppState, mappedCards: MappedCard[], targetName: ActionPayloadTargetName): AppState => {
