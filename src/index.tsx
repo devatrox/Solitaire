@@ -39,7 +39,7 @@ const App = (props: AppProps): JSX.Element => {
         if (isFinished) {
             console.info('Congratulations!');
         }
-    }, [isFinished, foundation]);
+    }, [isFinished]);
 
     useEffect(() => {
         tableau.forEach((pile, i) => {
