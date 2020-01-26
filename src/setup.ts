@@ -26,6 +26,8 @@ const ranks = [
     Rank.King
 ];
 
+const cardCount: number = suits.length * ranks.length;
+
 const createNewStack = (): Card[] => {
     const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
     return _shuffle(stack);
@@ -88,6 +90,7 @@ const createInitialState = (): AppState => {
 export {
     suits,
     ranks,
+    cardCount,
     createInitialState,
     createSolvedState
 };

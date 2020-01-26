@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
@@ -8,7 +8,7 @@ import PileGroup from './PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, MappedCard
 } from './definitions';
-import { createInitialState } from './setup';
+import { createInitialState, cardCount } from './setup';
 import reducer, { getFoundationTargetIndex } from './reducer';
 import 'normalize.css';
 import './main.scss';
@@ -23,37 +23,46 @@ const App = (props: AppProps): JSX.Element => {
         stock, waste, foundation, tableau
     }, dispatch] = useReducer(reducer, initialState);
 
-    const isDone = (): boolean => {
+    const isDone = useMemo((): boolean => {
         const allCards = _flattenDeep([...stock, ...waste, ...foundation]);
         const isAllRevealed = _every(allCards, (card) => card.isRevealed);
         const isStockAndWasteEmpty = stock[0].length === 0 && waste[0].length === 0;
         return isStockAndWasteEmpty && isAllRevealed;
-    };
+    }, [foundation, stock, waste]);
+
+    const isFinished = useMemo((): boolean => {
+        const allTableauCards = _flattenDeep(tableau);
+        return allTableauCards.length === cardCount;
+    }, [tableau]);
 
     useEffect(() => {
         tableau.forEach((pile, i) => {
-            const card = _last(pile);
+            const topCard = _last(pile);
 
-            if (card && !card.isRevealed) {
+            if (topCard && !topCard.isRevealed) {
                 dispatch({
                     type: ActionTypes.FLIP_CARD,
                     payload: {
-                        cards: [[card, i, i]],
+                        cards: [[topCard, i, i]],
                         targetPile: PileName.TABLEAU
                     }
                 });
             }
         });
-    }, [tableau]);
+
+        if (isFinished) {
+            console.info('Congratulations!');
+        }
+    }, [isFinished, tableau]);
 
     useEffect(() => {
-        const card = _last(waste[0]);
+        const topCard = _last(waste[0]);
 
-        if (card && !card.isRevealed) {
+        if (topCard && !topCard.isRevealed) {
             dispatch({
                 type: ActionTypes.FLIP_CARD,
                 payload: {
-                    cards: [[card, 0, 0]],
+                    cards: [[topCard, 0, 0]],
                     targetPile: PileName.WASTE
                 }
             });
@@ -181,7 +190,7 @@ const App = (props: AppProps): JSX.Element => {
             />
             <div className="menu">
                 <button type="button" onClick={handleReset}>New Game</button>
-                <button type="button" disabled={!isDone()} onClick={handleFinish}>Finish</button>
+                <button type="button" disabled={!isDone} onClick={handleFinish}>Finish</button>
             </div>
         </div>
     );
