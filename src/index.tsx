@@ -31,9 +31,15 @@ const App = (props: AppProps): JSX.Element => {
     }, [foundation, stock, waste]);
 
     const isFinished = useMemo((): boolean => {
-        const allTableauCards = _flattenDeep(tableau);
+        const allTableauCards = _flattenDeep(foundation);
         return allTableauCards.length === cardCount;
-    }, [tableau]);
+    }, [foundation]);
+
+    useEffect(() => {
+        if (isFinished) {
+            console.info('Congratulations!');
+        }
+    }, [isFinished, foundation]);
 
     useEffect(() => {
         tableau.forEach((pile, i) => {
@@ -49,11 +55,7 @@ const App = (props: AppProps): JSX.Element => {
                 });
             }
         });
-
-        if (isFinished) {
-            console.info('Congratulations!');
-        }
-    }, [isFinished, tableau]);
+    }, [tableau]);
 
     useEffect(() => {
         const topCard = _last(waste[0]);
