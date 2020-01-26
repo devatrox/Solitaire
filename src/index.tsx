@@ -44,7 +44,7 @@ const App = (props: AppProps): JSX.Element => {
 
     useEffect(() => {
         if (isFinished) {
-            console.info('Congratulations!');
+            setMessage('Congratulations!');
         }
     }, [isFinished]);
 
@@ -234,8 +234,8 @@ const App = (props: AppProps): JSX.Element => {
                 onCardDoubleClick={handleCardDoubleClick}
             />
             <div className="menu">
-                <button type="button" onClick={handleReset}>New Game</button>
-                <button type="button" disabled={!isDone} onClick={handleFinish}>Finish</button>
+                <button className="btn" type="button" onClick={handleReset}>New Game</button>
+                <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
                 <div className="message">{message}</div>
             </div>
         </div>

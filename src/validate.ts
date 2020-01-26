@@ -11,6 +11,8 @@ const genericError = {
     statusText: 'Some error occurred'
 };
 
+const MOVE_NOT_ALLOWED = 'Move is not allowed';
+
 const isDifferentColor = (cards: Card[], pile: Card[]): ValidationResult => {
     const topCard = _last(pile);
     const firstCard = _first(cards);
@@ -22,7 +24,7 @@ const isDifferentColor = (cards: Card[], pile: Card[]): ValidationResult => {
 
     return {
         status: result,
-        statusText: result ? '' : 'Top most card must be of a different color'
+        statusText: result ? '' : MOVE_NOT_ALLOWED
     };
 };
 
@@ -37,7 +39,7 @@ const isHigherRank = (cards: Card[], pile: Card[]): ValidationResult => {
 
     return {
         status: result,
-        statusText: result ? '' : 'Top most card must be of higher rank'
+        statusText: result ? '' : MOVE_NOT_ALLOWED
     };
 };
 
@@ -51,7 +53,7 @@ const isLowerRank = (cards: Card[], pile: Card[]): ValidationResult => {
 
     return {
         status: result,
-        statusText: result ? '' : 'Top most card must be of lower rank'
+        statusText: result ? '' : MOVE_NOT_ALLOWED
     };
 };
 
