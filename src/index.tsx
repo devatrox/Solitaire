@@ -237,6 +237,7 @@ const App = (props: AppProps): JSX.Element => {
                 <button className="btn" type="button" onClick={handleReset}>New Game</button>
                 <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
                 <div className="message">{message}</div>
+                <a className="btn" href="https://github.com/devatrox/Solitaire">GitHub</a>
             </div>
         </div>
     );

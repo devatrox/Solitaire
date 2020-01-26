@@ -4,7 +4,11 @@ Solitaire built in React using Typescript. Have fun poking around!
 
 ## Usage
 
-Download
+Visit https://solitaire.jasonnickel.de/
+
+### Local Usage
+
+Download or clone
 
 `npm install`
 
