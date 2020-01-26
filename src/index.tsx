@@ -58,16 +58,18 @@ const App = (props: AppProps): JSX.Element => {
     }, [tableau]);
 
     useEffect(() => {
-        const topCard = _last(waste[0]);
+        const pile = waste[0];
 
-        if (topCard && !topCard.isRevealed) {
-            dispatch({
-                type: ActionTypes.FLIP_CARD,
-                payload: {
-                    cards: [[topCard, 0, 0]],
-                    targetPile: PileName.WASTE
-                }
-            });
+        for (const card of pile) {
+            if (!card.isRevealed) {
+                dispatch({
+                    type: ActionTypes.FLIP_CARD,
+                    payload: {
+                        cards: [[card, 0, 0]],
+                        targetPile: PileName.WASTE
+                    }
+                });
+            }
         }
     }, [waste]);
 
