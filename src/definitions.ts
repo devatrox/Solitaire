@@ -39,10 +39,8 @@ enum Color {
 
 enum ActionTypes {
     MOVE_CARDS = 'move-cards',
-    FLIP_CARD = 'flip-card',
-    FLIP_CARDS = 'flip-cards',
     RESET = 'reset',
-    TOGGLE_CARD = 'toggle-card',
+    FLIP_CARD = 'flip-card',
     FINISH = 'finish'
 }
 
@@ -97,14 +95,14 @@ type CardTransferObject = {
 
 type MappedCard = [Card, number, number];
 
-type ActionPayloadSourcePile = PileName;
+type ActionPayloadSourceName = PileName;
 
-type ActionPayloadTargetPile = PileName;
+type ActionPayloadTargetName = PileName;
 
 type ActionPayload = {
     cards: MappedCard[];
-    sourcePile?: ActionPayloadSourcePile;
-    targetPile: ActionPayloadTargetPile;
+    sourcePile?: ActionPayloadSourceName;
+    targetPile: ActionPayloadTargetName;
 };
 
 type Action = {
@@ -126,8 +124,8 @@ export {
     CardTransferObject,
     MappedCard,
     ActionPayload,
-    ActionPayloadSourcePile as ActionPayloadSource,
-    ActionPayloadTargetPile as ActionPayloadTarget,
+    ActionPayloadSourceName,
+    ActionPayloadTargetName,
     ActionTypes,
     Action
 };

@@ -6,7 +6,7 @@ import _flatten from 'lodash/flatten';
 import _sortBy from 'lodash/sortBy';
 import _every from 'lodash/every';
 import {
-    Suit, AppState, PileName, ActionTypes, Action, ActionPayloadSource, ActionPayloadTarget, MappedCard
+    Suit, AppState, PileName, ActionTypes, Action, ActionPayloadSourceName, ActionPayloadTargetName, MappedCard
 } from './definitions';
 import Card from './Card';
 import { createInitialState, ranks } from './setup';
@@ -29,7 +29,7 @@ const getFoundationTargetIndex = (card: Card): number => {
     return targetIndex;
 };
 
-const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceName: ActionPayloadSource, targetName: ActionPayloadTarget): AppState => {
+const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceName: ActionPayloadSourceName, targetName: ActionPayloadTargetName): AppState => {
     const newSource = _cloneDeep(prevState[sourceName]);
     const newTarget = _cloneDeep(prevState[targetName]);
 
@@ -102,15 +102,15 @@ const finishAction = (prevState: AppState): AppState => {
     return prevState;
 };
 
-const toggleCardAction = (prevState: AppState, mappedCards: MappedCard[], targetName: ActionPayloadTarget): AppState => {
+const flipCardAction = (prevState: AppState, mappedCards: MappedCard[], targetName: ActionPayloadTargetName): AppState => {
     const newTarget = _cloneDeep(prevState[targetName]);
 
     for (const mappedCard of mappedCards) {
         const [targetCard, sourceIndex, targetIndex] = mappedCard;
-        const cardToBeToggled = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
+        const cardToBeFlipped = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
 
-        if (cardToBeToggled) {
-            cardToBeToggled.flip();
+        if (cardToBeFlipped) {
+            cardToBeFlipped.flip();
         }
     }
 
@@ -133,8 +133,8 @@ const reducer = (prevState: AppState, action: Action): AppState => {
         return finishAction(prevState);
     }
 
-    if (type === ActionTypes.TOGGLE_CARD && payload && payload.cards && payload.targetPile) {
-        return toggleCardAction(prevState, payload.cards, payload.targetPile);
+    if (type === ActionTypes.FLIP_CARD && payload && payload.cards && payload.targetPile) {
+        return flipCardAction(prevState, payload.cards, payload.targetPile);
     }
 
     if (type === ActionTypes.RESET) {

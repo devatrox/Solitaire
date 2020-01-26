@@ -2,6 +2,8 @@ import React, { useReducer, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
+import _flattenDeep from 'lodash/flattenDeep';
+import _every from 'lodash/every';
 import PileGroup from './PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, MappedCard
@@ -21,13 +23,20 @@ const App = (props: AppProps): JSX.Element => {
         stock, waste, foundation, tableau
     }, dispatch] = useReducer(reducer, initialState);
 
+    const isDone = (): boolean => {
+        const allCards = _flattenDeep([...stock, ...waste, ...foundation]);
+        const isAllRevealed = _every(allCards, (card) => card.isRevealed);
+        const isStockAndWasteEmpty = stock[0].length === 0 && waste[0].length === 0;
+        return isStockAndWasteEmpty && isAllRevealed;
+    };
+
     useEffect(() => {
         tableau.forEach((pile, i) => {
             const card = _last(pile);
 
             if (card && !card.isRevealed) {
                 dispatch({
-                    type: ActionTypes.TOGGLE_CARD,
+                    type: ActionTypes.FLIP_CARD,
                     payload: {
                         cards: [[card, i, i]],
                         targetPile: PileName.TABLEAU
@@ -42,7 +51,7 @@ const App = (props: AppProps): JSX.Element => {
 
         if (card && !card.isRevealed) {
             dispatch({
-                type: ActionTypes.TOGGLE_CARD,
+                type: ActionTypes.FLIP_CARD,
                 payload: {
                     cards: [[card, 0, 0]],
                     targetPile: PileName.WASTE
@@ -57,7 +66,7 @@ const App = (props: AppProps): JSX.Element => {
         for (const card of pile) {
             if (card.isRevealed) {
                 dispatch({
-                    type: ActionTypes.TOGGLE_CARD,
+                    type: ActionTypes.FLIP_CARD,
                     payload: {
                         cards: [[card, 0, 0]],
                         targetPile: PileName.STOCK
@@ -171,8 +180,8 @@ const App = (props: AppProps): JSX.Element => {
                 onCardDoubleClick={handleCardDoubleClick}
             />
             <div className="menu">
-                <button type="button" onClick={handleReset}>Reset</button>
-                <button type="button" onClick={handleFinish}>Finish</button>
+                <button type="button" onClick={handleReset}>New Game</button>
+                <button type="button" disabled={!isDone()} onClick={handleFinish}>Finish</button>
             </div>
         </div>
     );
