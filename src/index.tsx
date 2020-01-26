@@ -4,10 +4,10 @@ import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
 import PileGroup from './PileGroup';
 import {
-    PileName, AppProps, ActionTypes, CardTransferObject, Suit
+    PileName, AppProps, ActionTypes, CardTransferObject, MappedCard
 } from './definitions';
 import { createInitialState } from './setup';
-import reducer from './reducer';
+import reducer, { getFoundationTargetIndex } from './reducer';
 import 'normalize.css';
 import './main.scss';
 import Card from './Card';
@@ -29,7 +29,8 @@ const App = (props: AppProps): JSX.Element => {
                 dispatch({
                     type: ActionTypes.TOGGLE_CARD,
                     payload: {
-                        target: [PileName.TABLEAU, i, card]
+                        cards: [[card, i, i]],
+                        targetPile: PileName.TABLEAU
                     }
                 });
             }
@@ -43,7 +44,8 @@ const App = (props: AppProps): JSX.Element => {
             dispatch({
                 type: ActionTypes.TOGGLE_CARD,
                 payload: {
-                    target: [PileName.WASTE, 0, card]
+                    cards: [[card, 0, 0]],
+                    targetPile: PileName.WASTE
                 }
             });
         }
@@ -57,7 +59,8 @@ const App = (props: AppProps): JSX.Element => {
                 dispatch({
                     type: ActionTypes.TOGGLE_CARD,
                     payload: {
-                        target: [PileName.STOCK, 0, card]
+                        cards: [[card, 0, 0]],
+                        targetPile: PileName.STOCK
                     }
                 });
             }
@@ -65,13 +68,15 @@ const App = (props: AppProps): JSX.Element => {
     }, [stock]);
 
     const handleStockClick = (event: React.SyntheticEvent): void => {
-        const reversedWasteCards = _reverse(waste[0]);
+        const mappedCards = waste[0].map((card): MappedCard => [card, 0, 0]);
+        const reversedWasteCards = _reverse(mappedCards);
 
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [PileName.WASTE, 0, reversedWasteCards],
-                target: [PileName.STOCK, 0]
+                cards: reversedWasteCards,
+                sourcePile: PileName.WASTE,
+                targetPile: PileName.STOCK
             }
         });
     };
@@ -80,33 +85,23 @@ const App = (props: AppProps): JSX.Element => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [PileName.STOCK, 0, [card]],
-                target: [PileName.WASTE, 0]
+                cards: [[card, 0, 0]],
+                sourcePile: PileName.STOCK,
+                targetPile: PileName.WASTE
             }
         });
     };
 
     const handleCardDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
         const [sourceName, sourceIndex] = source;
-        let targetIndex = 0;
-
-        if (card.suit === Suit.Heart) {
-            targetIndex = 1;
-        }
-
-        if (card.suit === Suit.Diamond) {
-            targetIndex = 2;
-        }
-
-        if (card.suit === Suit.Club) {
-            targetIndex = 3;
-        }
+        const targetIndex = getFoundationTargetIndex(card);
 
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [sourceName, sourceIndex, [card]],
-                target: [PileName.FOUNDATION, targetIndex]
+                cards: [[card, sourceIndex, targetIndex]],
+                sourcePile: sourceName,
+                targetPile: PileName.FOUNDATION
             }
         });
     };
@@ -114,18 +109,23 @@ const App = (props: AppProps): JSX.Element => {
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]): void => {
         event.preventDefault();
         const data = event.dataTransfer.getData('text/plain');
+        const [targetName, targetIndex] = target;
 
         try {
             const json: CardTransferObject = JSON.parse(data);
-
-            const cards = json.cards.map((card) => Card.fromJSON(card));
             const [sourceName, sourceIndex] = json.source;
+
+            const cards: MappedCard[] = json.cards.map((cardJson) => {
+                const card = Card.fromJSON(cardJson);
+                return [card, sourceIndex, targetIndex];
+            });
 
             dispatch({
                 type: ActionTypes.MOVE_CARDS,
                 payload: {
-                    source: [sourceName, sourceIndex, cards],
-                    target
+                    cards: cards,
+                    sourcePile: sourceName,
+                    targetPile: targetName
                 }
             });
         } catch (error) {

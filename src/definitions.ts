@@ -8,21 +8,21 @@ enum Suit {
 }
 
 enum Rank {
-    Ace = '1',
-    Two = '2',
-    Three = '3',
-    Four = '4',
-    Five = '5',
-    Six = '6',
-    Seven = '7',
-    Eight = '8',
-    Nine = '9',
-    Ten = 'A',
-    Jack = 'B',
-    Knight = 'C',
-    Queen = 'D',
-    King = 'E',
-    Joker = 'F'
+    Ace = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+    Six = 6,
+    Seven = 7,
+    Eight = 8,
+    Nine = 9,
+    Ten = 10,
+    Jack = 11,
+    Knight = 12,
+    Queen = 13,
+    King = 14,
+    Joker = 15
 }
 
 enum PileName {
@@ -94,13 +94,16 @@ type CardTransferObject = {
     source: [PileName, number];
 };
 
-type ActionPayloadSource = [PileName, number, Card[]];
+type MappedCard = [Card, number, number];
 
-type ActionPayloadTarget = [PileName, number, Card?];
+type ActionPayloadSourcePile = PileName;
+
+type ActionPayloadTargetPile = PileName;
 
 type ActionPayload = {
-    source?: ActionPayloadSource;
-    target: ActionPayloadTarget;
+    cards: MappedCard[];
+    sourcePile?: ActionPayloadSourcePile;
+    targetPile: ActionPayloadTargetPile;
 };
 
 type Action = {
@@ -120,9 +123,10 @@ export {
     GroupProps,
     CardProps,
     CardTransferObject,
+    MappedCard,
     ActionPayload,
-    ActionPayloadSource,
-    ActionPayloadTarget,
+    ActionPayloadSourcePile as ActionPayloadSource,
+    ActionPayloadTargetPile as ActionPayloadTarget,
     ActionTypes,
     Action
 };
