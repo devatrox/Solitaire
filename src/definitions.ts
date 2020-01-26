@@ -42,7 +42,8 @@ enum ActionTypes {
     FLIP_CARD = 'flip-card',
     FLIP_CARDS = 'flip-cards',
     RESET = 'reset',
-    TOGGLE_CARD = 'toggle-card'
+    TOGGLE_CARD = 'toggle-card',
+    FINISH = 'finish'
 }
 
 type AppState = {

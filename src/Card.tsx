@@ -30,6 +30,18 @@ class Card implements CardInterface {
         return String.fromCodePoint(Number('0x0001F0' + this.id));
     }
 
+    reveal(): void {
+        this.isRevealed = true;
+    }
+
+    hide(): void {
+        this.isRevealed = false;
+    }
+
+    flip(): void {
+        this.isRevealed = !this.isRevealed;
+    }
+
     static fromJSON(json: CardInterface): Card {
         return new Card(json.suit, json.rank, json.isRevealed);
     }

@@ -139,6 +139,12 @@ const App = (props: AppProps): JSX.Element => {
         });
     };
 
+    const handleFinish = (event: React.SyntheticEvent): void => {
+        dispatch({
+            type: ActionTypes.FINISH
+        });
+    };
+
     return (
         <div className="solitaire">
             <PileGroup
@@ -166,6 +172,7 @@ const App = (props: AppProps): JSX.Element => {
             />
             <div className="menu">
                 <button type="button" onClick={handleReset}>Reset</button>
+                <button type="button" onClick={handleFinish}>Finish</button>
             </div>
         </div>
     );

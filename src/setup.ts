@@ -26,29 +26,59 @@ const ranks = [
     Rank.King
 ];
 
-const createInitialState = (): AppState => {
+const createNewStack = (): Card[] => {
     const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
-    const shuffledCards = _shuffle(stack);
+    return _shuffle(stack);
+};
+
+// For testing purposes
+const createSolvedState = (): AppState => {
+    const stack = createNewStack();
+    const revealedStack: Card[] = stack.map((card) => {
+        card.reveal();
+        return card;
+    });
 
     const state: AppState = {
-        stock: [shuffledCards.slice(28)],
+        stock: [[]],
         waste: [[]],
         foundation: [[], [], [], []],
         tableau: [
-            shuffledCards.slice(0, 1),
-            shuffledCards.slice(1, 3),
-            shuffledCards.slice(3, 6),
-            shuffledCards.slice(6, 10),
-            shuffledCards.slice(10, 15),
-            shuffledCards.slice(15, 21),
-            shuffledCards.slice(21, 28)
+            revealedStack.slice(0, 1),
+            revealedStack.slice(1, 3),
+            revealedStack.slice(3, 6),
+            revealedStack.slice(6, 10),
+            revealedStack.slice(10, 15),
+            revealedStack.slice(15, 21),
+            revealedStack.slice(21)
+        ]
+    };
+
+    return state;
+};
+
+const createInitialState = (): AppState => {
+    const stack = createNewStack();
+
+    const state: AppState = {
+        stock: [stack.slice(28)],
+        waste: [[]],
+        foundation: [[], [], [], []],
+        tableau: [
+            stack.slice(0, 1),
+            stack.slice(1, 3),
+            stack.slice(3, 6),
+            stack.slice(6, 10),
+            stack.slice(10, 15),
+            stack.slice(15, 21),
+            stack.slice(21, 28)
         ]
     };
 
     for (const pile of state.tableau) {
         const lastCard = _last(pile);
         if (lastCard) {
-            lastCard.isRevealed = true;
+            lastCard.reveal();
         }
     }
 
@@ -58,5 +88,6 @@ const createInitialState = (): AppState => {
 export {
     suits,
     ranks,
-    createInitialState
+    createInitialState,
+    createSolvedState
 };

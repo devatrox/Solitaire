@@ -2,6 +2,9 @@ import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 import _last from 'lodash/last';
 import _cloneDeep from 'lodash/cloneDeep';
+import _flatten from 'lodash/flatten';
+import _sortBy from 'lodash/sortBy';
+import _every from 'lodash/every';
 import {
     Suit, AppState, PileName, ActionTypes, Action, ActionPayloadSource, ActionPayloadTarget, MappedCard
 } from './definitions';
@@ -33,24 +36,16 @@ const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceN
     for (const mappedCard of mappedCards) {
         const [sourceCard, sourceIndex, targetIndex] = mappedCard;
 
-        newSource[sourceIndex] = _filter(newSource[sourceIndex], (card) => card.id !== sourceCard.id);
-
-        newTarget[targetIndex].push(sourceCard);
-
-        if (targetName === sourceName) {
-            newTarget[sourceIndex] = newSource[sourceIndex];
-        }
-
         if (targetName === PileName.FOUNDATION) {
-            if (prevState[PileName.FOUNDATION][targetIndex].length !== ranks.indexOf(sourceCard.rank)) {
-                console.info('Top most card must be of lower rank [A]');
+            if (newTarget[targetIndex].length !== ranks.indexOf(sourceCard.rank)) {
+                console.info('Top most card must be of lower rank');
 
                 return prevState;
             }
         }
 
         if (targetName === PileName.TABLEAU) {
-            const topCard = _last(prevState[PileName.TABLEAU][targetIndex]);
+            const topCard = _last(newTarget[targetIndex]);
 
             if (topCard) {
                 if (topCard.color === sourceCard.color) {
@@ -66,6 +61,14 @@ const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceN
                 }
             }
         }
+
+        newSource[sourceIndex] = _filter(newSource[sourceIndex], (card) => card.id !== sourceCard.id);
+
+        newTarget[targetIndex].push(sourceCard);
+
+        if (targetName === sourceName) {
+            newTarget[sourceIndex] = newSource[sourceIndex];
+        }
     }
 
     return {
@@ -73,6 +76,30 @@ const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceN
         [sourceName]: newSource,
         [targetName]: newTarget
     };
+};
+
+const finishAction = (prevState: AppState): AppState => {
+    if (prevState.stock[0].length === 0 && prevState.waste[0].length === 0) {
+        const piles = _flatten(prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
+            const targetIndex = getFoundationTargetIndex(card);
+            return [card, pileIndex, targetIndex];
+        })));
+        const sortedCards = _sortBy(piles, (mappedCard) => {
+            const [card] = mappedCard;
+
+            return card.rank;
+        });
+
+        if (_every(sortedCards, (mappedCard) => mappedCard[0].isRevealed)) {
+            return moveCardsAction(prevState, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
+        }
+
+        console.info('You need to reveal all cards on the tableau');
+        return prevState;
+    }
+
+    console.info('There are still cards in the stock and/or waste piles');
+    return prevState;
 };
 
 const toggleCardAction = (prevState: AppState, mappedCards: MappedCard[], targetName: ActionPayloadTarget): AppState => {
@@ -83,7 +110,7 @@ const toggleCardAction = (prevState: AppState, mappedCards: MappedCard[], target
         const cardToBeToggled = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
 
         if (cardToBeToggled) {
-            cardToBeToggled.isRevealed = !cardToBeToggled.isRevealed;
+            cardToBeToggled.flip();
         }
     }
 
@@ -100,6 +127,10 @@ const reducer = (prevState: AppState, action: Action): AppState => {
 
     if (type === ActionTypes.MOVE_CARDS && payload && payload.cards && payload.sourcePile && payload.targetPile) {
         return moveCardsAction(prevState, payload.cards, payload.sourcePile, payload.targetPile);
+    }
+
+    if (type === ActionTypes.FINISH) {
+        return finishAction(prevState);
     }
 
     if (type === ActionTypes.TOGGLE_CARD && payload && payload.cards && payload.targetPile) {
