@@ -1,8 +1,6 @@
 {
     "name": "solitaire",
     "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
     "scripts": {
         "start": "parcel src/index.html",
         "build": "parcel build src/index.html",
@@ -10,8 +8,12 @@
         "lint": "eslint --ext .jsx,.js,.tsx,.ts src",
         "lint-fix": "npm run lint -- --fix"
     },
-    "author": "",
-    "license": "ISC",
+    "author": {
+        "name": "Jason Nickel",
+        "email": "hello@jasonnickel.de",
+        "url": "https://jasonnickel.de"
+    },
+    "license": "MIT",
     "dependencies": {
         "classnames": "^2.2.6",
         "lodash": "^4.17.15",
