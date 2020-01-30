@@ -134,6 +134,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
+    height: var(--card-height);
+    width: var(--comp-card-width);
     transition: transform 50ms ease-in-out;
 
     &:not(.is-revealed):not(.is-clickable) {
@@ -172,6 +174,9 @@ body {
 
     &:before,
     &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
         overflow: hidden;
         pointer-events: none;
         background-color: #fff;
@@ -182,15 +187,11 @@ body {
     }
 
     &:before {
-        position: relative;
         z-index: 1;
         content: attr(data-symbol)
     }
 
     &:after {
-        position: absolute;
-        top: 0;
-        left: 0;
         z-index: 1;
         content: "\01F0A0";
         color: var(--color-blue);
