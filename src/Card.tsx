@@ -1,4 +1,6 @@
-import { Suit, Rank, Color } from './definitions';
+import {
+    Suit, Rank, Color
+} from './definitions';
 
 interface CardInterface {
     suit: Suit;
@@ -6,7 +8,6 @@ interface CardInterface {
     isRevealed: boolean;
     color?: Color;
     id?: string;
-    symbol?: string;
 }
 
 class Card implements CardInterface {
@@ -21,13 +22,9 @@ class Card implements CardInterface {
     }
 
     get id(): string {
-        const utf8Rank = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+        const names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king'];
 
-        return this.suit + utf8Rank[this.rank - 1];
-    }
-
-    get symbol(): string {
-        return String.fromCodePoint(Number('0x0001F0' + this.id));
+        return `${this.suit}_${names[this.rank - 1]}`;
     }
 
     reveal(): void {

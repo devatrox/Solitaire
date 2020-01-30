@@ -1,14 +1,14 @@
 :root {
     --grid-gap: 20px;
-    --card-height: 200px;
-    --card-border-radius: 10px;
-    --card-stack-amount: 40px;
+    --card-width: 100%;
+    --card-height: 140%;
+    --card-border-radius: 5%;
+    --card-stack-margin: 12%;
     --color-green: #3d9970;
     --color-red: #bd0534;
-    --color-blue: #7D99D5;
+    --color-blue: #7d99d5;
     --color-black: #111;
     --color-gray: #aaa;
-    --comp-card-width: calc(var(--card-height) / 100 * 70);
 }
 
 *,
@@ -38,6 +38,10 @@ body {
         "stock waste . foundation foundation foundation foundation"
         "tableau tableau tableau tableau tableau tableau tableau"
         "menu menu menu menu menu menu menu";
+
+    @media (max-width: 768px) {
+        grid-gap: calc(var(--grid-gap) / 2);
+    }
 }
 
 .btn {
@@ -68,6 +72,10 @@ body {
     grid-template-columns: repeat(2, auto) 1fr auto;
     color: rgba($color, 0.7);
 
+    @media (max-width: 768px) {
+        grid-gap: calc(var(--grid-gap) / 2);
+    }
+
     .btn {
         color: inherit;
         border: 2px solid currentColor;
@@ -96,10 +104,9 @@ body {
 
 .pile {
     position: relative;
-    font-size: var(--card-height);
-    line-height: var(--card-height);
-    width: var(--comp-card-width);
-    height: var(--card-height);
+    width: var(--card-width);
+    height: 0;
+    padding-bottom: var(--card-height);
     border: 2px solid rgba(#fff, 0.3);
     background-color: rgba(#000, 0.1);
     border-radius: var(--card-border-radius);
@@ -110,6 +117,10 @@ body {
     display: grid;
     grid-gap: var(--grid-gap);
     grid-template-columns: repeat(4, 1fr);
+
+    @media (max-width: 768px) {
+        grid-gap: calc(var(--grid-gap) / 2);
+    }
 }
 
 .foundation-pile {
@@ -121,6 +132,10 @@ body {
     display: grid;
     grid-gap: var(--grid-gap);
     grid-template-columns: repeat(7, 1fr);
+
+    @media (max-width: 768px) {
+        grid-gap: calc(var(--grid-gap) / 2);
+    }
 }
 
 .tableau-pile {
@@ -128,14 +143,13 @@ body {
 }
 
 .card {
-    font-family: serif;
     cursor: pointer;
     display: block;
     position: absolute;
     top: 0;
     left: 0;
-    height: var(--card-height);
-    width: var(--comp-card-width);
+    height: 100%;
+    width: 100%;
     transition: transform 50ms ease-in-out;
 
     &:not(.is-revealed):not(.is-clickable) {
@@ -148,19 +162,8 @@ body {
     }
 
     &.is-draggable.is-hover {
-        transform: scale(1.03);
-
-        &:before,
-        &:after {
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        }
-
-        &:before,
-        &:after,
-        .card:before,
-        .card:after {
-            border-color: orange;
-        }
+        transform: scale(1.04);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
 
     &.is-dragging {
@@ -168,59 +171,36 @@ body {
     }
 
     >.card {
-        top: var(--card-stack-amount);
+        top: var(--card-stack-margin);
         z-index: 2;
-    }
-
-    &:before,
-    &:after {
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        overflow: hidden;
-        pointer-events: none;
-        background-color: #fff;
-        border: 1px solid #aaa;
-        border-radius: var(--card-border-radius);
-        backface-visibility: hidden;
-        transition: transform 300ms ease-in-out;
-    }
-
-    &:before {
-        z-index: 1;
-        content: attr(data-symbol)
-    }
-
-    &:after {
-        z-index: 1;
-        content: "\01F0A0";
-        color: var(--color-blue);
-    }
-
-    &:before,
-    &.is-revealed:after {
-        transform: perspective(800px) rotateX(180deg);
-    }
-
-    &:after,
-    &.is-revealed:before {
-        transform: perspective(800px) rotateX(0deg);
-    }
-
-    &.card-red:before {
-        color: var(--color-red);
-    }
-
-    &.card-black:before {
-        color: var(--color-black);
     }
 }
 
-.card-svg {
+.card-svg-front,
+.card-svg-back {
+    z-index: 1;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: var(--card-border-radius);
+    backface-visibility: hidden;
+    transition: transform 300ms ease-in-out;
+}
+
+.card-svg-back {
+    fill: var(--color-blue);
+}
+
+.card-svg-front,
+.is-revealed .card-svg-back {
+    transform: perspective(800px) rotateX(180deg);
+}
+
+.card-svg-back,
+.is-revealed .card-svg-front {
+    transform: perspective(800px) rotateX(0deg);
 }
