@@ -22,6 +22,8 @@ const Pile = (props: PileProps): JSX.Element => {
     let enterTarget: EventTarget | null = null;
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>): void => {
+        event.preventDefault();
+
         onDrop(event, [name, index]);
     };
 
