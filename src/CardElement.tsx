@@ -80,7 +80,6 @@ const CardElement = (props: CardProps): JSX.Element => {
             data-rank={card.rank}
             data-suit={card.suit}
             data-color={card.color}
-            data-symbol={card.symbol}
             style={style}
             draggable={card.isRevealed}
             onClick={handleClick}
@@ -93,6 +92,12 @@ const CardElement = (props: CardProps): JSX.Element => {
             onMouseOut={handleMouseLeave}
             onBlur={handleMouseLeave}
         >
+            <svg className="card-svg-front" viewBox="0 0 169.075 244.64">
+                <use href={`#svg-cards_svg__${card.id}`} />
+            </svg>
+            <svg className="card-svg-back" viewBox="0 0 169.075 244.64">
+                <use href="#svg-cards_svg__alternate-back" />
+            </svg>
             {children}
         </div>
     );

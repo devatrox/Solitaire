@@ -19,9 +19,11 @@
         "lodash": "^4.17.15",
         "normalize.css": "^8.0.1",
         "react": "^16.12.0",
-        "react-dom": "^16.12.0"
+        "react-dom": "^16.12.0",
+        "svg-cards": "^4.0.0"
     },
     "devDependencies": {
+        "@svgr/parcel-plugin-svgr": "^5.0.1",
         "@types/classnames": "^2.2.9",
         "@types/lodash": "^4.14.149",
         "@types/react": "^16.9.17",

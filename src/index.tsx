@@ -4,6 +4,7 @@ import React, {
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
+import SvgCards from 'svg-cards/svg-cards.svg';
 import _flattenDeep from 'lodash/flattenDeep';
 import _every from 'lodash/every';
 import PileGroup from './PileGroup';
@@ -209,37 +210,43 @@ const App = (props: AppProps): JSX.Element => {
     };
 
     return (
-        <div className="solitaire">
-            <PileGroup
-                name={PileName.STOCK}
-                piles={stock}
-                onPileClick={handleStockClick}
-                onCardClick={handleStockCardClick}
-            />
-            <PileGroup
-                name={PileName.WASTE}
-                piles={waste}
-                onCardDoubleClick={handleCardDoubleClick}
-            />
-            <PileGroup
-                name={PileName.FOUNDATION}
-                piles={foundation}
-                onDrop={handleDrop}
-            />
-            <PileGroup
-                name={PileName.TABLEAU}
-                piles={tableau}
-                stackDown
-                onDrop={handleDrop}
-                onCardDoubleClick={handleCardDoubleClick}
-            />
-            <div className="menu">
-                <button className="btn" type="button" onClick={handleReset}>New Game</button>
-                <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
-                <div className="message">{message}</div>
-                <a className="btn" href="https://github.com/devatrox/Solitaire">GitHub</a>
+        <>
+            <SvgCards id="svg-cards" style={{ display: 'none' }} />
+            <div className="solitaire">
+                <PileGroup
+                    name={PileName.STOCK}
+                    piles={stock}
+                    onPileClick={handleStockClick}
+                    onCardClick={handleStockCardClick}
+                />
+                <PileGroup
+                    name={PileName.WASTE}
+                    piles={waste}
+                    onCardDoubleClick={handleCardDoubleClick}
+                />
+                <PileGroup
+                    name={PileName.FOUNDATION}
+                    piles={foundation}
+                    onDrop={handleDrop}
+                />
+                <PileGroup
+                    name={PileName.TABLEAU}
+                    piles={tableau}
+                    stackDown
+                    onDrop={handleDrop}
+                    onCardDoubleClick={handleCardDoubleClick}
+                />
+                <div className="menu">
+                    <button className="btn" type="button" onClick={handleReset}>New Game</button>
+                    <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
+                    <div className="menu-text message">{message}</div>
+                    <div className="menu-text">
+                        <a href="https://github.com/htdebeer/SVG-cards">SVG Cards by htdebeer</a>
+                    </div>
+                    <a className="btn" href="https://github.com/devatrox/Solitaire">GitHub</a>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

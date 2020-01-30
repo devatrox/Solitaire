@@ -1,10 +1,10 @@
 import Card, { CardInterface } from './Card';
 
 enum Suit {
-    Spade = 'A',
-    Heart = 'B',
-    Diamond = 'C',
-    Club = 'D'
+    Spade = 'spade',
+    Heart = 'heart',
+    Diamond = 'diamond',
+    Club = 'club'
 }
 
 enum Rank {
@@ -19,10 +19,9 @@ enum Rank {
     Nine = 9,
     Ten = 10,
     Jack = 11,
-    Knight = 12,
-    Queen = 13,
-    King = 14,
-    Joker = 15
+    Queen = 12,
+    King = 13,
+    Joker = 14
 }
 
 enum PileName {
@@ -62,6 +61,7 @@ type CardProps = {
     childCards?: Card[];
     style?: React.CSSProperties;
     children?: JSX.Element;
+    key?: string;
     onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
     onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;

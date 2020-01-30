@@ -64,6 +64,7 @@ const Pile = (props: PileProps): JSX.Element => {
                 childCards: cds.slice(0, i),
                 source: [name, index],
                 isTop: false,
+                key: card.id,
                 onClick: onCardClick,
                 onDoubleClick: onCardDoubleClick
             };
