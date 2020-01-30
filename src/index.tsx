@@ -1,17 +1,24 @@
-import React, { useReducer, useEffect } from 'react';
+import React, {
+    useReducer, useEffect, useMemo, useState
+} from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
 import SvgCards from 'svg-cards/svg-cards.svg';
+import _flattenDeep from 'lodash/flattenDeep';
+import _every from 'lodash/every';
 import PileGroup from './PileGroup';
 import {
-    PileName, AppProps, ActionTypes, CardTransferObject, Suit
+    PileName, AppProps, ActionTypes, CardTransferObject, MappedCard
 } from './definitions';
-import { createInitialState } from './setup';
-import reducer from './reducer';
+import { createInitialState, cardCount } from './setup';
+import reducer, { getFoundationTargetIndex } from './reducer';
 import 'normalize.css';
 import './main.scss';
 import Card from './Card';
+import {
+    isLowerRank, isHigherRank, isDifferentColor, isAllRevealed, hasNoStock
+} from './validate';
 
 const App = (props: AppProps): JSX.Element => {
     const {
@@ -22,15 +29,36 @@ const App = (props: AppProps): JSX.Element => {
         stock, waste, foundation, tableau
     }, dispatch] = useReducer(reducer, initialState);
 
+    const [message, setMessage] = useState('');
+
+    const isDone = useMemo((): boolean => {
+        const allCards = _flattenDeep([...stock, ...waste, ...foundation]);
+        const isRevealed = _every(allCards, (card) => card.isRevealed);
+        const isStockAndWasteEmpty = stock[0].length === 0 && waste[0].length === 0;
+        return isStockAndWasteEmpty && isRevealed;
+    }, [foundation, stock, waste]);
+
+    const isFinished = useMemo((): boolean => {
+        const allTableauCards = _flattenDeep(foundation);
+        return allTableauCards.length === cardCount;
+    }, [foundation]);
+
+    useEffect(() => {
+        if (isFinished) {
+            setMessage('Congratulations!');
+        }
+    }, [isFinished]);
+
     useEffect(() => {
         tableau.forEach((pile, i) => {
-            const card = _last(pile);
+            const topCard = _last(pile);
 
-            if (card && !card.isRevealed) {
+            if (topCard && !topCard.isRevealed) {
                 dispatch({
-                    type: ActionTypes.TOGGLE_CARD,
+                    type: ActionTypes.FLIP_CARD,
                     payload: {
-                        target: [PileName.TABLEAU, i, card]
+                        cards: [[topCard, i, i]],
+                        targetPile: PileName.TABLEAU
                     }
                 });
             }
@@ -38,15 +66,18 @@ const App = (props: AppProps): JSX.Element => {
     }, [tableau]);
 
     useEffect(() => {
-        const card = _last(waste[0]);
+        const pile = waste[0];
 
-        if (card && !card.isRevealed) {
-            dispatch({
-                type: ActionTypes.TOGGLE_CARD,
-                payload: {
-                    target: [PileName.WASTE, 0, card]
-                }
-            });
+        for (const card of pile) {
+            if (!card.isRevealed) {
+                dispatch({
+                    type: ActionTypes.FLIP_CARD,
+                    payload: {
+                        cards: [[card, 0, 0]],
+                        targetPile: PileName.WASTE
+                    }
+                });
+            }
         }
     }, [waste]);
 
@@ -56,9 +87,10 @@ const App = (props: AppProps): JSX.Element => {
         for (const card of pile) {
             if (card.isRevealed) {
                 dispatch({
-                    type: ActionTypes.TOGGLE_CARD,
+                    type: ActionTypes.FLIP_CARD,
                     payload: {
-                        target: [PileName.STOCK, 0, card]
+                        cards: [[card, 0, 0]],
+                        targetPile: PileName.STOCK
                     }
                 });
             }
@@ -66,13 +98,15 @@ const App = (props: AppProps): JSX.Element => {
     }, [stock]);
 
     const handleStockClick = (event: React.SyntheticEvent): void => {
-        const reversedWasteCards = _reverse(waste[0]);
+        const mappedCards = waste[0].map((card): MappedCard => [card, 0, 0]);
+        const reversedWasteCards = _reverse(mappedCards);
 
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [PileName.WASTE, 0, reversedWasteCards],
-                target: [PileName.STOCK, 0]
+                cards: reversedWasteCards,
+                sourcePile: PileName.WASTE,
+                targetPile: PileName.STOCK
             }
         });
     };
@@ -81,54 +115,71 @@ const App = (props: AppProps): JSX.Element => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
-                source: [PileName.STOCK, 0, [card]],
-                target: [PileName.WASTE, 0]
+                cards: [[card, 0, 0]],
+                sourcePile: PileName.STOCK,
+                targetPile: PileName.WASTE
             }
         });
     };
 
     const handleCardDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
         const [sourceName, sourceIndex] = source;
-        let targetIndex = 0;
+        const targetIndex = getFoundationTargetIndex(card);
+        const { status, statusText } = isLowerRank([card], foundation[targetIndex]);
 
-        if (card.suit === Suit.Heart) {
-            targetIndex = 1;
+        if (status) {
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    cards: [[card, sourceIndex, targetIndex]],
+                    sourcePile: sourceName,
+                    targetPile: PileName.FOUNDATION
+                }
+            });
         }
 
-        if (card.suit === Suit.Diamond) {
-            targetIndex = 2;
-        }
-
-        if (card.suit === Suit.Club) {
-            targetIndex = 3;
-        }
-
-        dispatch({
-            type: ActionTypes.MOVE_CARDS,
-            payload: {
-                source: [sourceName, sourceIndex, [card]],
-                target: [PileName.FOUNDATION, targetIndex]
-            }
-        });
+        setMessage(statusText);
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]): void => {
         event.preventDefault();
         const data = event.dataTransfer.getData('text/plain');
+        const [targetName, targetIndex] = target;
 
         try {
             const json: CardTransferObject = JSON.parse(data);
-
-            const cards = json.cards.map((card) => Card.fromJSON(card));
             const [sourceName, sourceIndex] = json.source;
 
-            dispatch({
-                type: ActionTypes.MOVE_CARDS,
-                payload: {
-                    source: [sourceName, sourceIndex, cards],
-                    target
+            const cards: Card[] = json.cards.map((cardJson) => Card.fromJSON(cardJson));
+            const mappedCards: MappedCard[] = cards.map((card) => [card, sourceIndex, targetIndex]);
+            let validationResult = { status: true, statusText: '' };
+
+            if (targetName === PileName.TABLEAU) {
+                validationResult = isHigherRank(cards, tableau[targetIndex]);
+
+                if (validationResult.status) {
+                    validationResult = isDifferentColor(cards, tableau[targetIndex]);
                 }
-            });
+            }
+
+            if (targetName === PileName.FOUNDATION) {
+                validationResult = isLowerRank(cards, foundation[targetIndex]);
+            }
+
+            const { status, statusText } = validationResult;
+
+            if (status) {
+                dispatch({
+                    type: ActionTypes.MOVE_CARDS,
+                    payload: {
+                        cards: mappedCards,
+                        sourcePile: sourceName,
+                        targetPile: targetName
+                    }
+                });
+            }
+
+            setMessage(statusText);
         } catch (error) {
             console.error(error);
         }
@@ -138,6 +189,24 @@ const App = (props: AppProps): JSX.Element => {
         dispatch({
             type: ActionTypes.RESET
         });
+    };
+
+    const handleFinish = (event: React.SyntheticEvent): void => {
+        let validationResult = hasNoStock(stock[0], waste[0]);
+
+        if (validationResult.status) {
+            validationResult = isAllRevealed(tableau);
+        }
+
+        const { status, statusText } = validationResult;
+
+        if (status) {
+            dispatch({
+                type: ActionTypes.FINISH
+            });
+        }
+
+        setMessage(statusText);
     };
 
     return (
@@ -168,7 +237,10 @@ const App = (props: AppProps): JSX.Element => {
                     onCardDoubleClick={handleCardDoubleClick}
                 />
                 <div className="menu">
-                    <button type="button" onClick={handleReset}>New Game</button>
+                    <button className="btn" type="button" onClick={handleReset}>New Game</button>
+                    <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
+                    <div className="message">{message}</div>
+                    <a className="btn" href="https://github.com/devatrox/Solitaire">GitHub</a>
                 </div>
             </div>
         </>

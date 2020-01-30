@@ -21,11 +21,25 @@ class Card implements CardInterface {
     }
 
     get id(): string {
-        return this.suit + this.rank;
+        const utf8Rank = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+
+        return this.suit + utf8Rank[this.rank - 1];
     }
 
     get symbol(): string {
         return String.fromCodePoint(Number('0x0001F0' + this.id));
+    }
+
+    reveal(): void {
+        this.isRevealed = true;
+    }
+
+    hide(): void {
+        this.isRevealed = false;
+    }
+
+    flip(): void {
+        this.isRevealed = !this.isRevealed;
     }
 
     static fromJSON(json: CardInterface): Card {

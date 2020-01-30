@@ -8,21 +8,21 @@ enum Suit {
 }
 
 enum Rank {
-    Ace = '1',
-    Two = '2',
-    Three = '3',
-    Four = '4',
-    Five = '5',
-    Six = '6',
-    Seven = '7',
-    Eight = '8',
-    Nine = '9',
-    Ten = 'A',
-    Jack = 'B',
-    Knight = 'C',
-    Queen = 'D',
-    King = 'E',
-    Joker = 'F'
+    Ace = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+    Six = 6,
+    Seven = 7,
+    Eight = 8,
+    Nine = 9,
+    Ten = 10,
+    Jack = 11,
+    Knight = 12,
+    Queen = 13,
+    King = 14,
+    Joker = 15
 }
 
 enum PileName {
@@ -39,10 +39,9 @@ enum Color {
 
 enum ActionTypes {
     MOVE_CARDS = 'move-cards',
-    FLIP_CARD = 'flip-card',
-    FLIP_CARDS = 'flip-cards',
     RESET = 'reset',
-    TOGGLE_CARD = 'toggle-card'
+    FLIP_CARD = 'flip-card',
+    FINISH = 'finish'
 }
 
 type AppState = {
@@ -89,18 +88,26 @@ type GroupProps = {
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
 };
 
+type ValidationResult = {
+    status: boolean;
+    statusText: string;
+};
+
 type CardTransferObject = {
     cards: CardInterface[];
     source: [PileName, number];
 };
 
-type ActionPayloadSource = [PileName, number, Card[]];
+type MappedCard = [Card, number, number];
 
-type ActionPayloadTarget = [PileName, number, Card?];
+type ActionPayloadSourceName = PileName;
+
+type ActionPayloadTargetName = PileName;
 
 type ActionPayload = {
-    source?: ActionPayloadSource;
-    target: ActionPayloadTarget;
+    cards: MappedCard[];
+    sourcePile?: ActionPayloadSourceName;
+    targetPile: ActionPayloadTargetName;
 };
 
 type Action = {
@@ -119,10 +126,12 @@ export {
     PileProps,
     GroupProps,
     CardProps,
+    ValidationResult,
     CardTransferObject,
+    MappedCard,
     ActionPayload,
-    ActionPayloadSource,
-    ActionPayloadTarget,
+    ActionPayloadSourceName,
+    ActionPayloadTargetName,
     ActionTypes,
     Action
 };
