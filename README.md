@@ -2,7 +2,7 @@
 
 Solitaire built in React using Typescript. Have fun poking around!
 
-Compatibility: Works best in Firefox, looks a little bad in Chrome, Mobile not working at all, others not tested.
+Tested in Chrome, Firefox, Safari on Mac. Touch not supported yet.
 
 ## Usage
 
