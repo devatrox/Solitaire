@@ -239,7 +239,10 @@ const App = (props: AppProps): JSX.Element => {
                 <div className="menu">
                     <button className="btn" type="button" onClick={handleReset}>New Game</button>
                     <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
-                    <div className="message">{message}</div>
+                    <div className="menu-text message">{message}</div>
+                    <div className="menu-text">
+                        <a href="https://github.com/htdebeer/SVG-cards">SVG Cards by htdebeer</a>
+                    </div>
                     <a className="btn" href="https://github.com/devatrox/Solitaire">GitHub</a>
                 </div>
             </div>
