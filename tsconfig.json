@@ -5,9 +5,16 @@
         "strict": true,
         "noImplicitReturns": true,
         "noImplicitAny": true,
-        "module": "es6",
+        "module": "esnext",
         "moduleResolution": "node",
         "target": "es5",
+        "lib": [
+            "ES2015.Promise",
+            "DOM",
+            "ES6",
+            "DOM.Iterable",
+            "ScriptHost"
+        ],
         "allowJs": true,
         "jsx": "react",
         "allowSyntheticDefaultImports": true

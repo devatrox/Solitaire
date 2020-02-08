@@ -1,12 +1,11 @@
 /** @jsx jsx */
 
 import React, {
-    useReducer, useEffect, useMemo, useState, Fragment
+    useReducer, useEffect, useMemo, useState, lazy, Fragment, Suspense
 } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
-import SvgCards from 'svg-cards/svg-cards.svg';
 import _flattenDeep from 'lodash/flattenDeep';
 import _every from 'lodash/every';
 import { Global, jsx, css } from '@emotion/core';
@@ -65,6 +64,8 @@ const App = (props: AppProps): JSX.Element => {
         const allTableauCards = _flattenDeep(foundation);
         return allTableauCards.length === cardCount;
     }, [foundation]);
+
+    const SvgCards = lazy(() => import('./components/SvgCards'));
 
     useEffect(() => {
         if (isFinished) {
@@ -235,39 +236,41 @@ const App = (props: AppProps): JSX.Element => {
     return (
         <Fragment>
             <Global styles={globalStyles} />
-            <SvgCards id="svg-cards" css={css`display: none;`} />
-            <div css={styles}>
-                <PileGroup
-                    name={PileName.STOCK}
-                    piles={stock}
-                    onPileClick={handleStockClick}
-                    onCardClick={handleStockCardClick}
-                />
-                <PileGroup
-                    name={PileName.WASTE}
-                    piles={waste}
-                    onCardDoubleClick={handleCardDoubleClick}
-                />
-                <PileGroup
-                    name={PileName.FOUNDATION}
-                    piles={foundation}
-                    onDrop={handleDrop}
-                />
-                <PileGroup
-                    name={PileName.TABLEAU}
-                    piles={tableau}
-                    stackDown
-                    onDrop={handleDrop}
-                    onCardDoubleClick={handleCardDoubleClick}
-                />
-                <Menu
-                    message={message}
-                    isDone={isDone}
-                    isFinished={isFinished}
-                    onReset={handleReset}
-                    onFinish={handleFinish}
-                />
-            </div>
+            <Suspense fallback={<div />}>
+                <SvgCards css={css`display: none;`} />
+                <div css={styles}>
+                    <PileGroup
+                        name={PileName.STOCK}
+                        piles={stock}
+                        onPileClick={handleStockClick}
+                        onCardClick={handleStockCardClick}
+                    />
+                    <PileGroup
+                        name={PileName.WASTE}
+                        piles={waste}
+                        onCardDoubleClick={handleCardDoubleClick}
+                    />
+                    <PileGroup
+                        name={PileName.FOUNDATION}
+                        piles={foundation}
+                        onDrop={handleDrop}
+                    />
+                    <PileGroup
+                        name={PileName.TABLEAU}
+                        piles={tableau}
+                        stackDown
+                        onDrop={handleDrop}
+                        onCardDoubleClick={handleCardDoubleClick}
+                    />
+                    <Menu
+                        message={message}
+                        isDone={isDone}
+                        isFinished={isFinished}
+                        onReset={handleReset}
+                        onFinish={handleFinish}
+                    />
+                </div>
+            </Suspense>
         </Fragment>
     );
 };
