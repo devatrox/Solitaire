@@ -3,6 +3,7 @@ const INDENTATION = 4;
 module.exports = {
     parser: '@typescript-eslint/parser',
     plugins: [
+        'emotion',
         '@typescript-eslint',
     ],
     env: {
@@ -82,6 +83,9 @@ module.exports = {
         'react/jsx-props-no-spreading': 'off',
         'react/jsx-fragments': ['error', 'element'],
         'jsx-a11y/click-events-have-key-events': 'off',
-        'jsx-a11y/no-static-element-interactions': 'off'
+        'jsx-a11y/no-static-element-interactions': 'off',
+        'emotion/jsx-import': 'error',
+        'emotion/no-vanilla': 'error',
+        'emotion/syntax-preference': [2, "string"]
     }
 }
