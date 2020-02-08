@@ -87,19 +87,33 @@ const Game = (props: GameProps): JSX.Element => {
 
     useEffect(() => {
         const pile = waste[0];
+        const topCard = _last(stock[0]);
 
-        for (const card of pile) {
-            if (!card.isRevealed) {
+        if (pile.length === 0 && topCard) {
+            window.setTimeout(() => {
                 dispatch({
-                    type: ActionTypes.FLIP_CARD,
+                    type: ActionTypes.MOVE_CARDS,
                     payload: {
-                        cards: [[card, 0, 0]],
+                        cards: [[topCard, 0, 0]],
+                        sourcePile: PileName.STOCK,
                         targetPile: PileName.WASTE
                     }
                 });
+            }, 300);
+        } else {
+            for (const card of pile) {
+                if (!card.isRevealed) {
+                    dispatch({
+                        type: ActionTypes.FLIP_CARD,
+                        payload: {
+                            cards: [[card, 0, 0]],
+                            targetPile: PileName.WASTE
+                        }
+                    });
+                }
             }
         }
-    }, [waste]);
+    }, [stock, waste]);
 
     useEffect(() => {
         const pile = stock[0];
