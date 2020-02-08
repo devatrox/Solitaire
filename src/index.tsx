@@ -18,6 +18,7 @@ import reducer, { getFoundationTargetIndex } from './reducer';
 import { globalStyles } from './styles';
 import Card from './Card';
 import Menu from './components/Menu';
+import Loader from './components/Loader';
 import {
     isLowerRank, isHigherRank, isDifferentColor, isAllRevealed, hasNoStock
 } from './rules';
@@ -236,8 +237,8 @@ const App = (props: AppProps): JSX.Element => {
     return (
         <Fragment>
             <Global styles={globalStyles} />
-            <Suspense fallback={<div />}>
-                <SvgCards css={css`display: none;`} />
+            <Suspense fallback={<Loader />}>
+                <SvgCards />
                 <div css={styles}>
                     <PileGroup
                         name={PileName.STOCK}
