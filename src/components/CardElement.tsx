@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import { jsx, css } from '@emotion/core';
 import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
@@ -20,7 +20,7 @@ const CardElement = (props: CardProps): JSX.Element => {
         onDoubleClick = _noop
     } = props;
 
-    const ref: React.RefObject<HTMLDivElement> = React.createRef();
+    const ref: React.RefObject<HTMLDivElement> = createRef();
 
     const [isDragging, setIsDragging] = useState(false);
 

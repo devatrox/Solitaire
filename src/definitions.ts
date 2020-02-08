@@ -43,7 +43,7 @@ enum ActionTypes {
     FINISH = 'finish'
 }
 
-type AppState = {
+type GameState = {
     stock: Card[][];
     waste: Card[][];
     foundation: Card[][];
@@ -51,7 +51,7 @@ type AppState = {
 };
 
 type GameProps = {
-    initialState: AppState;
+    initialState: GameState;
 };
 
 type CardProps = {
@@ -127,7 +127,7 @@ type Action = {
 };
 
 export {
-    AppState,
+    GameState,
     GameProps,
     Suit,
     Rank,

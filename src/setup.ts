@@ -2,7 +2,7 @@ import _flatten from 'lodash/flatten';
 import _shuffle from 'lodash/shuffle';
 import _last from 'lodash/last';
 import Card from './Card';
-import { Suit, Rank, AppState } from './definitions';
+import { Suit, Rank, GameState } from './definitions';
 
 const suits = [
     Suit.Spade,
@@ -34,14 +34,14 @@ const createNewStack = (): Card[] => {
 };
 
 // For testing purposes
-const createSolvedState = (): AppState => {
+const createSolvedState = (): GameState => {
     const stack = createNewStack();
     const revealedStack: Card[] = stack.map((card) => {
         card.reveal();
         return card;
     });
 
-    const state: AppState = {
+    const state: GameState = {
         stock: [[]],
         waste: [[]],
         foundation: [[], [], [], []],
@@ -59,10 +59,10 @@ const createSolvedState = (): AppState => {
     return state;
 };
 
-const createInitialState = (): AppState => {
+const createInitialState = (): GameState => {
     const stack = createNewStack();
 
-    const state: AppState = {
+    const state: GameState = {
         stock: [stack.slice(28)],
         waste: [[]],
         foundation: [[], [], [], []],

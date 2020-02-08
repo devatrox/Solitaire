@@ -4,7 +4,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _flatten from 'lodash/flatten';
 import _sortBy from 'lodash/sortBy';
 import {
-    Suit, AppState, PileName, ActionTypes, Action, ActionPayloadSourceName, ActionPayloadTargetName, MappedCard
+    Suit, GameState, PileName, ActionTypes, Action, ActionPayloadSourceName, ActionPayloadTargetName, MappedCard
 } from './definitions';
 import Card from './Card';
 import { createInitialState } from './setup';
@@ -27,7 +27,7 @@ const getFoundationTargetIndex = (card: Card): number => {
     return targetIndex;
 };
 
-const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceName: ActionPayloadSourceName, targetName: ActionPayloadTargetName): AppState => {
+const moveCardsAction = (prevState: GameState, mappedCards: MappedCard[], sourceName: ActionPayloadSourceName, targetName: ActionPayloadTargetName): GameState => {
     const newSource = _cloneDeep(prevState[sourceName]);
     const newTarget = _cloneDeep(prevState[targetName]);
 
@@ -50,7 +50,7 @@ const moveCardsAction = (prevState: AppState, mappedCards: MappedCard[], sourceN
     };
 };
 
-const finishAction = (prevState: AppState): AppState => {
+const finishAction = (prevState: GameState): GameState => {
     const piles = _flatten(prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
         const targetIndex = getFoundationTargetIndex(card);
         return [card, pileIndex, targetIndex];
@@ -64,7 +64,7 @@ const finishAction = (prevState: AppState): AppState => {
     return moveCardsAction(prevState, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
 };
 
-const flipCardAction = (prevState: AppState, mappedCards: MappedCard[], targetName: ActionPayloadTargetName): AppState => {
+const flipCardAction = (prevState: GameState, mappedCards: MappedCard[], targetName: ActionPayloadTargetName): GameState => {
     const newTarget = _cloneDeep(prevState[targetName]);
 
     for (const mappedCard of mappedCards) {
@@ -82,9 +82,9 @@ const flipCardAction = (prevState: AppState, mappedCards: MappedCard[], targetNa
     };
 };
 
-const resetAction = (): AppState => createInitialState();
+const resetAction = (): GameState => createInitialState();
 
-const reducer = (prevState: AppState, action: Action): AppState => {
+const reducer = (prevState: GameState, action: Action): GameState => {
     const { type, payload } = action;
 
     if (type === ActionTypes.MOVE_CARDS && payload && payload.cards && payload.sourcePile && payload.targetPile) {
