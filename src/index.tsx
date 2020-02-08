@@ -7,7 +7,7 @@ import _reverse from 'lodash/reverse';
 import SvgCards from 'svg-cards/svg-cards.svg';
 import _flattenDeep from 'lodash/flattenDeep';
 import _every from 'lodash/every';
-import PileGroup from './PileGroup';
+import PileGroup from './components/PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, MappedCard
 } from './definitions';
@@ -18,7 +18,7 @@ import './main.scss';
 import Card from './Card';
 import {
     isLowerRank, isHigherRank, isDifferentColor, isAllRevealed, hasNoStock
-} from './validate';
+} from './rules';
 
 const App = (props: AppProps): JSX.Element => {
     const {
