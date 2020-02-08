@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import React from 'react';
 import { jsx, css } from '@emotion/core';
 import Pile from './Pile';
 import { GroupProps, PileName } from '../definitions';

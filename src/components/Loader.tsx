@@ -1,12 +1,10 @@
 /** @jsx jsx */
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
-import {
-    memo
-} from 'react';
+import { memo } from 'react';
 import { jsx, css, keyframes } from '@emotion/core';
 
-const Loader = memo(() => {
+const Loader = (): JSX.Element => {
     const bulging = keyframes`
         0%,
         80%,
@@ -60,6 +58,6 @@ const Loader = memo(() => {
             <span css={ball3Style} />
         </div>
     );
-});
+};
 
-export default Loader;
+export default memo(Loader);

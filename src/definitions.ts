@@ -50,7 +50,7 @@ type AppState = {
     tableau: Card[][];
 };
 
-type AppProps = {
+type GameProps = {
     initialState: AppState;
 };
 
@@ -128,7 +128,7 @@ type Action = {
 
 export {
     AppState,
-    AppProps,
+    GameProps,
     Suit,
     Rank,
     PileName,

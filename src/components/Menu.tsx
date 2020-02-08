@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { memo } from 'react';
 import { jsx, css } from '@emotion/core';
 import _noop from 'lodash/noop';
 import { btnStyles as globalBtnStyles } from '../styles';
@@ -65,4 +66,4 @@ const Menu = (props: MenuProps): JSX.Element => {
     );
 };
 
-export default Menu;
+export default memo(Menu);
