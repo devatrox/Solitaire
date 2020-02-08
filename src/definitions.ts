@@ -57,7 +57,9 @@ type AppProps = {
 type CardProps = {
     card: Card;
     source: [PileName, number];
-    isTop: boolean;
+    isTop?: boolean;
+    isBottom?: boolean;
+    isStackDown?: boolean;
     childCards?: Card[];
     style?: React.CSSProperties;
     children?: JSX.Element;
@@ -86,6 +88,14 @@ type GroupProps = {
     onCardClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
     onCardDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
     onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+};
+
+type MenuProps = {
+    message: string;
+    isDone: boolean;
+    isFinished: boolean;
+    onFinish?: (event: React.SyntheticEvent) => void;
+    onReset?: (event: React.SyntheticEvent) => void;
 };
 
 type ValidationResult = {
@@ -125,6 +135,7 @@ export {
     Color,
     PileProps,
     GroupProps,
+    MenuProps,
     CardProps,
     ValidationResult,
     CardTransferObject,

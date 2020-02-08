@@ -1,5 +1,7 @@
+/** @jsx jsx */
+
 import React, {
-    useReducer, useEffect, useMemo, useState
+    useReducer, useEffect, useMemo, useState, Fragment
 } from 'react';
 import ReactDOM from 'react-dom';
 import _last from 'lodash/last';
@@ -7,15 +9,16 @@ import _reverse from 'lodash/reverse';
 import SvgCards from 'svg-cards/svg-cards.svg';
 import _flattenDeep from 'lodash/flattenDeep';
 import _every from 'lodash/every';
+import { Global, jsx, css } from '@emotion/core';
 import PileGroup from './components/PileGroup';
 import {
     PileName, AppProps, ActionTypes, CardTransferObject, MappedCard
 } from './definitions';
 import { createInitialState, cardCount } from './setup';
 import reducer, { getFoundationTargetIndex } from './reducer';
-import 'normalize.css';
-import './main.scss';
+import { globalStyles } from './styles';
 import Card from './Card';
+import Menu from './components/Menu';
 import {
     isLowerRank, isHigherRank, isDifferentColor, isAllRevealed, hasNoStock
 } from './rules';
@@ -24,6 +27,26 @@ const App = (props: AppProps): JSX.Element => {
     const {
         initialState
     } = props;
+
+    const styles = css`
+        height: 100vh;
+        max-height: 800px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--grid-gap);
+        display: grid;
+        grid-gap: var(--grid-gap);
+        grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "stock waste . foundation foundation foundation foundation"
+            "tableau tableau tableau tableau tableau tableau tableau"
+            "menu menu menu menu menu menu menu";
+
+        @media (max-width: 768px) {
+            grid-gap: calc(var(--grid-gap) / 2);
+        }
+    `;
 
     const [{
         stock, waste, foundation, tableau
@@ -210,9 +233,10 @@ const App = (props: AppProps): JSX.Element => {
     };
 
     return (
-        <>
-            <SvgCards id="svg-cards" style={{ display: 'none' }} />
-            <div className="solitaire">
+        <Fragment>
+            <Global styles={globalStyles} />
+            <SvgCards id="svg-cards" css={css`display: none;`} />
+            <div css={styles}>
                 <PileGroup
                     name={PileName.STOCK}
                     piles={stock}
@@ -236,17 +260,15 @@ const App = (props: AppProps): JSX.Element => {
                     onDrop={handleDrop}
                     onCardDoubleClick={handleCardDoubleClick}
                 />
-                <div className="menu">
-                    <button className="btn" type="button" onClick={handleReset}>New Game</button>
-                    <button className="btn" type="button" disabled={!isDone && !isFinished} onClick={handleFinish}>Finish</button>
-                    <div className="menu-text message">{message}</div>
-                    <div className="menu-text">
-                        <a href="https://github.com/htdebeer/SVG-cards">SVG Cards by htdebeer</a>
-                    </div>
-                    <a className="btn" href="https://github.com/devatrox/Solitaire">GitHub</a>
-                </div>
+                <Menu
+                    message={message}
+                    isDone={isDone}
+                    isFinished={isFinished}
+                    onReset={handleReset}
+                    onFinish={handleFinish}
+                />
             </div>
-        </>
+        </Fragment>
     );
 };
 

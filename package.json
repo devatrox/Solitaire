@@ -15,9 +15,11 @@
     },
     "license": "MIT",
     "dependencies": {
-        "classnames": "^2.2.6",
+        "@emotion/core": "^10.0.27",
+        "emotion-normalize": "^10.1.0",
+        "install": "^0.13.0",
         "lodash": "^4.17.15",
-        "normalize.css": "^8.0.1",
+        "npm": "^6.13.7",
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
         "svg-cards": "^4.0.0"
@@ -38,7 +40,6 @@
         "eslint-plugin-react": "^7.18.0",
         "eslint-plugin-react-hooks": "^1.7.0",
         "parcel-bundler": "^1.12.4",
-        "sass": "^1.25.0",
         "typescript": "^3.7.5"
     }
 }

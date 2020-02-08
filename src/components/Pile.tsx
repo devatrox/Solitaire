@@ -1,5 +1,7 @@
+/** @jsx jsx */
+
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import { jsx, css } from '@emotion/core';
 import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
 import CardElement from './CardElement';
@@ -18,6 +20,16 @@ const Pile = (props: PileProps): JSX.Element => {
     } = props;
 
     const [isHover, setIsHover] = useState(false);
+
+    const styles = css`
+        position: relative;
+        width: var(--card-width);
+        height: 0;
+        padding-bottom: var(--card-height);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: var(--card-border-radius);
+    `;
 
     let enterTarget: EventTarget | null = null;
 
@@ -63,7 +75,9 @@ const Pile = (props: PileProps): JSX.Element => {
                 card: card,
                 childCards: cds.slice(0, i),
                 source: [name, index],
+                isBottom: (reversedCards.length - 1) === i,
                 isTop: false,
+                isStackDown: true,
                 key: card.id,
                 onClick: onCardClick,
                 onDoubleClick: onCardDoubleClick
@@ -83,6 +97,7 @@ const Pile = (props: PileProps): JSX.Element => {
         <CardElement
             card={card}
             source={[name, index]}
+            isBottom={i === 0}
             isTop={(cards.length - 1) === i}
             key={card.id}
             onClick={onCardClick}
@@ -92,11 +107,7 @@ const Pile = (props: PileProps): JSX.Element => {
 
     return (
         <div
-            className={classnames(
-                `${name}-pile`,
-                'pile',
-                isHover ? 'is-hover' : null
-            )}
+            css={styles}
             onDrop={handleDrop}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}

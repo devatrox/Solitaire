@@ -1,6 +1,9 @@
+/** @jsx jsx */
+
 import React from 'react';
+import { jsx, css } from '@emotion/core';
 import Pile from './Pile';
-import { GroupProps } from '../definitions';
+import { GroupProps, PileName } from '../definitions';
 
 const PileGroup = (props: GroupProps): JSX.Element => {
     const {
@@ -13,8 +16,31 @@ const PileGroup = (props: GroupProps): JSX.Element => {
         onPileClick
     } = props;
 
+    const styles = css`
+        grid-area: ${name};
+        position: relative;
+        ${name === PileName.FOUNDATION && `
+            display: grid;
+            grid-gap: var(--grid-gap);
+            grid-template-columns: repeat(4, 1fr);
+
+            @media (max-width: 768px) {
+                grid-gap: calc(var(--grid-gap) / 2);
+            }
+        `}
+        ${name === PileName.TABLEAU && `
+            display: grid;
+            grid-gap: var(--grid-gap);
+            grid-template-columns: repeat(7, 1fr);
+
+            @media (max-width: 768px) {
+                grid-gap: calc(var(--grid-gap) / 2);
+            }
+        `}
+    `;
+
     return (
-        <div className={name}>
+        <div css={styles}>
             {piles.map((pile, i) => (
                 <Pile
                     name={name}
