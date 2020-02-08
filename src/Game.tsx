@@ -90,16 +90,14 @@ const Game = (props: GameProps): JSX.Element => {
         const topCard = _last(stock[0]);
 
         if (pile.length === 0 && topCard) {
-            window.setTimeout(() => {
-                dispatch({
-                    type: ActionTypes.MOVE_CARDS,
-                    payload: {
-                        cards: [[topCard, 0, 0]],
-                        sourcePile: PileName.STOCK,
-                        targetPile: PileName.WASTE
-                    }
-                });
-            }, 300);
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    cards: [[topCard, 0, 0]],
+                    sourcePile: PileName.STOCK,
+                    targetPile: PileName.WASTE
+                }
+            });
         } else {
             for (const card of pile) {
                 if (!card.isRevealed) {
