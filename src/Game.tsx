@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import React, {
-    useReducer, useEffect, useMemo, useState
+    useReducer, useEffect, useMemo, useState, Fragment
 } from 'react';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
@@ -27,21 +27,29 @@ const Game = (props: GameProps): JSX.Element => {
 
     const styles = css`
         height: 100vh;
-        max-height: 800px;
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--grid-gap);
+        padding: var(--grid-gap) var(--grid-gap) 80px;
         display: grid;
         grid-gap: var(--grid-gap);
         grid-template-columns: repeat(7, 1fr);
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto 1fr;
         grid-template-areas:
             "stock waste . foundation foundation foundation foundation"
-            "tableau tableau tableau tableau tableau tableau tableau"
-            "menu menu menu menu menu menu menu";
+            "tableau tableau tableau tableau tableau tableau tableau";
 
         @media (max-width: 768px) {
-            grid-gap: calc(var(--grid-gap) / 2);
+            grid-template-columns: auto 1fr;
+            grid-template-rows: repeat(7, 1fr);
+            grid-template-areas:
+                "stock tableau"
+                "waste tableau"
+                ". tableau"
+                "foundation tableau"
+                "foundation tableau"
+                "foundation tableau"
+                "foundation tableau";
+            padding-bottom: 100px;
         }
     `;
 
@@ -62,6 +70,12 @@ const Game = (props: GameProps): JSX.Element => {
         const allTableauCards = _flattenDeep(foundation);
         return allTableauCards.length === cardCount;
     }, [foundation]);
+
+    useEffect(() => {
+        if (message.length > 0) {
+            window.setTimeout(() => setMessage(''), 4000);
+        }
+    }, [message]);
 
     useEffect(() => {
         if (isFinished) {
@@ -242,30 +256,32 @@ const Game = (props: GameProps): JSX.Element => {
     };
 
     return (
-        <div css={styles}>
-            <PileGroup
-                name={PileName.STOCK}
-                piles={stock}
-                onPileClick={handleStockClick}
-                onCardClick={handleStockCardClick}
-            />
-            <PileGroup
-                name={PileName.WASTE}
-                piles={waste}
-                onCardDoubleClick={handleCardDoubleClick}
-            />
-            <PileGroup
-                name={PileName.FOUNDATION}
-                piles={foundation}
-                onDrop={handleDrop}
-            />
-            <PileGroup
-                name={PileName.TABLEAU}
-                piles={tableau}
-                stackDown
-                onDrop={handleDrop}
-                onCardDoubleClick={handleCardDoubleClick}
-            />
+        <Fragment>
+            <div css={styles}>
+                <PileGroup
+                    name={PileName.STOCK}
+                    piles={stock}
+                    onPileClick={handleStockClick}
+                    onCardClick={handleStockCardClick}
+                />
+                <PileGroup
+                    name={PileName.WASTE}
+                    piles={waste}
+                    onCardDoubleClick={handleCardDoubleClick}
+                />
+                <PileGroup
+                    name={PileName.FOUNDATION}
+                    piles={foundation}
+                    onDrop={handleDrop}
+                />
+                <PileGroup
+                    name={PileName.TABLEAU}
+                    piles={tableau}
+                    stackDown
+                    onDrop={handleDrop}
+                    onCardDoubleClick={handleCardDoubleClick}
+                />
+            </div>
             <Menu
                 message={message}
                 isDone={isDone}
@@ -273,7 +289,7 @@ const Game = (props: GameProps): JSX.Element => {
                 onReset={handleReset}
                 onFinish={handleFinish}
             />
-        </div>
+        </Fragment>
     );
 };
 

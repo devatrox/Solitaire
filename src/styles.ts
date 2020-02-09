@@ -7,13 +7,23 @@ const global = css`
         --grid-gap: 20px;
         --card-width: 100%;
         --card-height: 140%;
-        --card-border-radius: 5%;
+        --card-border-radius: 8px;
         --card-stack-margin: 12%;
         --color-green: #3d9970;
         --color-red: #bd0534;
         --color-blue: #7d99d5;
         --color-black: #111;
         --color-gray: #aaa;
+        --color-orange: #ff851b;
+        --card-border-color: #000;
+
+        @media (max-width: 768px) {
+            --grid-gap: 10px;
+            --card-width: 7vh;
+            --card-height: calc(var(--card-width) / 100 * 140);
+            --card-stack-margin: 20%;
+            --card-border-radius: 5px;
+        }
     }
 
     *,
@@ -26,10 +36,17 @@ const global = css`
         box-sizing: border-box;
     }
 
+    html,
+    body {
+        position: fixed;
+        overflow: hidden;
+    }
+
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         background-color: var(--color-green);
         background-image: radial-gradient(transparent, rgba(0, 0, 0, 0.4));
+        width: 100%;
     }
 
     a {
@@ -54,6 +71,7 @@ const btn = css`
     line-height: 1.5;
     border-radius: .25rem;
     text-decoration: none;
+    text-transform: none;
 
     &:not([disabled]) {
         cursor: pointer;

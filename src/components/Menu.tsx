@@ -18,14 +18,30 @@ const Menu = (props: MenuProps): JSX.Element => {
     const textColor = '255, 255, 255';
 
     const styles = css`
-        grid-area: menu;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: var(--grid-gap);
         display: grid;
         grid-gap: var(--grid-gap);
-        grid-template-columns: repeat(2, auto) 1fr repeat(2, auto);
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto;
+        grid-template-areas: "menuLeft menuCenter menuRight";
         color: rgba(${textColor}, 0.7);
 
         @media (max-width: 768px) {
-            grid-gap: calc(var(--grid-gap) / 2);
+            grid-template-columns: auto;
+            grid-template-areas: "menuCenter menuCenter" "menuLeft menuRight";
+        }
+    `;
+
+    const menuElementStyles = css`
+        label: MenuElement;
+        display: flex;
+
+        > * + * {
+            margin-left: var(--grid-gap);
         }
     `;
 
@@ -49,19 +65,28 @@ const Menu = (props: MenuProps): JSX.Element => {
     const textStyles = css`
         font-size: 1rem;
         line-height: 1.5;
-        padding: .375rem .75rem;
+        padding: .375rem 0;
         border: 2px solid transparent;
     `;
 
     return (
         <div css={styles}>
-            <button css={btnStyles} type="button" onClick={onReset}>New Game</button>
-            <button css={btnStyles} type="button" disabled={!isDone && !isFinished} onClick={onFinish}>Finish</button>
-            <div css={textStyles}>{message}</div>
-            <div css={textStyles}>
-                <a href="https://github.com/htdebeer/SVG-cards">SVG Cards by htdebeer</a>
+            <div css={css`${menuElementStyles} grid-area: menuLeft;`}>
+                <button css={btnStyles} type="button" onClick={onReset}>
+                    New Game
+                </button>
+                <button css={btnStyles} type="button" disabled={!isDone && !isFinished} onClick={onFinish}>
+                    Finish
+                </button>
             </div>
-            <a css={btnStyles} href="https://github.com/devatrox/Solitaire">GitHub</a>
+            <div css={css`${textStyles} grid-area: menuCenter;`}>
+                {message}
+            </div>
+            <div css={css`${menuElementStyles} grid-area: menuRight;`}>
+                <a css={btnStyles} href="https://github.com/devatrox/Solitaire">
+                    GitHub
+                </a>
+            </div>
         </div>
     );
 };
