@@ -4,6 +4,8 @@ Solitaire built in React using Typescript. Have fun poking around!
 
 Tested in Chrome, Firefox, Safari on Mac. Touch not supported yet.
 
+SVG-Cards by [htdebeer](https://github.com/htdebeer/SVG-cards).
+
 ## Usage
 
 Visit https://solitaire.jasonnickel.de/

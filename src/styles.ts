@@ -14,6 +14,10 @@ const global = css`
         --color-blue: #7d99d5;
         --color-black: #111;
         --color-gray: #aaa;
+
+        @media (max-width: 768px) {
+            --grid-gap: 10px;
+        }
     }
 
     *,
@@ -26,10 +30,17 @@ const global = css`
         box-sizing: border-box;
     }
 
+    html,
+    body {
+        position: fixed;
+        overflow: hidden;
+    }
+
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         background-color: var(--color-green);
         background-image: radial-gradient(transparent, rgba(0, 0, 0, 0.4));
+        width: 100%;
     }
 
     a {
@@ -54,6 +65,7 @@ const btn = css`
     line-height: 1.5;
     border-radius: .25rem;
     text-decoration: none;
+    text-transform: none;
 
     &:not([disabled]) {
         cursor: pointer;
