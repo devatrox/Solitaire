@@ -39,6 +39,16 @@ const Game = (props: GameProps): JSX.Element => {
             "tableau tableau tableau tableau tableau tableau tableau";
 
         @media (max-width: 768px) {
+            grid-template-columns: auto 1fr;
+            grid-template-rows: repeat(7, 1fr);
+            grid-template-areas:
+                "stock tableau"
+                "waste tableau"
+                ". tableau"
+                "foundation tableau"
+                "foundation tableau"
+                "foundation tableau"
+                "foundation tableau";
             padding-bottom: 100px;
         }
     `;

@@ -45,19 +45,51 @@ const CardElement = (props: CardProps): JSX.Element => {
         left: 0;
         height: 100%;
         width: 100%;
+        border-radius: var(--card-border-radius);
         transform: scale(1);
         transition: transform 50ms ease-in-out;
+
+        @media (max-width: 768px) {
+            --card-border-color: transparent;
+        }
+
         ${isHover && card.isRevealed && `
+            --card-border-color: var(--color-orange);
             transform: scale(1.04);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+
+            @media (max-width: 768px) {
+                --card-border-color: var(--color-orange);
+            }
         `}
         ${isDragging && `
             opacity: 0.5;
         `}
         ${!isBottom && isStackDown && `
             top: var(--card-stack-margin);
-            z-index: 2;
+            z-index: 3;
+
+            @media (max-width: 768px) {
+                top: auto;
+                left: var(--card-stack-margin);
+            }
         `}
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            z-index: 2;
+            box-shadow: inset 0 0 0 3px var(--card-border-color);
+            border-radius: var(--card-border-radius);
+
+            @media (max-width: 768px) {
+                box-shadow: inset 0 0 0 2px var(--card-border-color);
+            }
+        }
     `;
 
     const svgStyles = css`

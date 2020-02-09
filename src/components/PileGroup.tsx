@@ -24,7 +24,8 @@ const PileGroup = (props: GroupProps): JSX.Element => {
             grid-template-columns: repeat(4, 1fr);
 
             @media (max-width: 768px) {
-
+                grid-template-columns: auto;
+                grid-template-rows: repeat(4, 1fr);
             }
         `}
         ${name === PileName.TABLEAU && `
@@ -33,7 +34,8 @@ const PileGroup = (props: GroupProps): JSX.Element => {
             grid-template-columns: repeat(7, 1fr);
 
             @media (max-width: 768px) {
-
+                grid-template-columns: auto;
+                grid-template-rows: repeat(7, 1fr);
             }
         `}
     `;

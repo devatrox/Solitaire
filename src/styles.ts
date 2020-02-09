@@ -7,16 +7,22 @@ const global = css`
         --grid-gap: 20px;
         --card-width: 100%;
         --card-height: 140%;
-        --card-border-radius: 5%;
+        --card-border-radius: 8px;
         --card-stack-margin: 12%;
         --color-green: #3d9970;
         --color-red: #bd0534;
         --color-blue: #7d99d5;
         --color-black: #111;
         --color-gray: #aaa;
+        --color-orange: #ff851b;
+        --card-border-color: #000;
 
         @media (max-width: 768px) {
             --grid-gap: 10px;
+            --card-width: 7vh;
+            --card-height: calc(var(--card-width) / 100 * 140);
+            --card-stack-margin: 20%;
+            --card-border-radius: 5px;
         }
     }
 
