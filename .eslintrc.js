@@ -2,6 +2,9 @@ const INDENTATION = 4;
 
 module.exports = {
     parser: '@typescript-eslint/parser',
+    parserOptions: {
+        project: './tsconfig.eslint.json'
+    },
     plugins: [
         'emotion',
         '@typescript-eslint',
