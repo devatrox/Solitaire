@@ -15,29 +15,29 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@emotion/core": "^10.0.27",
+        "@emotion/core": "^10.0.28",
         "emotion-normalize": "^10.1.0",
         "lodash": "^4.17.15",
-        "react": "^16.12.0",
-        "react-dom": "^16.12.0",
+        "react": "^16.13.0",
+        "react-dom": "^16.13.0",
         "svg-cards": "^4.0.0"
     },
     "devDependencies": {
-        "@svgr/parcel-plugin-svgr": "^5.1.0",
+        "@svgr/parcel-plugin-svgr": "^5.2.0",
         "@types/lodash": "^4.14.149",
-        "@types/react": "^16.9.19",
+        "@types/react": "^16.9.23",
         "@types/react-dom": "^16.9.5",
-        "@typescript-eslint/eslint-plugin": "^2.19.0",
-        "@typescript-eslint/parser": "^2.19.0",
+        "@typescript-eslint/eslint-plugin": "^2.22.0",
+        "@typescript-eslint/parser": "^2.22.0",
         "eslint": "^6.8.0",
         "eslint-config-airbnb": "^18.0.1",
-        "eslint-config-airbnb-typescript": "^6.3.1",
+        "eslint-config-airbnb-typescript": "^7.0.0",
         "eslint-plugin-emotion": "^10.0.27",
         "eslint-plugin-import": "^2.20.1",
         "eslint-plugin-jsx-a11y": "^6.2.3",
-        "eslint-plugin-react": "^7.18.3",
+        "eslint-plugin-react": "^7.19.0",
         "eslint-plugin-react-hooks": "^1.7.0",
         "parcel-bundler": "^1.12.4",
-        "typescript": "^3.7.5"
+        "typescript": "^3.8.3"
     }
 }
