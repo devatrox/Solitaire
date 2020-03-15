@@ -1,6 +1,8 @@
 /** @jsx jsx */
 
 import React, { useState, createRef } from 'react';
+import { useSpring, animated } from 'react-spring';
+import { useDrag } from 'react-use-gesture';
 import { jsx, css } from '@emotion/core';
 import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
@@ -103,19 +105,18 @@ const CardElement = (props: CardProps): JSX.Element => {
         pointer-events: none;
         border-radius: var(--card-border-radius);
         backface-visibility: hidden;
-        transition: transform 300ms ease-in-out;
     `;
 
     const svgFrontStyles = css`
         label: CardSvgFront;
-        ${svgStyles}
-        ${card.isRevealed && `
-            transform: perspective(800px) rotateX(0deg);
-        `}
-        ${!card.isRevealed && `
-            transform: perspective(800px) rotateX(180deg);
-        `}
     `;
+
+    const springFrontProps = useSpring({
+        transform: `perspective(800px) rotateX(${card.isRevealed ? '0deg' : '180deg'})`,
+        from: {
+            transform: 'perspective(800px) rotateX(180deg)'
+        }
+    });
 
     const svgBackStyles = css`
         label: CardSvgBack;
@@ -128,6 +129,13 @@ const CardElement = (props: CardProps): JSX.Element => {
             transform: perspective(800px) rotateX(0deg);
         `}
     `;
+
+    const springBackProps = useSpring({
+        transform: `perspective(800px) rotateX(${card.isRevealed ? '180deg' : '360deg'})`,
+        from: {
+            transform: 'perspective(800px) rotateX(360deg)'
+        }
+    });
 
     const handleMouseOver = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.FocusEvent<HTMLDivElement>): void => {
         if (event && event.target === ref.current) {
@@ -170,6 +178,10 @@ const CardElement = (props: CardProps): JSX.Element => {
         setIsDragging(false);
     };
 
+    const bind = useDrag((state) => {
+        console.log(state);
+    });
+
     return (
         <div
             css={styles}
@@ -179,22 +191,23 @@ const CardElement = (props: CardProps): JSX.Element => {
             data-color={card.color}
             style={style}
             draggable={card.isRevealed}
-            onClick={handleClick}
-            onDoubleClick={handleDoubleClick}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onMouseOver={handleMouseOver}
-            onFocus={handleMouseOver}
-            onMouseLeave={handleMouseLeave}
-            onMouseOut={handleMouseLeave}
-            onBlur={handleMouseLeave}
+            // onClick={handleClick}
+            // onDoubleClick={handleDoubleClick}
+            // onDragStart={handleDragStart}
+            // onDragEnd={handleDragEnd}
+            // onMouseOver={handleMouseOver}
+            // onFocus={handleMouseOver}
+            // onMouseLeave={handleMouseLeave}
+            // onMouseOut={handleMouseLeave}
+            // onBlur={handleMouseLeave}
+            {...bind}
         >
-            <svg css={svgFrontStyles} viewBox="0 0 169.075 244.64">
+            <animated.svg css={svgFrontStyles} style={springFrontProps} viewBox="0 0 169.075 244.64">
                 <use href={`#svg-cards_svg__${card.id}`} />
-            </svg>
-            <svg css={svgBackStyles} viewBox="0 0 169.075 244.64">
+            </animated.svg>
+            <animated.svg css={svgBackStyles} style={springBackProps} viewBox="0 0 169.075 244.64">
                 <use href="#svg-cards_svg__alternate-back" />
-            </svg>
+            </animated.svg>
             {children}
         </div>
     );
