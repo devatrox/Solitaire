@@ -1,4 +1,3 @@
-import _flatten from 'lodash/flatten';
 import _shuffle from 'lodash/shuffle';
 import _last from 'lodash/last';
 import Card from './Card';
@@ -29,7 +28,7 @@ const ranks = [
 const cardCount: number = suits.length * ranks.length;
 
 const createNewStack = (): Card[] => {
-    const stack = _flatten(suits.map((suit) => ranks.map((rank) => new Card(suit, rank))));
+    const stack = suits.map((suit) => ranks.map((rank) => new Card(suit, rank))).flat();
     return _shuffle(stack);
 };
 

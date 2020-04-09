@@ -1,7 +1,5 @@
 import _last from 'lodash/last';
 import _first from 'lodash/first';
-import _every from 'lodash/every';
-import _flatten from 'lodash/flatten';
 import Card from './Card';
 import { ValidationResult } from './definitions';
 import { ranks } from './setup';
@@ -63,8 +61,8 @@ const hasNoStock = (stock: Card[], waste: Card[]): ValidationResult => ({
 });
 
 const isAllRevealed = (tableau: Card[][]): ValidationResult => {
-    const cards = _flatten(tableau);
-    const result = _every(cards, (card) => card.isRevealed);
+    const cards = tableau.flat();
+    const result = cards.every((card) => card.isRevealed);
     console.info('isAllRevealed', result);
 
     return {

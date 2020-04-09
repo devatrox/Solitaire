@@ -1,7 +1,4 @@
-import _filter from 'lodash/filter';
-import _find from 'lodash/find';
 import _cloneDeep from 'lodash/cloneDeep';
-import _flatten from 'lodash/flatten';
 import _sortBy from 'lodash/sortBy';
 import {
     Suit, GameState, PileName, ActionTypes, Action, ActionPayloadSourceName, ActionPayloadTargetName, MappedCard
@@ -34,7 +31,7 @@ const moveCardsAction = (prevState: GameState, mappedCards: MappedCard[], source
     for (const mappedCard of mappedCards) {
         const [sourceCard, sourceIndex, targetIndex] = mappedCard;
 
-        newSource[sourceIndex] = _filter(newSource[sourceIndex], (card) => card.id !== sourceCard.id);
+        newSource[sourceIndex] = newSource[sourceIndex].filter((card) => card.id !== sourceCard.id);
 
         newTarget[targetIndex].push(sourceCard);
 
@@ -51,10 +48,10 @@ const moveCardsAction = (prevState: GameState, mappedCards: MappedCard[], source
 };
 
 const finishAction = (prevState: GameState): GameState => {
-    const piles = _flatten(prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
+    const piles = prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
         const targetIndex = getFoundationTargetIndex(card);
         return [card, pileIndex, targetIndex];
-    })));
+    })).flat();
     const sortedCards = _sortBy(piles, (mappedCard) => {
         const [card] = mappedCard;
 
@@ -69,7 +66,7 @@ const flipCardAction = (prevState: GameState, mappedCards: MappedCard[], targetN
 
     for (const mappedCard of mappedCards) {
         const [targetCard, sourceIndex, targetIndex] = mappedCard;
-        const cardToBeFlipped = _find(newTarget[targetIndex], (card) => card.id === targetCard.id);
+        const cardToBeFlipped = newTarget[targetIndex].find((card) => card.id === targetCard.id);
 
         if (cardToBeFlipped) {
             cardToBeFlipped.flip();

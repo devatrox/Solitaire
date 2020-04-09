@@ -5,8 +5,6 @@ import React, {
 } from 'react';
 import _last from 'lodash/last';
 import _reverse from 'lodash/reverse';
-import _flattenDeep from 'lodash/flattenDeep';
-import _every from 'lodash/every';
 import { jsx, css } from '@emotion/core';
 import PileGroup from './components/PileGroup';
 import {
@@ -60,14 +58,14 @@ const Game = (props: GameProps): JSX.Element => {
     const [message, setMessage] = useState('');
 
     const isDone = useMemo((): boolean => {
-        const allCards = _flattenDeep([...stock, ...waste, ...foundation]);
-        const isRevealed = _every(allCards, (card) => card.isRevealed);
+        const allCards = [...stock, ...waste, ...foundation].flat();
+        const isRevealed = allCards.every((card) => card.isRevealed);
         const isStockAndWasteEmpty = stock[0].length === 0 && waste[0].length === 0;
         return isStockAndWasteEmpty && isRevealed;
     }, [foundation, stock, waste]);
 
     const isFinished = useMemo((): boolean => {
-        const allTableauCards = _flattenDeep(foundation);
+        const allTableauCards = foundation.flat();
         return allTableauCards.length === cardCount;
     }, [foundation]);
 
