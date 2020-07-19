@@ -17,7 +17,7 @@
     "dependencies": {
         "@emotion/core": "^10.0.28",
         "emotion-normalize": "^10.1.0",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "svg-cards": "^4.0.0"
