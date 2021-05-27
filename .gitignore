@@ -3,6 +3,8 @@ coverage/
 dist/
 node_modules/
 *.log
+.vscode
+.parcel-cache
 
 # OS generated files
 .DS_Store
