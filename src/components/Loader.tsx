@@ -4,7 +4,7 @@
 import { memo } from "react";
 import { jsx, css, keyframes } from "@emotion/react";
 
-const Loader = (): JSX.Element => {
+const Loader: React.FC = () => {
     const bulging = keyframes`
         0%,
         80%,

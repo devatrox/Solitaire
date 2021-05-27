@@ -6,20 +6,18 @@ import _noop from "lodash/noop";
 import _reverse from "lodash/reverse";
 import { CardProps, CardTransferObject, PileName } from "../definitions";
 
-const CardElement = (props: CardProps): JSX.Element => {
-    const {
-        card,
-        childCards = [],
-        source,
-        style,
-        isTop = false,
-        isBottom = false,
-        isStackDown = false,
-        children,
-        onClick = _noop,
-        onDoubleClick = _noop,
-    } = props;
-
+const CardElement: React.FC<CardProps> = ({
+    card,
+    childCards = [],
+    source,
+    style,
+    isTop = false,
+    isBottom = false,
+    isStackDown = false,
+    children,
+    onClick = _noop,
+    onDoubleClick = _noop,
+}) => {
     const ref: React.RefObject<HTMLDivElement> = createRef();
 
     const [isDragging, setIsDragging] = useState(false);

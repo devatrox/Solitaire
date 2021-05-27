@@ -7,18 +7,16 @@ import _reverse from "lodash/reverse";
 import CardElement from "./CardElement";
 import { PileProps, CardProps } from "../definitions";
 
-const Pile = (props: PileProps): JSX.Element => {
-    const {
-        cards,
-        name,
-        index = 0,
-        stackDown = false,
-        onDrop = _noop,
-        onCardClick,
-        onCardDoubleClick,
-        onClick = _noop,
-    } = props;
-
+const Pile: React.FC<PileProps> = ({
+    cards,
+    name,
+    index = 0,
+    stackDown = false,
+    onDrop = _noop,
+    onCardClick,
+    onCardDoubleClick,
+    onClick = _noop,
+}) => {
     const [isHover, setIsHover] = useState(false);
 
     const styles = css`

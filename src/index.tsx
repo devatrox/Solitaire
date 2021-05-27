@@ -8,9 +8,7 @@ import { createInitialState } from "./setup";
 import { globalStyles } from "./styles";
 import Loader from "./components/Loader";
 
-const App = (props: GameProps): JSX.Element => {
-    const { initialState } = props;
-
+const App: React.FC<GameProps> = ({ initialState }) => {
     const Game = lazy(() => import("./Game"));
 
     const SvgCards = lazy(() => import("./components/SvgCards"));

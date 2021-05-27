@@ -4,17 +4,15 @@ import { jsx, css } from "@emotion/react";
 import Pile from "./Pile";
 import { GroupProps, PileName } from "../definitions";
 
-const PileGroup = (props: GroupProps): JSX.Element => {
-    const {
-        piles = [],
-        name,
-        stackDown,
-        onDrop,
-        onCardClick,
-        onCardDoubleClick,
-        onPileClick,
-    } = props;
-
+const PileGroup: React.FC<GroupProps> = ({
+    piles = [],
+    name,
+    stackDown,
+    onDrop,
+    onCardClick,
+    onCardDoubleClick,
+    onPileClick,
+}) => {
     const styles = css`
         grid-area: ${name};
         position: relative;

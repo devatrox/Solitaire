@@ -6,15 +6,13 @@ import _noop from "lodash/noop";
 import { btnStyles as globalBtnStyles } from "../styles";
 import { MenuProps } from "../definitions";
 
-const Menu = (props: MenuProps): JSX.Element => {
-    const {
-        message,
-        isDone,
-        isFinished,
-        onFinish = _noop,
-        onReset = _noop,
-    } = props;
-
+const Menu: React.FC<MenuProps> = ({
+    message,
+    isDone,
+    isFinished,
+    onFinish = _noop,
+    onReset = _noop,
+}) => {
     const textColor = "255, 255, 255";
 
     const styles = css`
