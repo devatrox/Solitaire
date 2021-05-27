@@ -62,7 +62,7 @@ type CardProps = {
     isStackDown?: boolean;
     childCards?: Card[];
     style?: React.CSSProperties;
-    children?: JSX.Element;
+    children?: React.ReactNode;
     key?: string;
     onClick?: (
         event: React.SyntheticEvent,

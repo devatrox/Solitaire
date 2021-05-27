@@ -30,9 +30,7 @@ import {
     hasNoStock,
 } from "./rules";
 
-const Game = (props: GameProps): JSX.Element => {
-    const { initialState } = props;
-
+const Game: React.FC<GameProps> = ({ initialState }) => {
     const styles = css`
         height: 100vh;
         max-width: 1200px;
