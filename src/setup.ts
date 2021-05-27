@@ -1,14 +1,9 @@
-import _shuffle from 'lodash/shuffle';
-import _last from 'lodash/last';
-import Card from './Card';
-import { Suit, Rank, GameState } from './definitions';
+import _shuffle from "lodash/shuffle";
+import _last from "lodash/last";
+import Card from "./Card";
+import { Suit, Rank, GameState } from "./definitions";
 
-const suits = [
-    Suit.Spade,
-    Suit.Heart,
-    Suit.Diamond,
-    Suit.Club
-];
+const suits = [Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club];
 const ranks = [
     Rank.Ace,
     Rank.Two,
@@ -22,13 +17,15 @@ const ranks = [
     Rank.Ten,
     Rank.Jack,
     Rank.Queen,
-    Rank.King
+    Rank.King,
 ];
 
 const cardCount: number = suits.length * ranks.length;
 
 const createNewStack = (): Card[] => {
-    const stack = suits.map((suit) => ranks.map((rank) => new Card(suit, rank))).flat();
+    const stack = suits
+        .map((suit) => ranks.map((rank) => new Card(suit, rank)))
+        .flat();
     return _shuffle(stack);
 };
 
@@ -51,8 +48,8 @@ const createSolvedState = (): GameState => {
             revealedStack.slice(6, 10),
             revealedStack.slice(10, 15),
             revealedStack.slice(15, 21),
-            revealedStack.slice(21)
-        ]
+            revealedStack.slice(21),
+        ],
     };
 
     return state;
@@ -72,8 +69,8 @@ const createInitialState = (): GameState => {
             stack.slice(6, 10),
             stack.slice(10, 15),
             stack.slice(15, 21),
-            stack.slice(21, 28)
-        ]
+            stack.slice(21, 28),
+        ],
     };
 
     for (const pile of state.tableau) {
@@ -86,10 +83,4 @@ const createInitialState = (): GameState => {
     return state;
 };
 
-export {
-    suits,
-    ranks,
-    cardCount,
-    createInitialState,
-    createSolvedState
-};
+export { suits, ranks, cardCount, createInitialState, createSolvedState };

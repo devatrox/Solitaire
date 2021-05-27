@@ -1,10 +1,17 @@
-import _cloneDeep from 'lodash/cloneDeep';
-import _sortBy from 'lodash/sortBy';
+import _cloneDeep from "lodash/cloneDeep";
+import _sortBy from "lodash/sortBy";
 import {
-    Suit, GameState, PileName, ActionTypes, Action, ActionPayloadSourceName, ActionPayloadTargetName, MappedCard
-} from './definitions';
-import Card from './Card';
-import { createInitialState } from './setup';
+    Suit,
+    GameState,
+    PileName,
+    ActionTypes,
+    Action,
+    ActionPayloadSourceName,
+    ActionPayloadTargetName,
+    MappedCard,
+} from "./definitions";
+import Card from "./Card";
+import { createInitialState } from "./setup";
 
 const getFoundationTargetIndex = (card: Card): number => {
     let targetIndex = 0;
@@ -24,14 +31,21 @@ const getFoundationTargetIndex = (card: Card): number => {
     return targetIndex;
 };
 
-const moveCardsAction = (prevState: GameState, mappedCards: MappedCard[], sourceName: ActionPayloadSourceName, targetName: ActionPayloadTargetName): GameState => {
+const moveCardsAction = (
+    prevState: GameState,
+    mappedCards: MappedCard[],
+    sourceName: ActionPayloadSourceName,
+    targetName: ActionPayloadTargetName,
+): GameState => {
     const newSource = _cloneDeep(prevState[sourceName]);
     const newTarget = _cloneDeep(prevState[targetName]);
 
     for (const mappedCard of mappedCards) {
         const [sourceCard, sourceIndex, targetIndex] = mappedCard;
 
-        newSource[sourceIndex] = newSource[sourceIndex].filter((card) => card.id !== sourceCard.id);
+        newSource[sourceIndex] = newSource[sourceIndex].filter(
+            (card) => card.id !== sourceCard.id,
+        );
 
         newTarget[targetIndex].push(sourceCard);
 
@@ -43,30 +57,45 @@ const moveCardsAction = (prevState: GameState, mappedCards: MappedCard[], source
     return {
         ...prevState,
         [sourceName]: newSource,
-        [targetName]: newTarget
+        [targetName]: newTarget,
     };
 };
 
 const finishAction = (prevState: GameState): GameState => {
-    const piles = prevState.tableau.map((pile, pileIndex) => pile.map((card): MappedCard => {
-        const targetIndex = getFoundationTargetIndex(card);
-        return [card, pileIndex, targetIndex];
-    })).flat();
+    const piles = prevState.tableau
+        .map((pile, pileIndex) =>
+            pile.map((card): MappedCard => {
+                const targetIndex = getFoundationTargetIndex(card);
+                return [card, pileIndex, targetIndex];
+            }),
+        )
+        .flat();
     const sortedCards = _sortBy(piles, (mappedCard) => {
         const [card] = mappedCard;
 
         return card.rank;
     });
 
-    return moveCardsAction(prevState, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
+    return moveCardsAction(
+        prevState,
+        sortedCards,
+        PileName.TABLEAU,
+        PileName.FOUNDATION,
+    );
 };
 
-const flipCardAction = (prevState: GameState, mappedCards: MappedCard[], targetName: ActionPayloadTargetName): GameState => {
+const flipCardAction = (
+    prevState: GameState,
+    mappedCards: MappedCard[],
+    targetName: ActionPayloadTargetName,
+): GameState => {
     const newTarget = _cloneDeep(prevState[targetName]);
 
     for (const mappedCard of mappedCards) {
         const [targetCard, sourceIndex, targetIndex] = mappedCard;
-        const cardToBeFlipped = newTarget[targetIndex].find((card) => card.id === targetCard.id);
+        const cardToBeFlipped = newTarget[targetIndex].find(
+            (card) => card.id === targetCard.id,
+        );
 
         if (cardToBeFlipped) {
             cardToBeFlipped.flip();
@@ -75,7 +104,7 @@ const flipCardAction = (prevState: GameState, mappedCards: MappedCard[], targetN
 
     return {
         ...prevState,
-        [targetName]: newTarget
+        [targetName]: newTarget,
     };
 };
 
@@ -84,15 +113,31 @@ const resetAction = (): GameState => createInitialState();
 const reducer = (prevState: GameState, action: Action): GameState => {
     const { type, payload } = action;
 
-    if (type === ActionTypes.MOVE_CARDS && payload && payload.cards && payload.sourcePile && payload.targetPile) {
-        return moveCardsAction(prevState, payload.cards, payload.sourcePile, payload.targetPile);
+    if (
+        type === ActionTypes.MOVE_CARDS &&
+        payload &&
+        payload.cards &&
+        payload.sourcePile &&
+        payload.targetPile
+    ) {
+        return moveCardsAction(
+            prevState,
+            payload.cards,
+            payload.sourcePile,
+            payload.targetPile,
+        );
     }
 
     if (type === ActionTypes.FINISH) {
         return finishAction(prevState);
     }
 
-    if (type === ActionTypes.FLIP_CARD && payload && payload.cards && payload.targetPile) {
+    if (
+        type === ActionTypes.FLIP_CARD &&
+        payload &&
+        payload.cards &&
+        payload.targetPile
+    ) {
         return flipCardAction(prevState, payload.cards, payload.targetPile);
     }
 
@@ -104,6 +149,4 @@ const reducer = (prevState: GameState, action: Action): GameState => {
 };
 
 export default reducer;
-export {
-    getFoundationTargetIndex
-};
+export { getFoundationTargetIndex };

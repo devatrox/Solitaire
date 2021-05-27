@@ -1,6 +1,4 @@
-import {
-    Suit, Rank, Color
-} from './definitions';
+import { Suit, Rank, Color } from "./definitions";
 
 interface CardInterface {
     suit: Suit;
@@ -11,7 +9,11 @@ interface CardInterface {
 }
 
 class Card implements CardInterface {
-    constructor(public suit: Suit, public rank: Rank, public isRevealed: boolean = false) { }
+    constructor(
+        public suit: Suit,
+        public rank: Rank,
+        public isRevealed: boolean = false,
+    ) {}
 
     get color(): Color {
         if (this.suit === Suit.Diamond || this.suit === Suit.Heart) {
@@ -22,7 +24,21 @@ class Card implements CardInterface {
     }
 
     get id(): string {
-        const names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king'];
+        const names = [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "jack",
+            "queen",
+            "king",
+        ];
 
         return `${this.suit}_${names[this.rank - 1]}`;
     }
@@ -54,6 +70,4 @@ class Card implements CardInterface {
 }
 
 export default Card;
-export {
-    CardInterface
-};
+export { CardInterface };

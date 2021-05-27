@@ -1,10 +1,10 @@
-import Card, { CardInterface } from './Card';
+import Card, { CardInterface } from "./Card";
 
 enum Suit {
-    Spade = 'spade',
-    Heart = 'heart',
-    Diamond = 'diamond',
-    Club = 'club'
+    Spade = "spade",
+    Heart = "heart",
+    Diamond = "diamond",
+    Club = "club",
 }
 
 enum Rank {
@@ -21,26 +21,26 @@ enum Rank {
     Jack = 11,
     Queen = 12,
     King = 13,
-    Joker = 14
+    Joker = 14,
 }
 
 enum PileName {
-    STOCK = 'stock',
-    WASTE = 'waste',
-    FOUNDATION = 'foundation',
-    TABLEAU = 'tableau'
+    STOCK = "stock",
+    WASTE = "waste",
+    FOUNDATION = "foundation",
+    TABLEAU = "tableau",
 }
 
 enum Color {
-    RED = 'red',
-    BLACK = 'black'
+    RED = "red",
+    BLACK = "black",
 }
 
 enum ActionTypes {
-    MOVE_CARDS = 'move-cards',
-    RESET = 'reset',
-    FLIP_CARD = 'flip-card',
-    FINISH = 'finish'
+    MOVE_CARDS = "move-cards",
+    RESET = "reset",
+    FLIP_CARD = "flip-card",
+    FINISH = "finish",
 }
 
 type GameState = {
@@ -64,9 +64,20 @@ type CardProps = {
     style?: React.CSSProperties;
     children?: JSX.Element;
     key?: string;
-    onClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
-    onDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+    onClick?: (
+        event: React.SyntheticEvent,
+        card: Card,
+        source: [PileName, number],
+    ) => void;
+    onDoubleClick?: (
+        event: React.SyntheticEvent,
+        card: Card,
+        source: [PileName, number],
+    ) => void;
+    onDrop?: (
+        event: React.DragEvent<HTMLDivElement>,
+        target: [PileName, number],
+    ) => void;
 };
 
 type PileProps = {
@@ -75,9 +86,20 @@ type PileProps = {
     stackDown?: boolean;
     index?: number;
     onClick?: (event: React.SyntheticEvent, name: PileName) => void;
-    onCardClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
-    onCardDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+    onCardClick?: (
+        event: React.SyntheticEvent,
+        card: Card,
+        source?: [PileName, number],
+    ) => void;
+    onCardDoubleClick?: (
+        event: React.SyntheticEvent,
+        card: Card,
+        source: [PileName, number],
+    ) => void;
+    onDrop?: (
+        event: React.DragEvent<HTMLDivElement>,
+        target: [PileName, number],
+    ) => void;
 };
 
 type GroupProps = {
@@ -85,9 +107,20 @@ type GroupProps = {
     name: PileName;
     stackDown?: boolean;
     onPileClick?: (event: React.SyntheticEvent, name: PileName) => void;
-    onCardClick?: (event: React.SyntheticEvent, card: Card, source?: [PileName, number]) => void;
-    onCardDoubleClick?: (event: React.SyntheticEvent, card: Card, source: [PileName, number]) => void;
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]) => void;
+    onCardClick?: (
+        event: React.SyntheticEvent,
+        card: Card,
+        source?: [PileName, number],
+    ) => void;
+    onCardDoubleClick?: (
+        event: React.SyntheticEvent,
+        card: Card,
+        source: [PileName, number],
+    ) => void;
+    onDrop?: (
+        event: React.DragEvent<HTMLDivElement>,
+        target: [PileName, number],
+    ) => void;
 };
 
 type MenuProps = {
@@ -123,7 +156,6 @@ type ActionPayload = {
 type Action = {
     type: ActionTypes;
     payload?: ActionPayload;
-
 };
 
 export {
@@ -144,5 +176,5 @@ export {
     ActionPayloadSourceName,
     ActionPayloadTargetName,
     ActionTypes,
-    Action
+    Action,
 };

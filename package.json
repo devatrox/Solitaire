@@ -14,6 +14,11 @@
         "url": "https://jasonnickel.de"
     },
     "license": "MIT",
+    "prettier": {
+        "singleQuote": false,
+        "semi": true,
+        "trailingComma": "all"
+    },
     "dependencies": {
         "@emotion/react": "^11.4.0",
         "emotion-normalize": "^11.0.1",
@@ -23,6 +28,7 @@
         "svg-cards": "^4.0.0"
     },
     "devDependencies": {
+        "@emotion/eslint-plugin": "^11.2.0",
         "@svgr/parcel-plugin-svgr": "^5.5.0",
         "@types/lodash": "^4.14.170",
         "@types/react": "^17.0.8",
@@ -30,15 +36,13 @@
         "@typescript-eslint/eslint-plugin": "^4.25.0",
         "@typescript-eslint/parser": "^4.25.0",
         "eslint": "^7.27.0",
-        "eslint-config-airbnb": "^18.2.1",
-        "eslint-config-airbnb-typescript": "^12.3.1",
-        "eslint-plugin-emotion": "^11.0.0",
         "eslint-plugin-import": "^2.23.3",
         "eslint-plugin-jsx-a11y": "^6.4.1",
         "eslint-plugin-react": "^7.23.2",
         "eslint-plugin-react-hooks": "^4.2.0",
         "parcel": "^1.12.4",
         "parcel-bundler": "^1.12.4",
+        "prettier": "^2.3.0",
         "typescript": "^4.3.2"
     }
 }

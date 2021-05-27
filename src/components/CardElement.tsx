@@ -141,7 +141,7 @@ const CardElement = (props: CardProps): JSX.Element => {
     const handleMouseOver = (
         event:
             | React.MouseEvent<HTMLDivElement, MouseEvent>
-            | React.FocusEvent<HTMLDivElement>
+            | React.FocusEvent<HTMLDivElement>,
     ): void => {
         if (event && event.target === ref.current) {
             setIsHover(true);
@@ -151,7 +151,7 @@ const CardElement = (props: CardProps): JSX.Element => {
     const handleMouseLeave = (
         event:
             | React.MouseEvent<HTMLDivElement, MouseEvent>
-            | React.FocusEvent<HTMLDivElement>
+            | React.FocusEvent<HTMLDivElement>,
     ): void => {
         if (event && event.target === ref.current) {
             setIsHover(false);

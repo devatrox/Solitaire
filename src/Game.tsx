@@ -63,7 +63,7 @@ const Game = (props: GameProps): JSX.Element => {
 
     const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(
         reducer,
-        initialState
+        initialState,
     );
 
     const [message, setMessage] = useState("");
@@ -169,7 +169,7 @@ const Game = (props: GameProps): JSX.Element => {
 
     const handleStockCardClick = (
         event: React.SyntheticEvent,
-        card: Card
+        card: Card,
     ): void => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
@@ -184,13 +184,13 @@ const Game = (props: GameProps): JSX.Element => {
     const handleCardDoubleClick = (
         event: React.SyntheticEvent,
         card: Card,
-        source: [PileName, number]
+        source: [PileName, number],
     ): void => {
         const [sourceName, sourceIndex] = source;
         const targetIndex = getFoundationTargetIndex(card);
         const { status, statusText } = isLowerRank(
             [card],
-            foundation[targetIndex]
+            foundation[targetIndex],
         );
 
         if (status) {
@@ -209,7 +209,7 @@ const Game = (props: GameProps): JSX.Element => {
 
     const handleDrop = (
         event: React.DragEvent<HTMLDivElement>,
-        target: [PileName, number]
+        target: [PileName, number],
     ): void => {
         event.preventDefault();
         const data = event.dataTransfer.getData("text/plain");
@@ -220,7 +220,7 @@ const Game = (props: GameProps): JSX.Element => {
             const [sourceName, sourceIndex] = json.source;
 
             const cards: Card[] = json.cards.map((cardJson) =>
-                Card.fromJSON(cardJson)
+                Card.fromJSON(cardJson),
             );
             const mappedCards: MappedCard[] = cards.map((card) => [
                 card,
@@ -235,7 +235,7 @@ const Game = (props: GameProps): JSX.Element => {
                 if (validationResult.status) {
                     validationResult = isDifferentColor(
                         cards,
-                        tableau[targetIndex]
+                        tableau[targetIndex],
                     );
                 }
             }

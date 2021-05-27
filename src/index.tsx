@@ -28,5 +28,5 @@ const App = (props: GameProps): JSX.Element => {
 
 ReactDOM.render(
     <App initialState={createInitialState()} />,
-    document.getElementById("app")
+    document.getElementById("app"),
 );

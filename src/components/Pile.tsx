@@ -92,7 +92,7 @@ const Pile = (props: PileProps): JSX.Element => {
 
                 return <CardElement {...cardProps} />;
             },
-            null
+            null,
         );
     };
 
