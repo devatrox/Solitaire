@@ -1,5 +1,10 @@
 {
     "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
     "plugins": ["@emotion", "@typescript-eslint"],
     "env": {
         "browser": true
@@ -17,11 +22,11 @@
         "@emotion/no-vanilla": "error",
         "@emotion/import-from-emotion": "error",
         "@emotion/styled-import": "error",
-        "@emotion/syntax-preference": [2, "string"]
+        "@emotion/syntax-preference": [2, "string"],
+        "react/prop-types": "off"
     },
     "settings": {
         "react": {
-            "fragment": "Fragment",
             "version": "detect"
         }
     }
