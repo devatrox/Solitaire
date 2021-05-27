@@ -1,11 +1,11 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
-import { jsx, css } from '@emotion/core';
-import _noop from 'lodash/noop';
-import _reverse from 'lodash/reverse';
-import CardElement from './CardElement';
-import { PileProps, CardProps } from '../definitions';
+import React, { useState } from "react";
+import { jsx, css } from "@emotion/react";
+import _noop from "lodash/noop";
+import _reverse from "lodash/reverse";
+import CardElement from "./CardElement";
+import { PileProps, CardProps } from "../definitions";
 
 const Pile = (props: PileProps): JSX.Element => {
     const {
@@ -16,7 +16,7 @@ const Pile = (props: PileProps): JSX.Element => {
         onDrop = _noop,
         onCardClick,
         onCardDoubleClick,
-        onClick = _noop
+        onClick = _noop,
     } = props;
 
     const [isHover, setIsHover] = useState(false);
@@ -53,7 +53,7 @@ const Pile = (props: PileProps): JSX.Element => {
     };
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
-        if ([...event.dataTransfer.types].includes('text/plain')) {
+        if ([...event.dataTransfer.types].includes("text/plain")) {
             // This is necessary so the element works as a drop target
             event.preventDefault();
             event.stopPropagation();
@@ -70,40 +70,44 @@ const Pile = (props: PileProps): JSX.Element => {
     const renderStackedDownCards = (): JSX.Element | null => {
         const reversedCards = _reverse([...cards]);
 
-        return reversedCards.reduce((lastCard: JSX.Element | null, card, i, cds): JSX.Element => {
-            const cardProps: CardProps = {
-                card: card,
-                childCards: cds.slice(0, i),
-                source: [name, index],
-                isBottom: (reversedCards.length - 1) === i,
-                isTop: false,
-                isStackDown: true,
-                key: card.id,
-                onClick: onCardClick,
-                onDoubleClick: onCardDoubleClick
-            };
+        return reversedCards.reduce(
+            (lastCard: JSX.Element | null, card, i, cds): JSX.Element => {
+                const cardProps: CardProps = {
+                    card: card,
+                    childCards: cds.slice(0, i),
+                    source: [name, index],
+                    isBottom: reversedCards.length - 1 === i,
+                    isTop: false,
+                    isStackDown: true,
+                    key: card.id,
+                    onClick: onCardClick,
+                    onDoubleClick: onCardDoubleClick,
+                };
 
-            if (lastCard) {
-                cardProps.children = lastCard;
-            } else {
-                cardProps.isTop = true;
-            }
+                if (lastCard) {
+                    cardProps.children = lastCard;
+                } else {
+                    cardProps.isTop = true;
+                }
 
-            return <CardElement {...cardProps} />;
-        }, null);
+                return <CardElement {...cardProps} />;
+            },
+            null
+        );
     };
 
-    const renderStackedUpCards = (): JSX.Element[] => cards.map((card, i) => (
-        <CardElement
-            card={card}
-            source={[name, index]}
-            isBottom={i === 0}
-            isTop={(cards.length - 1) === i}
-            key={card.id}
-            onClick={onCardClick}
-            onDoubleClick={onCardDoubleClick}
-        />
-    ));
+    const renderStackedUpCards = (): JSX.Element[] =>
+        cards.map((card, i) => (
+            <CardElement
+                card={card}
+                source={[name, index]}
+                isBottom={i === 0}
+                isTop={cards.length - 1 === i}
+                key={card.id}
+                onClick={onCardClick}
+                onDoubleClick={onCardDoubleClick}
+            />
+        ));
 
     return (
         <div

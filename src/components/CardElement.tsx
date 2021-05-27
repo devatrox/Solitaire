@@ -1,10 +1,10 @@
 /** @jsx jsx */
 
-import React, { useState, createRef } from 'react';
-import { jsx, css } from '@emotion/core';
-import _noop from 'lodash/noop';
-import _reverse from 'lodash/reverse';
-import { CardProps, CardTransferObject, PileName } from '../definitions';
+import React, { useState, createRef } from "react";
+import { jsx, css } from "@emotion/react";
+import _noop from "lodash/noop";
+import _reverse from "lodash/reverse";
+import { CardProps, CardTransferObject, PileName } from "../definitions";
 
 const CardElement = (props: CardProps): JSX.Element => {
     const {
@@ -17,7 +17,7 @@ const CardElement = (props: CardProps): JSX.Element => {
         isStackDown = false,
         children,
         onClick = _noop,
-        onDoubleClick = _noop
+        onDoubleClick = _noop,
     } = props;
 
     const ref: React.RefObject<HTMLDivElement> = createRef();
@@ -28,12 +28,12 @@ const CardElement = (props: CardProps): JSX.Element => {
 
     const [sourceName] = source;
 
-    let cursorStyle = 'pointer';
+    let cursorStyle = "pointer";
 
     if (!card.isRevealed && sourceName !== PileName.STOCK) {
-        cursorStyle = 'not-allowed';
+        cursorStyle = "not-allowed";
     } else if (card.isRevealed) {
-        cursorStyle = 'grab';
+        cursorStyle = "grab";
     }
 
     const styles = css`
@@ -53,7 +53,9 @@ const CardElement = (props: CardProps): JSX.Element => {
             --card-border-color: transparent;
         }
 
-        ${isHover && card.isRevealed && `
+        ${isHover &&
+        card.isRevealed &&
+        `
             --card-border-color: var(--color-orange);
             transform: scale(1.04);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -62,10 +64,13 @@ const CardElement = (props: CardProps): JSX.Element => {
                 --card-border-color: var(--color-orange);
             }
         `}
-        ${isDragging && `
+        ${isDragging &&
+        `
             opacity: 0.5;
         `}
-        ${!isBottom && isStackDown && `
+        ${!isBottom &&
+        isStackDown &&
+        `
             top: var(--card-stack-margin);
             z-index: 3;
 
@@ -76,7 +81,7 @@ const CardElement = (props: CardProps): JSX.Element => {
         `}
 
         &:before {
-            content: '';
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
@@ -109,10 +114,12 @@ const CardElement = (props: CardProps): JSX.Element => {
     const svgFrontStyles = css`
         label: CardSvgFront;
         ${svgStyles}
-        ${card.isRevealed && `
+        ${card.isRevealed &&
+        `
             transform: perspective(800px) rotateX(0deg);
         `}
-        ${!card.isRevealed && `
+        ${!card.isRevealed &&
+        `
             transform: perspective(800px) rotateX(180deg);
         `}
     `;
@@ -121,21 +128,31 @@ const CardElement = (props: CardProps): JSX.Element => {
         label: CardSvgBack;
         ${svgStyles}
         fill: var(--color-blue);
-        ${card.isRevealed && `
+        ${card.isRevealed &&
+        `
             transform: perspective(800px) rotateX(180deg);
         `}
-        ${!card.isRevealed && `
+        ${!card.isRevealed &&
+        `
             transform: perspective(800px) rotateX(0deg);
         `}
     `;
 
-    const handleMouseOver = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.FocusEvent<HTMLDivElement>): void => {
+    const handleMouseOver = (
+        event:
+            | React.MouseEvent<HTMLDivElement, MouseEvent>
+            | React.FocusEvent<HTMLDivElement>
+    ): void => {
         if (event && event.target === ref.current) {
             setIsHover(true);
         }
     };
 
-    const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.FocusEvent<HTMLDivElement>): void => {
+    const handleMouseLeave = (
+        event:
+            | React.MouseEvent<HTMLDivElement, MouseEvent>
+            | React.FocusEvent<HTMLDivElement>
+    ): void => {
         if (event && event.target === ref.current) {
             setIsHover(false);
         }
@@ -158,10 +175,10 @@ const CardElement = (props: CardProps): JSX.Element => {
             const grabbedCards = _reverse([...childCards, card]);
             const payload: CardTransferObject = {
                 source: source,
-                cards: grabbedCards
+                cards: grabbedCards,
             };
-            event.dataTransfer.setData('text/plain', JSON.stringify(payload));
-            event.dataTransfer.effectAllowed = 'move'; // eslint-disable-line no-param-reassign
+            event.dataTransfer.setData("text/plain", JSON.stringify(payload));
+            event.dataTransfer.effectAllowed = "move"; // eslint-disable-line no-param-reassign
             setIsDragging(true);
         }
     };

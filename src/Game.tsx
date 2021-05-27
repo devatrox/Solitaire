@@ -1,27 +1,37 @@
 /** @jsx jsx */
 
 import React, {
-    useReducer, useEffect, useMemo, useState, Fragment
-} from 'react';
-import _last from 'lodash/last';
-import _reverse from 'lodash/reverse';
-import { jsx, css } from '@emotion/core';
-import PileGroup from './components/PileGroup';
+    useReducer,
+    useEffect,
+    useMemo,
+    useState,
+    Fragment,
+} from "react";
+import _last from "lodash/last";
+import _reverse from "lodash/reverse";
+import { jsx, css } from "@emotion/react";
+import PileGroup from "./components/PileGroup";
 import {
-    PileName, GameProps, ActionTypes, CardTransferObject, MappedCard
-} from './definitions';
-import { cardCount } from './setup';
-import reducer, { getFoundationTargetIndex } from './reducer';
-import Card from './Card';
-import Menu from './components/Menu';
+    PileName,
+    GameProps,
+    ActionTypes,
+    CardTransferObject,
+    MappedCard,
+} from "./definitions";
+import { cardCount } from "./setup";
+import reducer, { getFoundationTargetIndex } from "./reducer";
+import Card from "./Card";
+import Menu from "./components/Menu";
 import {
-    isLowerRank, isHigherRank, isDifferentColor, isAllRevealed, hasNoStock
-} from './rules';
+    isLowerRank,
+    isHigherRank,
+    isDifferentColor,
+    isAllRevealed,
+    hasNoStock,
+} from "./rules";
 
 const Game = (props: GameProps): JSX.Element => {
-    const {
-        initialState
-    } = props;
+    const { initialState } = props;
 
     const styles = css`
         height: 100vh;
@@ -51,16 +61,18 @@ const Game = (props: GameProps): JSX.Element => {
         }
     `;
 
-    const [{
-        stock, waste, foundation, tableau
-    }, dispatch] = useReducer(reducer, initialState);
+    const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(
+        reducer,
+        initialState
+    );
 
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState("");
 
     const isDone = useMemo((): boolean => {
         const allCards = [...stock, ...waste, ...foundation].flat();
         const isRevealed = allCards.every((card) => card.isRevealed);
-        const isStockAndWasteEmpty = stock[0].length === 0 && waste[0].length === 0;
+        const isStockAndWasteEmpty =
+            stock[0].length === 0 && waste[0].length === 0;
         return isStockAndWasteEmpty && isRevealed;
     }, [foundation, stock, waste]);
 
@@ -71,13 +83,13 @@ const Game = (props: GameProps): JSX.Element => {
 
     useEffect(() => {
         if (message.length > 0) {
-            window.setTimeout(() => setMessage(''), 4000);
+            window.setTimeout(() => setMessage(""), 4000);
         }
     }, [message]);
 
     useEffect(() => {
         if (isFinished) {
-            setMessage('Congratulations!');
+            setMessage("Congratulations!");
         }
     }, [isFinished]);
 
@@ -90,8 +102,8 @@ const Game = (props: GameProps): JSX.Element => {
                     type: ActionTypes.FLIP_CARD,
                     payload: {
                         cards: [[topCard, i, i]],
-                        targetPile: PileName.TABLEAU
-                    }
+                        targetPile: PileName.TABLEAU,
+                    },
                 });
             }
         });
@@ -107,8 +119,8 @@ const Game = (props: GameProps): JSX.Element => {
                 payload: {
                     cards: [[topCard, 0, 0]],
                     sourcePile: PileName.STOCK,
-                    targetPile: PileName.WASTE
-                }
+                    targetPile: PileName.WASTE,
+                },
             });
         } else {
             for (const card of pile) {
@@ -117,8 +129,8 @@ const Game = (props: GameProps): JSX.Element => {
                         type: ActionTypes.FLIP_CARD,
                         payload: {
                             cards: [[card, 0, 0]],
-                            targetPile: PileName.WASTE
-                        }
+                            targetPile: PileName.WASTE,
+                        },
                     });
                 }
             }
@@ -134,8 +146,8 @@ const Game = (props: GameProps): JSX.Element => {
                     type: ActionTypes.FLIP_CARD,
                     payload: {
                         cards: [[card, 0, 0]],
-                        targetPile: PileName.STOCK
-                    }
+                        targetPile: PileName.STOCK,
+                    },
                 });
             }
         }
@@ -150,26 +162,36 @@ const Game = (props: GameProps): JSX.Element => {
             payload: {
                 cards: reversedWasteCards,
                 sourcePile: PileName.WASTE,
-                targetPile: PileName.STOCK
-            }
+                targetPile: PileName.STOCK,
+            },
         });
     };
 
-    const handleStockCardClick = (event: React.SyntheticEvent, card: Card): void => {
+    const handleStockCardClick = (
+        event: React.SyntheticEvent,
+        card: Card
+    ): void => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
                 cards: [[card, 0, 0]],
                 sourcePile: PileName.STOCK,
-                targetPile: PileName.WASTE
-            }
+                targetPile: PileName.WASTE,
+            },
         });
     };
 
-    const handleCardDoubleClick = (event: React.SyntheticEvent, card: Card, source: [PileName, number]): void => {
+    const handleCardDoubleClick = (
+        event: React.SyntheticEvent,
+        card: Card,
+        source: [PileName, number]
+    ): void => {
         const [sourceName, sourceIndex] = source;
         const targetIndex = getFoundationTargetIndex(card);
-        const { status, statusText } = isLowerRank([card], foundation[targetIndex]);
+        const { status, statusText } = isLowerRank(
+            [card],
+            foundation[targetIndex]
+        );
 
         if (status) {
             dispatch({
@@ -177,32 +199,44 @@ const Game = (props: GameProps): JSX.Element => {
                 payload: {
                     cards: [[card, sourceIndex, targetIndex]],
                     sourcePile: sourceName,
-                    targetPile: PileName.FOUNDATION
-                }
+                    targetPile: PileName.FOUNDATION,
+                },
             });
         }
 
         setMessage(statusText);
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: [PileName, number]): void => {
+    const handleDrop = (
+        event: React.DragEvent<HTMLDivElement>,
+        target: [PileName, number]
+    ): void => {
         event.preventDefault();
-        const data = event.dataTransfer.getData('text/plain');
+        const data = event.dataTransfer.getData("text/plain");
         const [targetName, targetIndex] = target;
 
         try {
             const json: CardTransferObject = JSON.parse(data);
             const [sourceName, sourceIndex] = json.source;
 
-            const cards: Card[] = json.cards.map((cardJson) => Card.fromJSON(cardJson));
-            const mappedCards: MappedCard[] = cards.map((card) => [card, sourceIndex, targetIndex]);
-            let validationResult = { status: true, statusText: '' };
+            const cards: Card[] = json.cards.map((cardJson) =>
+                Card.fromJSON(cardJson)
+            );
+            const mappedCards: MappedCard[] = cards.map((card) => [
+                card,
+                sourceIndex,
+                targetIndex,
+            ]);
+            let validationResult = { status: true, statusText: "" };
 
             if (targetName === PileName.TABLEAU) {
                 validationResult = isHigherRank(cards, tableau[targetIndex]);
 
                 if (validationResult.status) {
-                    validationResult = isDifferentColor(cards, tableau[targetIndex]);
+                    validationResult = isDifferentColor(
+                        cards,
+                        tableau[targetIndex]
+                    );
                 }
             }
 
@@ -218,8 +252,8 @@ const Game = (props: GameProps): JSX.Element => {
                     payload: {
                         cards: mappedCards,
                         sourcePile: sourceName,
-                        targetPile: targetName
-                    }
+                        targetPile: targetName,
+                    },
                 });
             }
 
@@ -231,7 +265,7 @@ const Game = (props: GameProps): JSX.Element => {
 
     const handleReset = (event: React.SyntheticEvent): void => {
         dispatch({
-            type: ActionTypes.RESET
+            type: ActionTypes.RESET,
         });
     };
 
@@ -246,7 +280,7 @@ const Game = (props: GameProps): JSX.Element => {
 
         if (status) {
             dispatch({
-                type: ActionTypes.FINISH
+                type: ActionTypes.FINISH,
             });
         }
 

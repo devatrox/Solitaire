@@ -1,10 +1,10 @@
 /** @jsx jsx */
 
-import { memo } from 'react';
-import { jsx, css } from '@emotion/core';
-import _noop from 'lodash/noop';
-import { btnStyles as globalBtnStyles } from '../styles';
-import { MenuProps } from '../definitions';
+import { memo } from "react";
+import { jsx, css } from "@emotion/react";
+import _noop from "lodash/noop";
+import { btnStyles as globalBtnStyles } from "../styles";
+import { MenuProps } from "../definitions";
 
 const Menu = (props: MenuProps): JSX.Element => {
     const {
@@ -12,10 +12,10 @@ const Menu = (props: MenuProps): JSX.Element => {
         isDone,
         isFinished,
         onFinish = _noop,
-        onReset = _noop
+        onReset = _noop,
     } = props;
 
-    const textColor = '255, 255, 255';
+    const textColor = "255, 255, 255";
 
     const styles = css`
         position: fixed;
@@ -65,24 +65,41 @@ const Menu = (props: MenuProps): JSX.Element => {
     const textStyles = css`
         font-size: 1rem;
         line-height: 1.5;
-        padding: .375rem 0;
+        padding: 0.375rem 0;
         border: 2px solid transparent;
     `;
 
     return (
         <div css={styles}>
-            <div css={css`${menuElementStyles} grid-area: menuLeft;`}>
+            <div
+                css={css`
+                    ${menuElementStyles} grid-area: menuLeft;
+                `}
+            >
                 <button css={btnStyles} type="button" onClick={onReset}>
                     New Game
                 </button>
-                <button css={btnStyles} type="button" disabled={!isDone && !isFinished} onClick={onFinish}>
+                <button
+                    css={btnStyles}
+                    type="button"
+                    disabled={!isDone && !isFinished}
+                    onClick={onFinish}
+                >
                     Finish
                 </button>
             </div>
-            <div css={css`${textStyles} grid-area: menuCenter;`}>
+            <div
+                css={css`
+                    ${textStyles} grid-area: menuCenter;
+                `}
+            >
                 {message}
             </div>
-            <div css={css`${menuElementStyles} grid-area: menuRight;`}>
+            <div
+                css={css`
+                    ${menuElementStyles} grid-area: menuRight;
+                `}
+            >
                 <a css={btnStyles} href="https://github.com/devatrox/Solitaire">
                     GitHub
                 </a>

@@ -1,5 +1,5 @@
-import { css } from '@emotion/core';
-import emotionNormalize from 'emotion-normalize';
+import { css } from "@emotion/react";
+import emotionNormalize from "emotion-normalize";
 
 const global = css`
     ${emotionNormalize}
@@ -43,7 +43,8 @@ const global = css`
     }
 
     body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
         background-color: var(--color-green);
         background-image: radial-gradient(transparent, rgba(0, 0, 0, 0.4));
         width: 100%;
@@ -66,10 +67,10 @@ const btn = css`
     vertical-align: middle;
     user-select: none;
     background-color: transparent;
-    padding: .375rem .75rem;
+    padding: 0.375rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     text-decoration: none;
     text-transform: none;
 
@@ -78,7 +79,4 @@ const btn = css`
     }
 `;
 
-export {
-    global as globalStyles,
-    btn as btnStyles
-};
+export { global as globalStyles, btn as btnStyles };
