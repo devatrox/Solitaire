@@ -4,7 +4,7 @@
     "scripts": {
         "start": "parcel ./src/index.html",
         "build": "parcel build ./src/index.html",
-        "clean": "rm dist/bundle.js",
+        "clean": "rm -rf dist/",
         "lint": "eslint --ext .jsx,.js,.tsx,.ts src",
         "lint-fix": "npm run lint -- --fix"
     },
