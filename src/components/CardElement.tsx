@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useMemo } from "react";
 import { jsx, css } from "@emotion/react";
-import _noop from "lodash/noop";
 import _reverse from "lodash/reverse";
 import { CardProps, CardTransferObject, PileName } from "../definitions";
 
@@ -15,10 +14,10 @@ const CardElement: React.FC<CardProps> = ({
     isBottom = false,
     isStackDown = false,
     children,
-    onClick = _noop,
-    onDoubleClick = _noop,
+    onClick,
+    onDoubleClick,
 }) => {
-    const ref: React.RefObject<HTMLDivElement> = createRef();
+    const ref = createRef<HTMLDivElement>();
 
     const [isDragging, setIsDragging] = useState(false);
 
@@ -26,34 +25,36 @@ const CardElement: React.FC<CardProps> = ({
 
     const [sourceName] = source;
 
-    let cursorStyle = "pointer";
-
-    if (!card.isRevealed && sourceName !== PileName.STOCK) {
-        cursorStyle = "not-allowed";
-    } else if (card.isRevealed) {
-        cursorStyle = "grab";
-    }
-
-    const styles = css`
-        label: Card;
-        cursor: ${cursorStyle};
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        border-radius: var(--card-border-radius);
-        transform: scale(1);
-        transition: transform 50ms ease-in-out;
-
-        @media (max-width: 768px) {
-            --card-border-color: transparent;
+    const cursorStyle = useMemo(() => {
+        if (!card.isRevealed && sourceName !== PileName.STOCK) {
+            return "not-allowed";
+        } else if (card.isRevealed) {
+            return "grab";
         }
+        return "pointer";
+    }, [card.isRevealed, sourceName]);
 
-        ${isHover &&
-        card.isRevealed &&
-        `
+    const styles = useMemo(
+        () => css`
+            label: Card;
+            cursor: ${cursorStyle};
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: var(--card-border-radius);
+            transform: scale(1);
+            transition: transform 50ms ease-in-out;
+
+            @media (max-width: 768px) {
+                --card-border-color: transparent;
+            }
+
+            ${isHover &&
+            card.isRevealed &&
+            `
             --card-border-color: var(--color-orange);
             transform: scale(1.04);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -62,13 +63,13 @@ const CardElement: React.FC<CardProps> = ({
                 --card-border-color: var(--color-orange);
             }
         `}
-        ${isDragging &&
-        `
+            ${isDragging &&
+            `
             opacity: 0.5;
         `}
         ${!isBottom &&
-        isStackDown &&
-        `
+            isStackDown &&
+            `
             top: var(--card-stack-margin);
             z-index: 3;
 
@@ -79,69 +80,87 @@ const CardElement: React.FC<CardProps> = ({
         `}
 
         &:before {
-            content: "";
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 100%;
+                z-index: 2;
+                box-shadow: inset 0 0 0 3px var(--card-border-color);
+                border-radius: var(--card-border-radius);
+
+                @media (max-width: 768px) {
+                    box-shadow: inset 0 0 0 2px var(--card-border-color);
+                }
+            }
+        `,
+        [
+            card.isRevealed,
+            cursorStyle,
+            isBottom,
+            isDragging,
+            isHover,
+            isStackDown,
+        ],
+    );
+
+    const svgStyles = useMemo(
+        () => css`
+            z-index: 1;
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
+            width: 100%;
             height: 100%;
-            z-index: 2;
-            box-shadow: inset 0 0 0 3px var(--card-border-color);
+            overflow: hidden;
+            pointer-events: none;
             border-radius: var(--card-border-radius);
+            backface-visibility: hidden;
+            transition: transform 300ms ease-in-out;
+        `,
+        [],
+    );
 
-            @media (max-width: 768px) {
-                box-shadow: inset 0 0 0 2px var(--card-border-color);
-            }
-        }
-    `;
-
-    const svgStyles = css`
-        z-index: 1;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        pointer-events: none;
-        border-radius: var(--card-border-radius);
-        backface-visibility: hidden;
-        transition: transform 300ms ease-in-out;
-    `;
-
-    const svgFrontStyles = css`
-        label: CardSvgFront;
-        ${svgStyles}
-        ${card.isRevealed &&
-        `
+    const svgFrontStyles = useMemo(
+        () => css`
+            label: CardSvgFront;
+            ${svgStyles}
+            ${card.isRevealed &&
+            `
             transform: perspective(800px) rotateX(0deg);
         `}
         ${!card.isRevealed &&
-        `
+            `
             transform: perspective(800px) rotateX(180deg);
         `}
-    `;
+        `,
+        [card.isRevealed, svgStyles],
+    );
 
-    const svgBackStyles = css`
-        label: CardSvgBack;
-        ${svgStyles}
-        fill: var(--color-blue);
-        ${card.isRevealed &&
-        `
+    const svgBackStyles = useMemo(
+        () => css`
+            label: CardSvgBack;
+            ${svgStyles}
+            fill: var(--color-blue);
+            ${card.isRevealed &&
+            `
             transform: perspective(800px) rotateX(180deg);
         `}
-        ${!card.isRevealed &&
-        `
+            ${!card.isRevealed &&
+            `
             transform: perspective(800px) rotateX(0deg);
         `}
-    `;
+        `,
+        [card.isRevealed, svgStyles],
+    );
 
     const handleMouseOver = (
         event:
             | React.MouseEvent<HTMLDivElement, MouseEvent>
             | React.FocusEvent<HTMLDivElement>,
-    ): void => {
-        if (event && event.target === ref.current) {
+    ) => {
+        if (event?.target === ref.current) {
             setIsHover(true);
         }
     };
@@ -150,26 +169,26 @@ const CardElement: React.FC<CardProps> = ({
         event:
             | React.MouseEvent<HTMLDivElement, MouseEvent>
             | React.FocusEvent<HTMLDivElement>,
-    ): void => {
-        if (event && event.target === ref.current) {
+    ) => {
+        if (event?.target === ref.current) {
             setIsHover(false);
         }
     };
 
-    const handleClick = (event: React.SyntheticEvent): void => {
+    const handleClick = (event: React.SyntheticEvent) => {
         if (isTop) {
-            onClick(event, card, source);
+            onClick?.(event, card, source);
         }
     };
 
-    const handleDoubleClick = (event: React.SyntheticEvent): void => {
+    const handleDoubleClick = (event: React.SyntheticEvent) => {
         if (isTop) {
-            onDoubleClick(event, card, source);
+            onDoubleClick?.(event, card, source);
         }
     };
 
-    const handleDragStart = (event: React.DragEvent<HTMLDivElement>): void => {
-        if (event && event.target === ref.current && event.dataTransfer) {
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        if (event?.target === ref.current && event?.dataTransfer) {
             const grabbedCards = _reverse([...childCards, card]);
             const payload: CardTransferObject = {
                 source: source,
@@ -181,7 +200,7 @@ const CardElement: React.FC<CardProps> = ({
         }
     };
 
-    const handleDragEnd = (event: React.DragEvent<HTMLDivElement>): void => {
+    const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
         setIsDragging(false);
     };
 

@@ -17,6 +17,10 @@ import {
     ActionTypes,
     CardTransferObject,
     MappedCard,
+    CardClickEvent,
+    DropEvent,
+    MenuEvent,
+    PileClickEvent,
 } from "./definitions";
 import { cardCount } from "./setup";
 import reducer, { getFoundationTargetIndex } from "./reducer";
@@ -31,33 +35,36 @@ import {
 } from "./rules";
 
 const Game: React.FC<GameProps> = ({ initialState }) => {
-    const styles = css`
-        height: 100vh;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: var(--grid-gap) var(--grid-gap) 80px;
-        display: grid;
-        grid-gap: var(--grid-gap);
-        grid-template-columns: repeat(7, 1fr);
-        grid-template-rows: auto 1fr;
-        grid-template-areas:
-            "stock waste . foundation foundation foundation foundation"
-            "tableau tableau tableau tableau tableau tableau tableau";
-
-        @media (max-width: 768px) {
-            grid-template-columns: auto 1fr;
-            grid-template-rows: repeat(7, 1fr);
+    const styles = useMemo(
+        () => css`
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--grid-gap) var(--grid-gap) 80px;
+            display: grid;
+            grid-gap: var(--grid-gap);
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: auto 1fr;
             grid-template-areas:
-                "stock tableau"
-                "waste tableau"
-                ". tableau"
-                "foundation tableau"
-                "foundation tableau"
-                "foundation tableau"
-                "foundation tableau";
-            padding-bottom: 100px;
-        }
-    `;
+                "stock waste . foundation foundation foundation foundation"
+                "tableau tableau tableau tableau tableau tableau tableau";
+
+            @media (max-width: 768px) {
+                grid-template-columns: auto 1fr;
+                grid-template-rows: repeat(7, 1fr);
+                grid-template-areas:
+                    "stock tableau"
+                    "waste tableau"
+                    ". tableau"
+                    "foundation tableau"
+                    "foundation tableau"
+                    "foundation tableau"
+                    "foundation tableau";
+                padding-bottom: 100px;
+            }
+        `,
+        [],
+    );
 
     const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(
         reducer,
@@ -66,7 +73,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
 
     const [message, setMessage] = useState("");
 
-    const isDone = useMemo((): boolean => {
+    const isDone = useMemo<boolean>(() => {
         const allCards = [...stock, ...waste, ...foundation].flat();
         const isRevealed = allCards.every((card) => card.isRevealed);
         const isStockAndWasteEmpty =
@@ -74,7 +81,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         return isStockAndWasteEmpty && isRevealed;
     }, [foundation, stock, waste]);
 
-    const isFinished = useMemo((): boolean => {
+    const isFinished = useMemo<boolean>(() => {
         const allTableauCards = foundation.flat();
         return allTableauCards.length === cardCount;
     }, [foundation]);
@@ -151,7 +158,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         }
     }, [stock]);
 
-    const handleStockClick = (event: React.SyntheticEvent): void => {
+    const handleStockClick: PileClickEvent = () => {
         const mappedCards = waste[0].map((card): MappedCard => [card, 0, 0]);
         const reversedWasteCards = _reverse(mappedCards);
 
@@ -165,10 +172,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         });
     };
 
-    const handleStockCardClick = (
-        event: React.SyntheticEvent,
-        card: Card,
-    ): void => {
+    const handleStockCardClick: CardClickEvent = (event, card) => {
         dispatch({
             type: ActionTypes.MOVE_CARDS,
             payload: {
@@ -179,11 +183,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         });
     };
 
-    const handleCardDoubleClick = (
-        event: React.SyntheticEvent,
-        card: Card,
-        source: [PileName, number],
-    ): void => {
+    const handleCardDoubleClick: CardClickEvent = (event, card, source) => {
         const [sourceName, sourceIndex] = source;
         const targetIndex = getFoundationTargetIndex(card);
         const { status, statusText } = isLowerRank(
@@ -205,10 +205,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         setMessage(statusText);
     };
 
-    const handleDrop = (
-        event: React.DragEvent<HTMLDivElement>,
-        target: [PileName, number],
-    ): void => {
+    const handleDrop: DropEvent = (event, target) => {
         event.preventDefault();
         const data = event.dataTransfer.getData("text/plain");
         const [targetName, targetIndex] = target;
@@ -261,13 +258,13 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         }
     };
 
-    const handleReset = (event: React.SyntheticEvent): void => {
+    const handleReset: MenuEvent = () => {
         dispatch({
             type: ActionTypes.RESET,
         });
     };
 
-    const handleFinish = (event: React.SyntheticEvent): void => {
+    const handleFinish: MenuEvent = () => {
         let validationResult = hasNoStock(stock[0], waste[0]);
 
         if (validationResult.status) {

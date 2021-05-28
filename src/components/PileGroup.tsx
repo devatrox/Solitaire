@@ -3,6 +3,7 @@
 import { jsx, css } from "@emotion/react";
 import Pile from "./Pile";
 import { GroupProps, PileName } from "../definitions";
+import { useMemo } from "react";
 
 const PileGroup: React.FC<GroupProps> = ({
     piles = [],
@@ -13,11 +14,12 @@ const PileGroup: React.FC<GroupProps> = ({
     onCardDoubleClick,
     onPileClick,
 }) => {
-    const styles = css`
-        grid-area: ${name};
-        position: relative;
-        ${name === PileName.FOUNDATION &&
-        `
+    const styles = useMemo(
+        () => css`
+            grid-area: ${name};
+            position: relative;
+            ${name === PileName.FOUNDATION &&
+            `
             display: grid;
             grid-gap: var(--grid-gap);
             grid-template-columns: repeat(4, 1fr);
@@ -27,8 +29,8 @@ const PileGroup: React.FC<GroupProps> = ({
                 grid-template-rows: repeat(4, 1fr);
             }
         `}
-        ${name === PileName.TABLEAU &&
-        `
+            ${name === PileName.TABLEAU &&
+            `
             display: grid;
             grid-gap: var(--grid-gap);
             grid-template-columns: repeat(7, 1fr);
@@ -38,7 +40,9 @@ const PileGroup: React.FC<GroupProps> = ({
                 grid-template-rows: repeat(7, 1fr);
             }
         `}
-    `;
+        `,
+        [name],
+    );
 
     return (
         <div css={styles}>

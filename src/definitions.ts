@@ -1,13 +1,13 @@
 import Card, { CardInterface } from "./Card";
 
-enum Suit {
+export enum Suit {
     Spade = "spade",
     Heart = "heart",
     Diamond = "diamond",
     Club = "club",
 }
 
-enum Rank {
+export enum Rank {
     Ace = 1,
     Two = 2,
     Three = 3,
@@ -24,37 +24,55 @@ enum Rank {
     Joker = 14,
 }
 
-enum PileName {
+export enum PileName {
     STOCK = "stock",
     WASTE = "waste",
     FOUNDATION = "foundation",
     TABLEAU = "tableau",
 }
 
-enum Color {
+export enum Color {
     RED = "red",
     BLACK = "black",
 }
 
-enum ActionTypes {
+export enum ActionTypes {
     MOVE_CARDS = "move-cards",
     RESET = "reset",
     FLIP_CARD = "flip-card",
     FINISH = "finish",
 }
 
-type GameState = {
+export type CardClickEvent = (
+    event: React.SyntheticEvent,
+    card: Card,
+    source: [PileName, number],
+) => void;
+
+export type PileClickEvent = (
+    event: React.SyntheticEvent,
+    name: PileName,
+) => void;
+
+export type DropEvent = (
+    event: React.DragEvent<HTMLDivElement>,
+    target: [PileName, number],
+) => void;
+
+export type MenuEvent = (event: React.SyntheticEvent) => void;
+
+export interface GameState {
     stock: Card[][];
     waste: Card[][];
     foundation: Card[][];
     tableau: Card[][];
-};
+}
 
-type GameProps = {
+export interface GameProps {
     initialState: GameState;
-};
+}
 
-type CardProps = {
+export interface CardProps {
     card: Card;
     source: [PileName, number];
     isTop?: boolean;
@@ -62,119 +80,62 @@ type CardProps = {
     isStackDown?: boolean;
     childCards?: Card[];
     style?: React.CSSProperties;
-    children?: React.ReactNode;
     key?: string;
-    onClick?: (
-        event: React.SyntheticEvent,
-        card: Card,
-        source: [PileName, number],
-    ) => void;
-    onDoubleClick?: (
-        event: React.SyntheticEvent,
-        card: Card,
-        source: [PileName, number],
-    ) => void;
-    onDrop?: (
-        event: React.DragEvent<HTMLDivElement>,
-        target: [PileName, number],
-    ) => void;
-};
+    onClick?: CardClickEvent;
+    onDoubleClick?: CardClickEvent;
+    onDrop?: DropEvent;
+}
 
-type PileProps = {
+export interface GenericPileProps {
+    name: PileName;
+    stackDown?: boolean;
+    onCardClick?: CardClickEvent;
+    onCardDoubleClick?: CardClickEvent;
+    onDrop?: DropEvent;
+}
+
+export interface PileProps extends GenericPileProps {
     cards: Card[];
-    name: PileName;
-    stackDown?: boolean;
     index?: number;
-    onClick?: (event: React.SyntheticEvent, name: PileName) => void;
-    onCardClick?: (
-        event: React.SyntheticEvent,
-        card: Card,
-        source?: [PileName, number],
-    ) => void;
-    onCardDoubleClick?: (
-        event: React.SyntheticEvent,
-        card: Card,
-        source: [PileName, number],
-    ) => void;
-    onDrop?: (
-        event: React.DragEvent<HTMLDivElement>,
-        target: [PileName, number],
-    ) => void;
-};
+    onClick?: PileClickEvent;
+}
 
-type GroupProps = {
+export interface GroupProps extends GenericPileProps {
     piles: Card[][];
-    name: PileName;
-    stackDown?: boolean;
-    onPileClick?: (event: React.SyntheticEvent, name: PileName) => void;
-    onCardClick?: (
-        event: React.SyntheticEvent,
-        card: Card,
-        source?: [PileName, number],
-    ) => void;
-    onCardDoubleClick?: (
-        event: React.SyntheticEvent,
-        card: Card,
-        source: [PileName, number],
-    ) => void;
-    onDrop?: (
-        event: React.DragEvent<HTMLDivElement>,
-        target: [PileName, number],
-    ) => void;
-};
+    onPileClick?: PileClickEvent;
+}
 
-type MenuProps = {
+export interface MenuProps {
     message: string;
     isDone: boolean;
     isFinished: boolean;
-    onFinish?: (event: React.SyntheticEvent) => void;
-    onReset?: (event: React.SyntheticEvent) => void;
-};
+    onFinish?: MenuEvent;
+    onReset?: MenuEvent;
+}
 
-type ValidationResult = {
+export type ValidationResult = {
     status: boolean;
     statusText: string;
 };
 
-type CardTransferObject = {
+export type CardTransferObject = {
     cards: CardInterface[];
     source: [PileName, number];
 };
 
-type MappedCard = [Card, number, number];
+export type MappedCard = [Card, number, number];
 
-type ActionPayloadSourceName = PileName;
+export type ActionPayloadSourceName = PileName;
 
-type ActionPayloadTargetName = PileName;
+export type ActionPayloadTargetName = PileName;
 
-type ActionPayload = {
+export type ActionPayload = {
     cards: MappedCard[];
     sourcePile?: ActionPayloadSourceName;
     targetPile: ActionPayloadTargetName;
 };
 
-type Action = {
+export type Action = {
     type: ActionTypes;
     payload?: ActionPayload;
-};
-
-export {
-    GameState,
-    GameProps,
-    Suit,
-    Rank,
-    PileName,
-    Color,
-    PileProps,
-    GroupProps,
-    MenuProps,
-    CardProps,
-    ValidationResult,
-    CardTransferObject,
-    MappedCard,
-    ActionPayload,
-    ActionPayloadSourceName,
-    ActionPayloadTargetName,
-    ActionTypes,
-    Action,
 };

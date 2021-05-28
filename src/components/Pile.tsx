@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
-import React, { useState } from "react";
+import React, { PropsWithChildren, useMemo, useState } from "react";
 import { jsx, css } from "@emotion/react";
-import _noop from "lodash/noop";
 import _reverse from "lodash/reverse";
 import CardElement from "./CardElement";
 import { PileProps, CardProps } from "../definitions";
@@ -12,37 +11,40 @@ const Pile: React.FC<PileProps> = ({
     name,
     index = 0,
     stackDown = false,
-    onDrop = _noop,
+    onDrop,
     onCardClick,
     onCardDoubleClick,
-    onClick = _noop,
+    onClick,
 }) => {
     const [isHover, setIsHover] = useState(false);
 
-    const styles = css`
-        position: relative;
-        width: var(--card-width);
-        height: 0;
-        padding-bottom: var(--card-height);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: var(--card-border-radius);
-    `;
+    const styles = useMemo(
+        () => css`
+            position: relative;
+            width: var(--card-width);
+            height: 0;
+            padding-bottom: var(--card-height);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: var(--card-border-radius);
+        `,
+        [],
+    );
 
-    let enterTarget: EventTarget | null = null;
+    let enterTarget: EventTarget;
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>): void => {
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
 
-        onDrop(event, [name, index]);
+        onDrop?.(event, [name, index]);
     };
 
-    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>): void => {
+    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
         enterTarget = event.target;
         setIsHover(true);
     };
 
-    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>): void => {
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
         if (enterTarget === event.target) {
             event.stopPropagation();
             event.preventDefault();
@@ -50,7 +52,7 @@ const Pile: React.FC<PileProps> = ({
         }
     };
 
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         if ([...event.dataTransfer.types].includes("text/plain")) {
             // This is necessary so the element works as a drop target
             event.preventDefault();
@@ -58,19 +60,19 @@ const Pile: React.FC<PileProps> = ({
         }
     };
 
-    const handleClick = (event: React.SyntheticEvent): void => {
+    const handleClick = (event: React.SyntheticEvent) => {
         if (cards.length === 0) {
-            onClick(event, name);
+            onClick?.(event, name);
         }
     };
 
     // Put cards into each other
-    const renderStackedDownCards = (): JSX.Element | null => {
+    const renderStackedDownCards = useMemo(() => {
         const reversedCards = _reverse([...cards]);
 
-        return reversedCards.reduce(
-            (lastCard: JSX.Element | null, card, i, cds): JSX.Element => {
-                const cardProps: CardProps = {
+        return reversedCards.reduce<React.ReactNode>(
+            (lastCard, card, i, cds) => {
+                const cardProps: PropsWithChildren<CardProps> = {
                     card: card,
                     childCards: cds.slice(0, i),
                     source: [name, index],
@@ -92,20 +94,23 @@ const Pile: React.FC<PileProps> = ({
             },
             null,
         );
-    };
+    }, [cards, index, name, onCardClick, onCardDoubleClick]);
 
-    const renderStackedUpCards = (): JSX.Element[] =>
-        cards.map((card, i) => (
-            <CardElement
-                card={card}
-                source={[name, index]}
-                isBottom={i === 0}
-                isTop={cards.length - 1 === i}
-                key={card.id}
-                onClick={onCardClick}
-                onDoubleClick={onCardDoubleClick}
-            />
-        ));
+    const renderStackedUpCards = useMemo(
+        () =>
+            cards.map((card, i) => (
+                <CardElement
+                    card={card}
+                    source={[name, index]}
+                    isBottom={i === 0}
+                    isTop={cards.length - 1 === i}
+                    key={card.id}
+                    onClick={onCardClick}
+                    onDoubleClick={onCardDoubleClick}
+                />
+            )),
+        [cards, index, name, onCardClick, onCardDoubleClick],
+    );
 
     return (
         <div
@@ -116,7 +121,7 @@ const Pile: React.FC<PileProps> = ({
             onDragOver={handleDragOver}
             onClick={handleClick}
         >
-            {stackDown ? renderStackedDownCards() : renderStackedUpCards()}
+            {stackDown ? renderStackedDownCards : renderStackedUpCards}
         </div>
     );
 };

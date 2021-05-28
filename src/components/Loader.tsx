@@ -1,11 +1,12 @@
 /** @jsx jsx */
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { jsx, css, keyframes } from "@emotion/react";
 
 const Loader: React.FC = () => {
-    const bulging = keyframes`
+    const bulging = useMemo(
+        () => keyframes`
         0%,
         80%,
         100% {
@@ -16,40 +17,57 @@ const Loader: React.FC = () => {
             transform: scale(1);
             opacity: 1;
         }
-    `;
+    `,
+        [],
+    );
 
-    const style = css`
-        display: flex;
-        width: 100%;
-        height: 100vh;
-        justify-content: center;
-        align-items: center;
-    `;
+    const style = useMemo(
+        () => css`
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        `,
+        [],
+    );
 
-    const ballStyle = css`
-        font-size: 2rem;
-        display: inline-block;
-        margin: auto 0.25em;
-        height: 0.75em;
-        width: 0.75em;
-        border-radius: 0.375em;
-        background: #fff;
-        animation: ${bulging} 2s infinite ease-in-out;
-    `;
+    const ballStyle = useMemo(
+        () => css`
+            font-size: 2rem;
+            display: inline-block;
+            margin: auto 0.25em;
+            height: 0.75em;
+            width: 0.75em;
+            border-radius: 0.375em;
+            background: #fff;
+            animation: ${bulging} 2s infinite ease-in-out;
+        `,
+        [bulging],
+    );
 
-    const ball1Style = css`
-        ${ballStyle}
-        animation-delay: -0.4s;
-    `;
+    const ball1Style = useMemo(
+        () => css`
+            ${ballStyle}
+            animation-delay: -0.4s;
+        `,
+        [ballStyle],
+    );
 
-    const ball2Style = css`
-        ${ballStyle}
-        animation-delay: -0.2s;
-    `;
+    const ball2Style = useMemo(
+        () => css`
+            ${ballStyle}
+            animation-delay: -0.2s;
+        `,
+        [ballStyle],
+    );
 
-    const ball3Style = css`
-        ${ballStyle}
-    `;
+    const ball3Style = useMemo(
+        () => css`
+            ${ballStyle}
+        `,
+        [ballStyle],
+    );
 
     return (
         <div css={style}>

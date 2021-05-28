@@ -55,8 +55,8 @@ class Card implements CardInterface {
         this.isRevealed = !this.isRevealed;
     }
 
-    static fromJSON(json: CardInterface): Card {
-        return new Card(json.suit, json.rank, json.isRevealed);
+    static fromJSON({ suit, rank, isRevealed }: CardInterface): Card {
+        return new Card(suit, rank, isRevealed);
     }
 
     static fromString = (jsonString: string): Card => {
