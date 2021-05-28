@@ -205,10 +205,10 @@ const CardElement: React.FC<CardProps> = ({
             onBlur={handleMouseLeave}
         >
             <svg css={svgFrontStyles} viewBox="0 0 169.075 244.64">
-                <use href={`#svg-cards_svg__${card.id}`} />
+                <use href={`#${card.id}`} />
             </svg>
             <svg css={svgBackStyles} viewBox="0 0 169.075 244.64">
-                <use href="#svg-cards_svg__alternate-back" />
+                <use href="#alternate-back" />
             </svg>
             {children}
         </div>
