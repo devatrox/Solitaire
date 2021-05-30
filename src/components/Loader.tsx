@@ -1,7 +1,7 @@
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
 import { useSpring, animated } from "@react-spring/web";
-import React, { memo } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const Dot = styled(animated.div)`
@@ -62,4 +62,4 @@ const StyledLoader = styled(Loader)`
     align-items: center;
 `;
 
-export default memo(StyledLoader);
+export default StyledLoader;

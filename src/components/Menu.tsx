@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Button } from "../styles";
 import { MenuProps } from "../definitions";
@@ -71,4 +71,4 @@ const StyledMenu = styled(Menu)`
     }
 `;
 
-export default memo(StyledMenu);
+export default StyledMenu;
