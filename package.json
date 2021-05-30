@@ -20,19 +20,19 @@
         "trailingComma": "all"
     },
     "dependencies": {
-        "@emotion/react": "^11.4.0",
-        "emotion-normalize": "^11.0.1",
         "lodash": "^4.17.21",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "styled-components": "^5.3.0",
+        "styled-normalize": "^8.0.7",
         "svg-cards": "^4.0.0"
     },
     "devDependencies": {
-        "@emotion/eslint-plugin": "^11.2.0",
         "@parcel/transformer-svg-react": "^2.0.0-beta.3.1",
         "@types/lodash": "^4.14.170",
         "@types/react": "^17.0.8",
         "@types/react-dom": "^17.0.5",
+        "@types/styled-components": "^5.1.9",
         "@typescript-eslint/eslint-plugin": "^4.25.0",
         "@typescript-eslint/parser": "^4.25.0",
         "eslint": "^7.27.0",

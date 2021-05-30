@@ -1,8 +1,6 @@
-import { css } from "@emotion/react";
-import emotionNormalize from "emotion-normalize";
+import styled, { createGlobalStyle } from "styled-components";
 
-const global = css`
-    ${emotionNormalize}
+const GlobalStyle = createGlobalStyle`
     :root {
         --grid-gap: 20px;
         --card-width: 100%;
@@ -59,10 +57,12 @@ const global = css`
     }
 `;
 
-const btn = css`
+interface ButtonProps {
+    textColor?: string;
+}
+
+const Button = styled.button<ButtonProps>`
     display: inline-block;
-    font-weight: 400;
-    color: var(--color-black);
     text-align: center;
     vertical-align: middle;
     user-select: none;
@@ -73,10 +73,22 @@ const btn = css`
     border-radius: 0.25rem;
     text-decoration: none;
     text-transform: none;
+    color: inherit;
+    border: 2px solid currentColor;
+    font-weight: bold;
+
+    &:hover,
+    &:focus {
+        color: #fff;
+    }
+
+    &[disabled] {
+        color: rgba(255, 255, 255, 0.3);
+    }
 
     &:not([disabled]) {
         cursor: pointer;
     }
 `;
 
-export { global as globalStyles, btn as btnStyles };
+export { GlobalStyle, Button };

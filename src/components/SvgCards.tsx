@@ -1,14 +1,8 @@
-/** @jsx jsx */
-
-import { jsx, css } from "@emotion/react";
+import styled from "styled-components";
 import SvgCards from "svg-cards/svg-cards.svg";
 
-const Svg: React.FC = () => (
-    <SvgCards
-        css={css`
-            display: none;
-        `}
-    />
-);
+const StyledSvg = styled(SvgCards)`
+    display: none;
+`;
 
-export default Svg;
+export default StyledSvg;

@@ -1,5 +1,3 @@
-/** @jsx jsx */
-
 import React, {
     useReducer,
     useEffect,
@@ -7,9 +5,9 @@ import React, {
     useState,
     Fragment,
 } from "react";
+import styled from "styled-components";
 import _last from "lodash/last";
 import _reverse from "lodash/reverse";
-import { jsx, css } from "@emotion/react";
 import PileGroup from "./components/PileGroup";
 import {
     PileName,
@@ -34,38 +32,35 @@ import {
     hasNoStock,
 } from "./rules";
 
+const StyledContainer = styled.div`
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--grid-gap) var(--grid-gap) 80px;
+    display: grid;
+    grid-gap: var(--grid-gap);
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "stock waste . foundation foundation foundation foundation"
+        "tableau tableau tableau tableau tableau tableau tableau";
+
+    @media (max-width: 768px) {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: repeat(7, 1fr);
+        grid-template-areas:
+            "stock tableau"
+            "waste tableau"
+            ". tableau"
+            "foundation tableau"
+            "foundation tableau"
+            "foundation tableau"
+            "foundation tableau";
+        padding-bottom: 100px;
+    }
+`;
+
 const Game: React.FC<GameProps> = ({ initialState }) => {
-    const styles = useMemo(
-        () => css`
-            height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: var(--grid-gap) var(--grid-gap) 80px;
-            display: grid;
-            grid-gap: var(--grid-gap);
-            grid-template-columns: repeat(7, 1fr);
-            grid-template-rows: auto 1fr;
-            grid-template-areas:
-                "stock waste . foundation foundation foundation foundation"
-                "tableau tableau tableau tableau tableau tableau tableau";
-
-            @media (max-width: 768px) {
-                grid-template-columns: auto 1fr;
-                grid-template-rows: repeat(7, 1fr);
-                grid-template-areas:
-                    "stock tableau"
-                    "waste tableau"
-                    ". tableau"
-                    "foundation tableau"
-                    "foundation tableau"
-                    "foundation tableau"
-                    "foundation tableau";
-                padding-bottom: 100px;
-            }
-        `,
-        [],
-    );
-
     const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(
         reducer,
         initialState,
@@ -284,7 +279,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
 
     return (
         <Fragment>
-            <div css={styles}>
+            <StyledContainer>
                 <PileGroup
                     name={PileName.STOCK}
                     piles={stock}
@@ -308,7 +303,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                     onDrop={handleDrop}
                     onCardDoubleClick={handleCardDoubleClick}
                 />
-            </div>
+            </StyledContainer>
             <Menu
                 message={message}
                 isDone={isDone}

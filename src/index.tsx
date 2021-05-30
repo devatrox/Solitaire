@@ -1,11 +1,9 @@
-/** @jsx jsx */
-
-import { lazy, Fragment, Suspense } from "react";
+import React, { lazy, Fragment, Suspense } from "react";
 import ReactDOM from "react-dom";
-import { Global, jsx } from "@emotion/react";
+import { Normalize } from "styled-normalize";
 import { GameProps } from "./definitions";
 import { createInitialState } from "./setup";
-import { globalStyles } from "./styles";
+import { GlobalStyle } from "./styles";
 import Loader from "./components/Loader";
 
 const App: React.FC<GameProps> = ({ initialState }) => {
@@ -15,7 +13,8 @@ const App: React.FC<GameProps> = ({ initialState }) => {
 
     return (
         <Fragment>
-            <Global styles={globalStyles} />
+            <Normalize />
+            <GlobalStyle />
             <Suspense fallback={<Loader />}>
                 <SvgCards />
                 <Game initialState={initialState} />

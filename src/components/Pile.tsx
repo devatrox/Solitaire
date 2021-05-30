@@ -1,12 +1,11 @@
-/** @jsx jsx */
-
 import React, { PropsWithChildren, useMemo, useState } from "react";
-import { jsx, css } from "@emotion/react";
 import _reverse from "lodash/reverse";
 import CardElement from "./CardElement";
 import { PileProps, CardProps } from "../definitions";
+import styled from "styled-components";
 
 const Pile: React.FC<PileProps> = ({
+    className,
     cards,
     name,
     index = 0,
@@ -17,19 +16,6 @@ const Pile: React.FC<PileProps> = ({
     onClick,
 }) => {
     const [isHover, setIsHover] = useState(false);
-
-    const styles = useMemo(
-        () => css`
-            position: relative;
-            width: var(--card-width);
-            height: 0;
-            padding-bottom: var(--card-height);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: var(--card-border-radius);
-        `,
-        [],
-    );
 
     let enterTarget: EventTarget;
 
@@ -114,7 +100,7 @@ const Pile: React.FC<PileProps> = ({
 
     return (
         <div
-            css={styles}
+            className={className}
             onDrop={handleDrop}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
@@ -126,4 +112,14 @@ const Pile: React.FC<PileProps> = ({
     );
 };
 
-export default Pile;
+const StyledPile = styled(Pile)`
+    position: relative;
+    width: var(--card-width);
+    height: 0;
+    padding-bottom: var(--card-height);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: var(--card-border-radius);
+`;
+
+export default StyledPile;

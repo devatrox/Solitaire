@@ -1,120 +1,74 @@
-/** @jsx jsx */
-
-import { memo, useMemo } from "react";
-import { jsx, css } from "@emotion/react";
-import { btnStyles as globalBtnStyles } from "../styles";
+import React, { Fragment, memo } from "react";
+import styled from "styled-components";
+import { Button } from "../styles";
 import { MenuProps } from "../definitions";
 
+interface ElementProps {
+    gridArea: "menuLeft" | "menuCenter" | "menuRight";
+}
+
+const MenuElement = styled.div<ElementProps>`
+    display: flex;
+
+    > * + * {
+        margin-left: var(--grid-gap);
+    }
+`;
+
+const TextElement = styled.div<ElementProps>`
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 0.375rem 0;
+    border: 2px solid transparent;
+`;
+
 const Menu: React.FC<MenuProps> = ({
+    className,
     message,
     isDone,
     isFinished,
     onFinish,
     onReset,
-}) => {
-    const textColor = "255, 255, 255";
-
-    const styles = useMemo(
-        () => css`
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: var(--grid-gap);
-            display: grid;
-            grid-gap: var(--grid-gap);
-            grid-template-columns: auto 1fr auto;
-            grid-template-rows: auto;
-            grid-template-areas: "menuLeft menuCenter menuRight";
-            color: rgba(${textColor}, 0.7);
-
-            @media (max-width: 768px) {
-                grid-template-columns: auto;
-                grid-template-areas: "menuCenter menuCenter" "menuLeft menuRight";
-            }
-        `,
-        [],
-    );
-
-    const menuElementStyles = useMemo(
-        () => css`
-            label: MenuElement;
-            display: flex;
-
-            > * + * {
-                margin-left: var(--grid-gap);
-            }
-        `,
-        [],
-    );
-
-    const btnStyles = useMemo(
-        () => css`
-            label: MenuBtn;
-            ${globalBtnStyles}
-            color: inherit;
-            border: 2px solid currentColor;
-            font-weight: bold;
-
-            &:hover,
-            &:focus {
-                color: #fff;
-            }
-
-            &[disabled] {
-                color: rgba(${textColor}, 0.3);
-            }
-        `,
-        [],
-    );
-
-    const textStyles = useMemo(
-        () => css`
-            font-size: 1rem;
-            line-height: 1.5;
-            padding: 0.375rem 0;
-            border: 2px solid transparent;
-        `,
-        [],
-    );
-
-    return (
-        <div css={styles}>
-            <div
-                css={css`
-                    ${menuElementStyles} grid-area: menuLeft;
-                `}
+}) => (
+    <div className={className}>
+        <MenuElement gridArea="menuLeft">
+            <Button type="button" onClick={onReset}>
+                New Game
+            </Button>
+            <Button
+                type="button"
+                disabled={!isDone && !isFinished}
+                onClick={onFinish}
             >
-                <button css={btnStyles} type="button" onClick={onReset}>
-                    New Game
-                </button>
-                <button
-                    css={btnStyles}
-                    type="button"
-                    disabled={!isDone && !isFinished}
-                    onClick={onFinish}
-                >
-                    Finish
-                </button>
-            </div>
-            <div
-                css={css`
-                    ${textStyles} grid-area: menuCenter;
-                `}
-            >
-                {message}
-            </div>
-            <div
-                css={css`
-                    ${menuElementStyles} grid-area: menuRight;
-                `}
-            >
-                <a css={btnStyles} href="https://github.com/devatrox/Solitaire">
-                    GitHub
-                </a>
-            </div>
-        </div>
-    );
-};
+                Finish
+            </Button>
+        </MenuElement>
+        <TextElement gridArea="menuCenter">{message}</TextElement>
+        <MenuElement gridArea="menuRight">
+            <Button as="a" href="https://github.com/devatrox/Solitaire">
+                GitHub
+            </Button>
+        </MenuElement>
+    </div>
+);
 
-export default memo(Menu);
+const StyledMenu = styled(Menu)`
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--grid-gap);
+    display: grid;
+    grid-gap: var(--grid-gap);
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    grid-template-areas: "menuLeft menuCenter menuRight";
+    color: rgba(255, 255, 255, 0.7);
+
+    @media (max-width: 768px) {
+        grid-template-columns: auto;
+        grid-template-areas: "menuCenter menuCenter" "menuLeft menuRight";
+    }
+`;
+
+export default memo(StyledMenu);

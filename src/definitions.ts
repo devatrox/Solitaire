@@ -95,6 +95,7 @@ export interface GenericPileProps {
 }
 
 export interface PileProps extends GenericPileProps {
+    className?: string;
     cards: Card[];
     index?: number;
     onClick?: PileClickEvent;
@@ -106,6 +107,7 @@ export interface GroupProps extends GenericPileProps {
 }
 
 export interface MenuProps {
+    className?: string;
     message: string;
     isDone: boolean;
     isFinished: boolean;

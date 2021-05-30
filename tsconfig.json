@@ -19,15 +19,7 @@
         ],
         "allowJs": true,
         "jsx": "react",
-        "allowSyntheticDefaultImports": true,
-        "plugins": [
-            {
-                "name": "typescript-styled-plugin",
-                "lint": {
-                    "validProperties": ["label"]
-                }
-            }
-        ]
+        "allowSyntheticDefaultImports": true
     },
     "include": ["src/**/*"]
 }
