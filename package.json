@@ -20,6 +20,7 @@
         "trailingComma": "all"
     },
     "dependencies": {
+        "@react-spring/web": "^9.2.1",
         "lodash": "^4.17.21",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",

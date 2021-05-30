@@ -4,14 +4,14 @@ import Pile from "./Pile";
 import { GroupProps, PileName } from "../definitions";
 
 interface StyledContainerProps {
-    name: string;
+    $name: string;
 }
 
 const StyledContainer = styled.div<StyledContainerProps>`
-    grid-area: ${(props) => props.name};
+    grid-area: ${(props) => props.$name};
     position: relative;
     ${(props) =>
-        props.name === PileName.FOUNDATION &&
+        props.$name === PileName.FOUNDATION &&
         `
     display: grid;
     grid-gap: var(--grid-gap);
@@ -23,7 +23,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
     }
     `}
     ${(props) =>
-        props.name === PileName.TABLEAU &&
+        props.$name === PileName.TABLEAU &&
         `
     display: grid;
     grid-gap: var(--grid-gap);
@@ -45,7 +45,7 @@ const PileGroup: React.FC<GroupProps> = ({
     onCardDoubleClick,
     onPileClick,
 }) => (
-    <StyledContainer name={name}>
+    <StyledContainer $name={name}>
         {piles.map((pile, i) => (
             <Pile
                 name={name}

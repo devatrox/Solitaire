@@ -1,22 +1,10 @@
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
+import { useSpring, animated } from "@react-spring/web";
 import React, { memo } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
-const bulging = keyframes`
-    0%,
-    80%,
-    100% {
-        transform: scale(0);
-        opacity: 0.5;
-    }
-    40% {
-        transform: scale(1);
-        opacity: 1;
-    }
-`;
-
-const Dot = styled.div`
+const Dot = styled(animated.div)`
     font-size: 2rem;
     display: inline-block;
     margin: auto 0.25em;
@@ -24,30 +12,47 @@ const Dot = styled.div`
     width: 0.75em;
     border-radius: 0.375em;
     background: #fff;
-    animation: ${bulging} 2s infinite ease-in-out;
 `;
-
-const Dot1 = styled(Dot)`
-    animation-delay: -0.4s;
-`;
-
-const Dot2 = styled(Dot)`
-    animation-delay: -0.2s;
-`;
-
-const Dot3 = styled(Dot)``;
 
 interface LoaderProps {
     className?: string;
 }
 
-const Loader: React.FC<LoaderProps> = ({ className }) => (
-    <div className={className}>
-        <Dot1 />
-        <Dot2 />
-        <Dot3 />
-    </div>
-);
+const Loader: React.FC<LoaderProps> = ({ className }) => {
+    const springConfig = {
+        loop: { reverse: true },
+        from: {
+            transform: "scale(0)",
+            opacity: 0.5,
+        },
+        to: {
+            transform: "scale(1)",
+            opacity: 1,
+        },
+    };
+
+    const dot1Styles = useSpring({
+        ...springConfig,
+        delay: 40,
+    });
+
+    const dot2Styles = useSpring({
+        ...springConfig,
+        delay: 20,
+    });
+
+    const dot3Styles = useSpring({
+        ...springConfig,
+    });
+
+    return (
+        <div className={className}>
+            <Dot style={dot1Styles} />
+            <Dot style={dot2Styles} />
+            <Dot style={dot3Styles} />
+        </div>
+    );
+};
 
 const StyledLoader = styled(Loader)`
     display: flex;

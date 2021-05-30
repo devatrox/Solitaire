@@ -1,14 +1,17 @@
 import React, { useState, createRef, useMemo } from "react";
 import styled from "styled-components";
+import { useSpring, animated, config } from "@react-spring/web";
 import _reverse from "lodash/reverse";
 import { CardProps, CardTransferObject, PileName } from "../definitions";
 import Card from "../Card";
 
 interface SvgInterface {
-    card: Card;
+    $card: Card;
 }
 
-const Svg = styled.svg<SvgInterface>`
+const Svg = styled(animated.svg).attrs({
+    viewBox: "0 0 169.075 244.64",
+})<SvgInterface>`
     z-index: 1;
     position: absolute;
     top: 0;
@@ -19,35 +22,27 @@ const Svg = styled.svg<SvgInterface>`
     pointer-events: none;
     border-radius: var(--card-border-radius);
     backface-visibility: hidden;
-    transition: transform 300ms ease-in-out;
+    box-shadow: inset 0 0 0 3px var(--card-border-color);
 `;
 
-const SvgFront = styled(Svg)`
-    transform: ${(props) =>
-        props.card.isRevealed
-            ? "perspective(800px) rotateX(0deg)"
-            : "perspective(800px) rotateX(180deg)"};
-`;
+const SvgFront = styled(Svg)``;
 
 const SvgBack = styled(Svg)`
     fill: var(--color-blue);
-    transform: ${(props) =>
-        props.card.isRevealed
-            ? "perspective(800px) rotateX(180deg)"
-            : "perspective(800px) rotateX(0deg)"};
 `;
 
-interface StyledContainerProps {
-    cursorStyle: "not-allowed" | "grab" | "pointer";
-    isHover: boolean;
-    isDragging: boolean;
-    isBottom: boolean;
-    isStackDown: boolean;
-    card: Card;
+interface ContainerProps {
+    className?: string;
+    $cursorStyle: "not-allowed" | "grab" | "pointer";
+    $isHover: boolean;
+    $isDragging: boolean;
+    $isBottom: boolean;
+    $isStackDown: boolean;
+    $card: Card;
 }
 
-const StyledContainer = styled.div<StyledContainerProps>`
-    cursor: ${(props) => props.cursorStyle};
+const StyledContainer = styled(animated.div)<ContainerProps>`
+    cursor: ${(props) => props.$cursorStyle};
     display: block;
     position: absolute;
     top: 0;
@@ -55,33 +50,29 @@ const StyledContainer = styled.div<StyledContainerProps>`
     height: 100%;
     width: 100%;
     border-radius: var(--card-border-radius);
-    transform: scale(1);
-    transition: transform 50ms ease-in-out;
 
     @media (max-width: 768px) {
         --card-border-color: transparent;
     }
 
     ${(props) =>
-        props.isHover &&
-        props.card.isRevealed &&
+        props.$isHover &&
+        props.$card.isRevealed &&
         `
         --card-border-color: var(--color-orange);
-        transform: scale(1.04);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 
         @media (max-width: 768px) {
             --card-border-color: var(--color-orange);
         }
     `}
     ${(props) =>
-        props.isDragging &&
+        props.$isDragging &&
         `
         opacity: 0.5;
     `}
     ${(props) =>
-        !props.isBottom &&
-        props.isStackDown &&
+        !props.$isBottom &&
+        props.$isStackDown &&
         `
         top: var(--card-stack-margin);
         z-index: 3;
@@ -113,7 +104,7 @@ const CardElement: React.FC<CardProps> = ({
     card,
     childCards = [],
     source,
-    style,
+    style = {},
     isTop = false,
     isBottom = false,
     isStackDown = false,
@@ -126,6 +117,21 @@ const CardElement: React.FC<CardProps> = ({
     const [isDragging, setIsDragging] = useState(false);
 
     const [isHover, setIsHover] = useState(false);
+
+    const { transform: transformRotate } = useSpring({
+        transform: `perspective(800px) rotateX(${
+            card.isRevealed ? 0 : 180
+        }deg)`,
+        config: config.stiff,
+    });
+
+    const { transform: transformScale, boxShadow } = useSpring({
+        transform: `scale(${isHover && card.isRevealed ? "1.04" : "1"})`,
+        boxShadow: `0 0 ${
+            isHover && card.isRevealed ? "20" : "0"
+        }px rgba(0, 0, 0, 0.3)`,
+        config: config.stiff,
+    });
 
     const [sourceName] = source;
 
@@ -190,13 +196,17 @@ const CardElement: React.FC<CardProps> = ({
     return (
         <StyledContainer
             ref={ref}
-            cursorStyle={cursorStyle}
-            isHover={isHover}
-            isDragging={isDragging}
-            isBottom={isBottom}
-            isStackDown={isStackDown}
-            card={card}
-            style={style}
+            $cursorStyle={cursorStyle}
+            $isHover={isHover}
+            $isDragging={isDragging}
+            $isBottom={isBottom}
+            $isStackDown={isStackDown}
+            $card={card}
+            style={{
+                ...style,
+                boxShadow,
+                transform: transformScale,
+            }}
             data-rank={card.rank}
             data-suit={card.suit}
             data-color={card.color}
@@ -211,10 +221,13 @@ const CardElement: React.FC<CardProps> = ({
             onMouseOut={handleMouseLeave}
             onBlur={handleMouseLeave}
         >
-            <SvgFront card={card} viewBox="0 0 169.075 244.64">
+            <SvgFront $card={card} style={{ transform: transformRotate }}>
                 <use href={`#${card.id}`} />
             </SvgFront>
-            <SvgBack card={card} viewBox="0 0 169.075 244.64">
+            <SvgBack
+                $card={card}
+                style={{ transform: transformRotate, rotateX: "180deg" }}
+            >
                 <use href="#alternate-back" />
             </SvgBack>
             {children}

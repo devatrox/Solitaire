@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 import { Button } from "../styles";
 import { MenuProps } from "../definitions";
