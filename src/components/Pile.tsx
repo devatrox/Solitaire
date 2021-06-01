@@ -120,6 +120,7 @@ const StyledPile = styled(Pile)`
     border: 2px solid rgba(255, 255, 255, 0.3);
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: var(--card-border-radius);
+    perspective: 600px;
 `;
 
 export default StyledPile;
