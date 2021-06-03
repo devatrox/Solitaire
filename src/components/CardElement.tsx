@@ -35,10 +35,6 @@ interface CardWrapperProps {
 }
 
 const CardWrapper = styled(animated.div)<CardWrapperProps>`
-    --card-border-color: ${(props) =>
-        props.$isHover && props.$card.isRevealed
-            ? "var(--color-orange);"
-            : "var(--color-black);"}
     position: absolute;
     height: 100%;
     width: 100%;
@@ -51,7 +47,8 @@ const CardWrapper = styled(animated.div)<CardWrapperProps>`
             props.$isAnimating && props.$isTop ? "10px" : "0"
         } rgba(0, 0, 0, 0.3)`};
 
-    &:before {
+    &:before,
+    &:after {
         content: "";
         position: absolute;
         top: 0;
@@ -59,13 +56,12 @@ const CardWrapper = styled(animated.div)<CardWrapperProps>`
         right: 0;
         height: 100%;
         z-index: 2;
-        box-shadow: inset 0 0 0 3px var(--card-border-color);
+        box-shadow: inset 0 0 0 2px var(--card-border-color);
         border-radius: var(--card-border-radius);
+    }
 
-        @media (max-width: 768px) {
-            --card-border-color: transparent;
-            box-shadow: inset 0 0 0 2px var(--card-border-color);
-        }
+    &:after {
+        transform: rotateY(180deg);
     }
 `;
 
@@ -75,6 +71,8 @@ interface DragContainerProps {
     $isDragging: boolean;
     $isBottom: boolean;
     $isStackDown: boolean;
+    $isHover: boolean;
+    $card: Card;
 }
 
 const DragContainer = styled(animated.div)<DragContainerProps>`
@@ -102,6 +100,16 @@ const DragContainer = styled(animated.div)<DragContainerProps>`
             left: var(--card-stack-margin);
         }
     `};
+    ${(props) =>
+        props.$isHover &&
+        props.$card.isRevealed &&
+        `
+            --card-border-color: var(--color-orange);
+        `}
+
+    @media (max-width: 768px) {
+        --card-border-color: transparent;
+    }
 `;
 
 const CardElement: React.FC<CardProps> = ({
@@ -157,7 +165,6 @@ const CardElement: React.FC<CardProps> = ({
             | React.FocusEvent<HTMLDivElement>,
     ) => {
         if (event?.target === cardRref.current) {
-            console.log("mouseover");
             setIsHover(true);
         }
     };
@@ -204,10 +211,12 @@ const CardElement: React.FC<CardProps> = ({
     return (
         <DragContainer
             ref={containerRref}
+            $card={card}
             $cursorStyle={cursorStyle}
             $isDragging={isDragging}
             $isBottom={isBottom}
             $isStackDown={isStackDown}
+            $isHover={isHover}
             style={{
                 ...style,
                 boxShadow,
@@ -216,6 +225,11 @@ const CardElement: React.FC<CardProps> = ({
             draggable={card.isRevealed}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onMouseOver={handleMouseOver}
+            onMouseLeave={handleMouseLeave}
+            onMouseOut={handleMouseLeave}
+            onFocus={handleMouseOver}
+            onBlur={handleMouseLeave}
         >
             <CardWrapper
                 ref={cardRref}
@@ -227,11 +241,6 @@ const CardElement: React.FC<CardProps> = ({
                 data-rank={card.rank}
                 data-suit={card.suit}
                 data-color={card.color}
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
-                onMouseOut={handleMouseLeave}
-                onFocus={handleMouseOver}
-                onBlur={handleMouseLeave}
                 onClick={handleClick}
                 onDoubleClick={handleDoubleClick}
             >
