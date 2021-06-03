@@ -1,17 +1,33 @@
 import _last from "lodash/last";
 import _first from "lodash/first";
 import Card from "./Card";
-import { ValidationResult } from "./definitions";
+import { Rank, ValidationResult } from "./definitions";
 import { ranks } from "./setup";
 
-const genericError = {
+export const validResult = { status: true, statusText: "" };
+
+export const genericError = {
     status: false,
     statusText: "Some error occurred",
 };
 
-const MOVE_NOT_ALLOWED = "Move is not allowed";
+export const MOVE_NOT_ALLOWED = "Move is not allowed";
 
-const isDifferentColor = (cards: Card[], pile: Card[]): ValidationResult => {
+export type CardRuleFn = (cards: Card[], pile: Card[]) => ValidationResult;
+
+export const validateMultiple = (
+    cards: Card[],
+    pile: Card[],
+    rules: CardRuleFn[],
+): ValidationResult =>
+    rules.reduce((result, rule) => {
+        if (!result.status) {
+            return result;
+        }
+        return rule(cards, pile);
+    }, validResult);
+
+export const isDifferentColor: CardRuleFn = (cards, pile) => {
     const topCard = _last(pile);
     const firstCard = _first(cards);
     if (!firstCard) {
@@ -26,7 +42,7 @@ const isDifferentColor = (cards: Card[], pile: Card[]): ValidationResult => {
     };
 };
 
-const isHigherRank = (cards: Card[], pile: Card[]): ValidationResult => {
+export const isHigherRank: CardRuleFn = (cards, pile) => {
     const topCard = _last(pile);
     const firstCard = _first(cards);
     if (!firstCard) {
@@ -43,7 +59,7 @@ const isHigherRank = (cards: Card[], pile: Card[]): ValidationResult => {
     };
 };
 
-const isLowerRank = (cards: Card[], pile: Card[]): ValidationResult => {
+export const isLowerRank: CardRuleFn = (cards, pile) => {
     const firstCard = _first(cards);
     if (!firstCard) {
         return genericError;
@@ -57,12 +73,27 @@ const isLowerRank = (cards: Card[], pile: Card[]): ValidationResult => {
     };
 };
 
-const hasNoStock = (stock: Card[], waste: Card[]): ValidationResult => ({
+export const isKingOnEmpty: CardRuleFn = (cards, pile) => {
+    const topCard = _last(pile);
+    const firstCard = _first(cards);
+    if (!firstCard) {
+        return genericError;
+    }
+    const result = !!topCard || (!topCard && firstCard.rank === Rank.King);
+    console.info("isKingOnEmpty", result);
+
+    return {
+        status: result,
+        statusText: result ? "" : MOVE_NOT_ALLOWED,
+    };
+};
+
+export const hasNoStock = (stock: Card[], waste: Card[]): ValidationResult => ({
     status: stock.length === 0 && waste.length === 0,
     statusText: "There are still cards in the stock and/or waste piles",
 });
 
-const isAllRevealed = (tableau: Card[][]): ValidationResult => {
+export const isAllRevealed = (tableau: Card[][]): ValidationResult => {
     const cards = tableau.flat();
     const result = cards.every((card) => card.isRevealed);
     console.info("isAllRevealed", result);
@@ -71,12 +102,4 @@ const isAllRevealed = (tableau: Card[][]): ValidationResult => {
         status: result,
         statusText: "You need to reveal all cards on the tableau",
     };
-};
-
-export {
-    isAllRevealed,
-    hasNoStock,
-    isDifferentColor,
-    isHigherRank,
-    isLowerRank,
 };

@@ -30,6 +30,9 @@ import {
     isDifferentColor,
     isAllRevealed,
     hasNoStock,
+    validateMultiple,
+    isKingOnEmpty,
+    validResult,
 } from "./rules";
 
 const StyledContainer = styled.div`
@@ -181,9 +184,10 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
     const handleCardDoubleClick: CardClickEvent = (event, card, source) => {
         const [sourceName, sourceIndex] = source;
         const targetIndex = getFoundationTargetIndex(card);
-        const { status, statusText } = isLowerRank(
+        const { status, statusText } = validateMultiple(
             [card],
             foundation[targetIndex],
+            [isLowerRank],
         );
 
         if (status) {
@@ -217,21 +221,22 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 sourceIndex,
                 targetIndex,
             ]);
-            let validationResult = { status: true, statusText: "" };
+            let validationResult = validResult;
 
             if (targetName === PileName.TABLEAU) {
-                validationResult = isHigherRank(cards, tableau[targetIndex]);
-
-                if (validationResult.status) {
-                    validationResult = isDifferentColor(
-                        cards,
-                        tableau[targetIndex],
-                    );
-                }
+                validationResult = validateMultiple(
+                    cards,
+                    tableau[targetIndex],
+                    [isHigherRank, isDifferentColor, isKingOnEmpty],
+                );
             }
 
             if (targetName === PileName.FOUNDATION) {
-                validationResult = isLowerRank(cards, foundation[targetIndex]);
+                validationResult = validateMultiple(
+                    cards,
+                    foundation[targetIndex],
+                    [isLowerRank],
+                );
             }
 
             const { status, statusText } = validationResult;
