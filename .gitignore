@@ -6,6 +6,14 @@ node_modules/
 .vscode
 .parcel-cache
 
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
 # OS generated files
 .DS_Store
 .DS_Store?

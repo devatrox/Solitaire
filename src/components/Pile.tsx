@@ -3,6 +3,7 @@ import _reverse from "lodash/reverse";
 import CardElement from "./CardElement";
 import { PileProps, CardProps } from "../definitions";
 import styled from "styled-components";
+import { useTransition } from "@react-spring/web";
 
 const Pile: React.FC<PileProps> = ({
     className,
@@ -16,6 +17,15 @@ const Pile: React.FC<PileProps> = ({
     onClick,
 }) => {
     const [isHover, setIsHover] = useState(false);
+    const sortedCards = useMemo(
+        () => (stackDown ? _reverse([...cards]) : cards),
+        [cards, stackDown],
+    );
+    const transitions = useTransition(sortedCards, {
+        from: { transform: `scale(1.1)` },
+        enter: { transform: `scale(1)` },
+        leave: { transform: `scale(1.1)` },
+    });
 
     let enterTarget: EventTarget;
 
@@ -47,55 +57,51 @@ const Pile: React.FC<PileProps> = ({
     };
 
     const handleClick = (event: React.SyntheticEvent) => {
-        if (cards.length === 0) {
+        if (sortedCards.length === 0) {
             onClick?.(event, name);
         }
     };
 
     // Put cards into each other
     const renderStackedDownCards = useMemo(() => {
-        const reversedCards = _reverse([...cards]);
+        return sortedCards.reduce<React.ReactNode>((lastCard, card, i, cds) => {
+            const cardProps: PropsWithChildren<CardProps> = {
+                card: card,
+                childCards: cds.slice(0, i),
+                source: [name, index],
+                isBottom: sortedCards.length - 1 === i,
+                isTop: false,
+                isStackDown: true,
+                key: card.id,
+                onClick: onCardClick,
+                onDoubleClick: onCardDoubleClick,
+            };
 
-        return reversedCards.reduce<React.ReactNode>(
-            (lastCard, card, i, cds) => {
-                const cardProps: PropsWithChildren<CardProps> = {
-                    card: card,
-                    childCards: cds.slice(0, i),
-                    source: [name, index],
-                    isBottom: reversedCards.length - 1 === i,
-                    isTop: false,
-                    isStackDown: true,
-                    key: card.id,
-                    onClick: onCardClick,
-                    onDoubleClick: onCardDoubleClick,
-                };
+            if (lastCard) {
+                cardProps.children = lastCard;
+            } else {
+                cardProps.isTop = true;
+            }
 
-                if (lastCard) {
-                    cardProps.children = lastCard;
-                } else {
-                    cardProps.isTop = true;
-                }
-
-                return <CardElement {...cardProps} />;
-            },
-            null,
-        );
-    }, [cards, index, name, onCardClick, onCardDoubleClick]);
+            return <CardElement {...cardProps} />;
+        }, null);
+    }, [sortedCards, index, name, onCardClick, onCardDoubleClick]);
 
     const renderStackedUpCards = useMemo(
         () =>
-            cards.map((card, i) => (
+            transitions((styles, card, transition, i) => (
                 <CardElement
                     card={card}
                     source={[name, index]}
                     isBottom={i === 0}
-                    isTop={cards.length - 1 === i}
+                    isTop={sortedCards.length - 1 === i}
+                    style={styles}
                     key={card.id}
                     onClick={onCardClick}
                     onDoubleClick={onCardDoubleClick}
                 />
             )),
-        [cards, index, name, onCardClick, onCardDoubleClick],
+        [transitions, index, name, onCardClick, onCardDoubleClick],
     );
 
     return (

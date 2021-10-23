@@ -40,7 +40,7 @@ class Card implements CardInterface {
             "king",
         ];
 
-        return `${this.suit}_${names[this.rank - 1]}`;
+        return `SvgCards__${this.suit}_${names[this.rank - 1]}`;
     }
 
     reveal(): void {

@@ -87,6 +87,7 @@ const DragContainer = styled(animated.div)<DragContainerProps>`
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
     perspective: 600px;
     will-change: transform, box-shadow;
+    touch-action: manipulation;
     opacity: ${(props) => (props.$isDragging ? "0.5;" : "1;")}
         ${(props) =>
             !props.$isBottom &&
@@ -159,39 +160,49 @@ const CardElement: React.FC<CardProps> = ({
         return "pointer";
     }, [card.isRevealed, sourceName]);
 
-    const handleMouseOver = (
-        event:
-            | React.MouseEvent<HTMLDivElement, MouseEvent>
-            | React.FocusEvent<HTMLDivElement>,
+    const handleMouseOver: React.MouseEventHandler<HTMLDivElement> = (
+        event,
     ) => {
         if (event?.target === cardRref.current) {
             setIsHover(true);
         }
     };
 
-    const handleMouseLeave = (
-        event:
-            | React.MouseEvent<HTMLDivElement, MouseEvent>
-            | React.FocusEvent<HTMLDivElement>,
+    const handleMouseLeave: React.MouseEventHandler<HTMLDivElement> = (
+        event,
     ) => {
         if (event?.target === cardRref.current) {
             setIsHover(false);
         }
     };
 
-    const handleClick = (event: React.SyntheticEvent) => {
+    const handleFocus: React.FocusEventHandler<HTMLDivElement> = (event) => {
+        if (event?.target === cardRref.current) {
+            setIsHover(true);
+        }
+    };
+
+    const handleBlur: React.FocusEventHandler<HTMLDivElement> = (event) => {
+        if (event?.target === cardRref.current) {
+            setIsHover(false);
+        }
+    };
+
+    const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
         if (isTop) {
             onClick?.(event, card, source);
         }
     };
 
-    const handleDoubleClick = (event: React.SyntheticEvent) => {
+    const handleDoubleClick: React.MouseEventHandler<HTMLDivElement> = (
+        event,
+    ) => {
         if (isTop) {
             onDoubleClick?.(event, card, source);
         }
     };
 
-    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragStart: React.DragEventHandler<HTMLDivElement> = (event) => {
         if (event?.target === containerRref.current && event?.dataTransfer) {
             const grabbedCards = _reverse([...childCards, card]);
             const payload: CardTransferObject = {
@@ -204,7 +215,7 @@ const CardElement: React.FC<CardProps> = ({
         }
     };
 
-    const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDragEnd: React.DragEventHandler<HTMLDivElement> = (event) => {
         setIsDragging(false);
     };
 
@@ -228,8 +239,8 @@ const CardElement: React.FC<CardProps> = ({
             onMouseOver={handleMouseOver}
             onMouseLeave={handleMouseLeave}
             onMouseOut={handleMouseLeave}
-            onFocus={handleMouseOver}
-            onBlur={handleMouseLeave}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
         >
             <CardWrapper
                 ref={cardRref}
@@ -248,7 +259,7 @@ const CardElement: React.FC<CardProps> = ({
                     <use href={`#${card.id}`} />
                 </SvgFront>
                 <SvgBack>
-                    <use href="#alternate-back" />
+                    <use href="#SvgCards__alternate-back" />
                 </SvgBack>
             </CardWrapper>
             {children}
