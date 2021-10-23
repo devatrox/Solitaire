@@ -162,6 +162,8 @@ const CardElement: React.FC<CardProps> = ({
     useEffect(() => {
         if (isHover && card.isRevealed) {
             setBorderColor("orange");
+        } else {
+            setBorderColor("black");
         }
     }, [isHover, card]);
 
