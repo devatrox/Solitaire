@@ -104,6 +104,7 @@ const Pile: React.FC<PileProps> = ({
                     source={[name, index]}
                     isBottom={i === 0}
                     isTop={sortedCards.length - 1 === i}
+                    // @ts-ignore
                     style={styles}
                     key={card.id}
                     onClick={onCardClick}

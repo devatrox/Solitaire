@@ -36,8 +36,6 @@ const Svg: React.FC<React.SVGProps<SVGSVGElement> & SxProp> = ({
     />
 );
 
-const AnimatedBox = animated(Box);
-
 export interface CardProps
     extends Omit<BoxProps, "onClick" | "onDoubleClick" | "onDrop"> {
     card: Card;
@@ -50,6 +48,8 @@ export interface CardProps
     onDoubleClick?: CardClickEvent;
     onDrop?: DropEvent;
 }
+
+const AnimatedBox = animated(Box);
 
 const CardElement: React.FC<CardProps> = ({
     card,
