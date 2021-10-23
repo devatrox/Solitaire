@@ -5,9 +5,10 @@ import { ThemeProvider } from "@theme-ui/theme-provider";
 import { createInitialState } from "./setup";
 import Loader from "./components/Loader";
 import theme from "./theme";
-import { GameProps } from "./Game";
 
-const App: React.FC<GameProps> = ({ initialState }) => {
+const initialState = createInitialState();
+
+const App: React.FC = () => {
     const Game = lazy(() => import("./Game"));
 
     const SvgCards = lazy(() => import("./components/SvgCards"));
@@ -22,7 +23,4 @@ const App: React.FC<GameProps> = ({ initialState }) => {
     );
 };
 
-ReactDOM.render(
-    <App initialState={createInitialState()} />,
-    document.getElementById("app"),
-);
+ReactDOM.render(<App />, document.getElementById("app"));
