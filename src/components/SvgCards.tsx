@@ -1,8 +1,6 @@
-import styled from "styled-components";
-import SvgCards from "../svg-cards.svg";
+import React from "react";
+import BaseSvgCards from "../svg-cards.svg";
 
-const StyledSvg = styled(SvgCards)`
-    display: none;
-`;
+const SvgCards = () => <BaseSvgCards sx={{ display: "none" }} />;
 
-export default StyledSvg;
+export default SvgCards;

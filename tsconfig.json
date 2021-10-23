@@ -8,17 +8,10 @@
         "module": "esnext",
         "moduleResolution": "node",
         "target": "es5",
-        "lib": [
-            "ES2015.Promise",
-            "DOM",
-            "ES6",
-            "ES7",
-            "ESNext",
-            "DOM.Iterable",
-            "ScriptHost"
-        ],
+        "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
-        "jsx": "react",
+        "jsx": "preserve",
+        "jsxImportSource": "theme-ui",
         "allowSyntheticDefaultImports": true
     },
     "include": ["src/**/*"]

@@ -17,15 +17,16 @@
     "prettier": {
         "singleQuote": false,
         "semi": true,
-        "trailingComma": "all"
+        "trailingComma": "all",
+        "tabWidth": 4
     },
     "dependencies": {
         "@react-spring/web": "^9.3.0",
+        "@theme-ui/preset-system": "^0.11.3",
         "lodash": "^4.17.21",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
-        "styled-components": "^5.3.3",
-        "styled-normalize": "^8.0.7"
+        "theme-ui": "^0.11.3"
     },
     "devDependencies": {
         "@parcel/config-default": "^2.0.0",
@@ -33,7 +34,6 @@
         "@types/lodash": "^4.14.176",
         "@types/react": "^17.0.31",
         "@types/react-dom": "^17.0.10",
-        "@types/styled-components": "^5.1.15",
         "@typescript-eslint/eslint-plugin": "^5.1.0",
         "@typescript-eslint/parser": "^5.1.0",
         "eslint": "^8.1.0",

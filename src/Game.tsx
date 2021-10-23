@@ -1,17 +1,9 @@
-import React, {
-    useReducer,
-    useEffect,
-    useMemo,
-    useState,
-    Fragment,
-} from "react";
-import styled from "styled-components";
+import React, { useReducer, useEffect, useMemo, useState } from "react";
 import _last from "lodash/last";
 import _reverse from "lodash/reverse";
 import PileGroup from "./components/PileGroup";
 import {
     PileName,
-    GameProps,
     ActionTypes,
     CardTransferObject,
     MappedCard,
@@ -19,6 +11,7 @@ import {
     DropEvent,
     MenuEvent,
     PileClickEvent,
+    GameState,
 } from "./definitions";
 import { cardCount } from "./setup";
 import reducer, { getFoundationTargetIndex } from "./reducer";
@@ -34,34 +27,12 @@ import {
     isKingOnEmpty,
     validResult,
 } from "./rules";
+import { Box, Grid } from "@theme-ui/components";
+import { GAP } from "./theme";
 
-const StyledContainer = styled.div`
-    height: 100vh;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--grid-gap) var(--grid-gap) 80px;
-    display: grid;
-    grid-gap: var(--grid-gap);
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-        "stock waste . foundation foundation foundation foundation"
-        "tableau tableau tableau tableau tableau tableau tableau";
-
-    @media (max-width: 768px) {
-        grid-template-columns: auto 1fr;
-        grid-template-rows: repeat(7, 1fr);
-        grid-template-areas:
-            "stock tableau"
-            "waste tableau"
-            ". tableau"
-            "foundation tableau"
-            "foundation tableau"
-            "foundation tableau"
-            "foundation tableau";
-        padding-bottom: 100px;
-    }
-`;
+export interface GameProps {
+    initialState: GameState;
+}
 
 const Game: React.FC<GameProps> = ({ initialState }) => {
     const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(
@@ -283,8 +254,34 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
     };
 
     return (
-        <Fragment>
-            <StyledContainer>
+        <Box
+            sx={{
+                position: "fixed",
+                overflow: "hidden",
+                width: "100%",
+            }}
+        >
+            <Grid
+                sx={{
+                    height: "100vh",
+                    maxWidth: 1200,
+                    margin: "0 auto",
+                    padding: `${GAP} ${GAP} 80px`,
+                    gridGap: GAP,
+                    gridTemplateColumns: "repeat(7, 1fr)",
+                    gridTemplateRows: "auto 1fr",
+                    gridTemplateAreas:
+                        '"stock waste . foundation foundation foundation foundation" "tableau tableau tableau tableau tableau tableau tableau"',
+
+                    "@media (max-width: 768px)": {
+                        gridTemplateColumns: "auto 1fr",
+                        gridTemplateRows: "repeat(7, 1fr)",
+                        gridTemplateAreas:
+                            '"stock tableau" "waste tableau" ". tableau" "foundation tableau" "foundation tableau" "foundation tableau" "foundation tableau"',
+                        paddingBottom: 100,
+                    },
+                }}
+            >
                 <PileGroup
                     name={PileName.STOCK}
                     piles={stock}
@@ -308,7 +305,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                     onDrop={handleDrop}
                     onCardDoubleClick={handleCardDoubleClick}
                 />
-            </StyledContainer>
+            </Grid>
             <Menu
                 message={message}
                 isDone={isDone}
@@ -316,7 +313,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 onReset={handleReset}
                 onFinish={handleFinish}
             />
-        </Fragment>
+        </Box>
     );
 };
 

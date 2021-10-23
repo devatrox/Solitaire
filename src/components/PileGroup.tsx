@@ -1,40 +1,14 @@
 import React from "react";
-import styled from "styled-components";
 import Pile from "./Pile";
-import { GroupProps, PileName } from "../definitions";
+import { GenericPileProps, PileClickEvent, PileName } from "../definitions";
+import Card from "../Card";
+import { Box } from "@theme-ui/components";
+import { GAP } from "../theme";
 
-interface StyledContainerProps {
-    $name: string;
+export interface GroupProps extends GenericPileProps {
+    piles: Card[][];
+    onPileClick?: PileClickEvent;
 }
-
-const StyledContainer = styled.div<StyledContainerProps>`
-    grid-area: ${(props) => props.$name};
-    position: relative;
-    ${(props) =>
-        props.$name === PileName.FOUNDATION &&
-        `
-    display: grid;
-    grid-gap: var(--grid-gap);
-    grid-template-columns: repeat(4, 1fr);
-
-    @media (max-width: 768px) {
-        grid-template-columns: auto;
-        grid-template-rows: repeat(4, 1fr);
-    }
-    `}
-    ${(props) =>
-        props.$name === PileName.TABLEAU &&
-        `
-    display: grid;
-    grid-gap: var(--grid-gap);
-    grid-template-columns: repeat(7, 1fr);
-
-    @media (max-width: 768px) {
-        grid-template-columns: auto;
-        grid-template-rows: repeat(7, 1fr);
-    }
-    `}
-`;
 
 const PileGroup: React.FC<GroupProps> = ({
     piles = [],
@@ -45,7 +19,32 @@ const PileGroup: React.FC<GroupProps> = ({
     onCardDoubleClick,
     onPileClick,
 }) => (
-    <StyledContainer $name={name}>
+    <Box
+        sx={{
+            gridArea: name,
+            position: "relative",
+            display:
+                name === PileName.FOUNDATION || name === PileName.TABLEAU
+                    ? "grid"
+                    : "block",
+            gridGap: GAP,
+            gridTemplateColumns:
+                name === PileName.FOUNDATION
+                    ? "repeat(4, 1fr)"
+                    : name === PileName.TABLEAU
+                    ? "repeat(7, 1fr)"
+                    : "auto",
+            "@media (max-width: 768px)": {
+                gridTemplateColumns: "auto",
+                gridTemplateRows:
+                    name === PileName.FOUNDATION
+                        ? "repeat(4, 1fr)"
+                        : name === PileName.TABLEAU
+                        ? "repeat(7, 1fr)"
+                        : "auto",
+            },
+        }}
+    >
         {piles.map((pile, i) => (
             <Pile
                 name={name}
@@ -59,7 +58,7 @@ const PileGroup: React.FC<GroupProps> = ({
                 key={i} // eslint-disable-line react/no-array-index-key
             />
         ))}
-    </StyledContainer>
+    </Box>
 );
 
 export default PileGroup;

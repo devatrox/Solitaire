@@ -1,12 +1,20 @@
 import React, { PropsWithChildren, useMemo, useState } from "react";
 import _reverse from "lodash/reverse";
-import CardElement from "./CardElement";
-import { PileProps, CardProps } from "../definitions";
-import styled from "styled-components";
 import { useTransition } from "@react-spring/web";
+import { Box } from "@theme-ui/components";
+
+import Card from "../Card";
+import CardElement, { CardProps } from "./CardElement";
+import { GenericPileProps, PileClickEvent } from "../definitions";
+import { CARD_BORDER_RADIUS, CARD_HEIGHT, CARD_WIDTH } from "../theme";
+
+export interface PileProps extends GenericPileProps {
+    cards: Card[];
+    index?: number;
+    onClick?: PileClickEvent;
+}
 
 const Pile: React.FC<PileProps> = ({
-    className,
     cards,
     name,
     index = 0,
@@ -15,6 +23,7 @@ const Pile: React.FC<PileProps> = ({
     onCardClick,
     onCardDoubleClick,
     onClick,
+    ...boxProps
 }) => {
     const [isHover, setIsHover] = useState(false);
     const sortedCards = useMemo(
@@ -105,28 +114,27 @@ const Pile: React.FC<PileProps> = ({
     );
 
     return (
-        <div
-            className={className}
+        <Box
+            sx={{
+                position: "relative",
+                width: CARD_WIDTH,
+                height: 0,
+                paddingBottom: CARD_HEIGHT,
+                border: "2px solid rgba(255, 255, 255, 0.3)",
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                borderRadius: CARD_BORDER_RADIUS,
+                perspective: "600px",
+            }}
             onDrop={handleDrop}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
             onClick={handleClick}
+            {...boxProps}
         >
             {stackDown ? renderStackedDownCards : renderStackedUpCards}
-        </div>
+        </Box>
     );
 };
 
-const StyledPile = styled(Pile)`
-    position: relative;
-    width: var(--card-width);
-    height: 0;
-    padding-bottom: var(--card-height);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: var(--card-border-radius);
-    perspective: 600px;
-`;
-
-export default StyledPile;
+export default Pile;

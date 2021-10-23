@@ -1,3 +1,4 @@
+import { BoxProps } from "@theme-ui/components";
 import Card, { CardInterface } from "./Card";
 
 export enum Suit {
@@ -68,51 +69,12 @@ export interface GameState {
     tableau: Card[][];
 }
 
-export interface GameProps {
-    initialState: GameState;
-}
-
-export interface CardProps {
-    card: Card;
-    source: [PileName, number];
-    isTop?: boolean;
-    isBottom?: boolean;
-    isStackDown?: boolean;
-    childCards?: Card[];
-    style?: React.CSSProperties;
-    key?: string;
-    onClick?: CardClickEvent;
-    onDoubleClick?: CardClickEvent;
-    onDrop?: DropEvent;
-}
-
-export interface GenericPileProps {
+export interface GenericPileProps extends Omit<BoxProps, "onDrop" | "onClick"> {
     name: PileName;
     stackDown?: boolean;
     onCardClick?: CardClickEvent;
     onCardDoubleClick?: CardClickEvent;
     onDrop?: DropEvent;
-}
-
-export interface PileProps extends GenericPileProps {
-    className?: string;
-    cards: Card[];
-    index?: number;
-    onClick?: PileClickEvent;
-}
-
-export interface GroupProps extends GenericPileProps {
-    piles: Card[][];
-    onPileClick?: PileClickEvent;
-}
-
-export interface MenuProps {
-    className?: string;
-    message: string;
-    isDone: boolean;
-    isFinished: boolean;
-    onFinish?: MenuEvent;
-    onReset?: MenuEvent;
 }
 
 export type ValidationResult = {

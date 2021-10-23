@@ -1,6 +1,6 @@
 import { Suit, Rank, Color } from "./definitions";
 
-interface CardInterface {
+export interface CardInterface {
     suit: Suit;
     rank: Rank;
     isRevealed: boolean;
@@ -63,11 +63,11 @@ class Card implements CardInterface {
         try {
             const json = JSON.parse(jsonString);
             return Card.fromJSON(json);
-        } catch (e) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
             throw new Error(e);
         }
     };
 }
 
 export default Card;
-export { CardInterface };

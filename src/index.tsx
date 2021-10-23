@@ -1,10 +1,11 @@
-import React, { lazy, Fragment, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
-import { Normalize } from "styled-normalize";
-import { GameProps } from "./definitions";
+import { ThemeProvider } from "@theme-ui/theme-provider";
+
 import { createInitialState } from "./setup";
-import { GlobalStyle } from "./styles";
 import Loader from "./components/Loader";
+import theme from "./theme";
+import { GameProps } from "./Game";
 
 const App: React.FC<GameProps> = ({ initialState }) => {
     const Game = lazy(() => import("./Game"));
@@ -12,14 +13,12 @@ const App: React.FC<GameProps> = ({ initialState }) => {
     const SvgCards = lazy(() => import("./components/SvgCards"));
 
     return (
-        <Fragment>
-            <Normalize />
-            <GlobalStyle />
+        <ThemeProvider theme={theme}>
             <Suspense fallback={<Loader />}>
                 <SvgCards />
                 <Game initialState={initialState} />
             </Suspense>
-        </Fragment>
+        </ThemeProvider>
     );
 };
 
