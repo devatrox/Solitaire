@@ -1,5 +1,5 @@
 import React, { lazy, Fragment, Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Normalize } from "styled-normalize";
 import { GameProps } from "./definitions";
 import { createInitialState } from "./setup";
@@ -23,7 +23,7 @@ const App: React.FC<GameProps> = ({ initialState }) => {
     );
 };
 
-ReactDOM.render(
-    <App initialState={createInitialState()} />,
-    document.getElementById("app"),
-);
+const container = document.getElementById("app")!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container);
+
+root.render(<App initialState={createInitialState()} />);
