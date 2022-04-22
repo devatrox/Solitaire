@@ -1,12 +1,30 @@
-import { Suit, Rank, Color } from "./types";
+import { Suit, Rank, Color, SvgRankName } from "./types";
+
+export type SvgID = `SvgCards__${Suit}_${SvgRankName}`;
 
 interface CardInterface {
     suit: Suit;
     rank: Rank;
     isRevealed: boolean;
     color?: Color;
-    id?: string;
+    id?: SvgID;
 }
+
+const names: SvgRankName[] = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "jack",
+    "queen",
+    "king",
+];
 
 class Card implements CardInterface {
     constructor(
@@ -23,23 +41,7 @@ class Card implements CardInterface {
         return Color.BLACK;
     }
 
-    get id(): string {
-        const names = [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "jack",
-            "queen",
-            "king",
-        ];
-
+    get id(): SvgID {
         return `SvgCards__${this.suit}_${names[this.rank - 1]}`;
     }
 

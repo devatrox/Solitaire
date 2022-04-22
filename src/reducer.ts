@@ -92,7 +92,7 @@ const flipCardAction = (
     const newTarget = _cloneDeep(prevState[targetName]);
 
     for (const mappedCard of mappedCards) {
-        const [targetCard, sourceIndex, targetIndex] = mappedCard;
+        const [targetCard, , targetIndex] = mappedCard;
         const cardToBeFlipped = newTarget[targetIndex].find(
             (card) => card.id === targetCard.id,
         );

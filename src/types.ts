@@ -7,6 +7,21 @@ export enum Suit {
     Club = "club",
 }
 
+export type SvgRankName =
+    | "1"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    | "8"
+    | "9"
+    | "10"
+    | "jack"
+    | "queen"
+    | "king";
+
 export enum Rank {
     Ace = 1,
     Two = 2,
@@ -57,10 +72,6 @@ export type PileClickEvent<T = HTMLDivElement> = (
 export type DropEvent<T = HTMLDivElement> = (
     event: React.DragEvent<T>,
     target: [PileName, number],
-) => void;
-
-export type MenuEvent<T = HTMLDivElement> = (
-    event: React.SyntheticEvent<T>,
 ) => void;
 
 export interface GameState {

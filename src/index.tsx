@@ -18,18 +18,18 @@ const App: React.FC<AppProps> = ({ initialState }) => {
 
     return (
         <ThemeProvider theme={theme}>
+            <Global
+                styles={(theme) => ({
+                    body: {
+                        position: "fixed",
+                        overflow: "hidden",
+                        width: "100%",
+                        backgroundImage:
+                            "radial-gradient(transparent, rgba(0, 0, 0, 0.4))",
+                    },
+                })}
+            />
             <Suspense fallback={<Loader />}>
-                <Global
-                    styles={(theme) => ({
-                        body: {
-                            position: "fixed",
-                            overflow: "hidden",
-                            width: "100%",
-                            backgroundImage:
-                                "radial-gradient(transparent, rgba(0, 0, 0, 0.4))",
-                        },
-                    })}
-                />
                 <SvgCards />
                 <Game initialState={initialState} />
             </Suspense>

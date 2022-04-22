@@ -1,14 +1,13 @@
 import { Box, Flex, Grid, GridProps } from "theme-ui";
 
 import Button from "../elements/Button";
-import { MenuEvent } from "../types";
 
-export interface MenuProps extends GridProps {
+export interface MenuProps extends Omit<GridProps, "onReset"> {
     message: string;
     isDone: boolean;
     isFinished: boolean;
-    onFinish?: MenuEvent;
-    onReset?: MenuEvent;
+    onFinish?: React.MouseEventHandler<HTMLButtonElement>;
+    onReset?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Menu: React.FC<MenuProps> = ({

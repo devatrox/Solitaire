@@ -1,4 +1,11 @@
-import { useReducer, useEffect, useMemo, useState, Fragment } from "react";
+import {
+    useReducer,
+    useEffect,
+    useMemo,
+    useState,
+    Fragment,
+    useCallback,
+} from "react";
 import { Flex, Grid } from "theme-ui";
 import _last from "lodash/last";
 import _reverse from "lodash/reverse";
@@ -28,6 +35,7 @@ import {
     isKingOnEmpty,
     validResult,
 } from "./rules";
+import useMessage from "./hooks/useMessage";
 
 export interface GameProps {
     initialState: GameState;
@@ -39,7 +47,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         initialState,
     );
 
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useMessage();
 
     const isDone = useMemo<boolean>(() => {
         const allCards = [...stock, ...waste, ...foundation].flat();
@@ -49,22 +57,145 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         return isStockAndWasteEmpty && isRevealed;
     }, [foundation, stock, waste]);
 
-    const isFinished = useMemo<boolean>(() => {
-        const allTableauCards = foundation.flat();
-        return allTableauCards.length === cardCount;
-    }, [foundation]);
+    const isFinished = foundation.flat().length === cardCount;
 
-    useEffect(() => {
-        if (message.length > 0) {
-            window.setTimeout(() => setMessage(""), 4000);
+    const handleStockClick: PileClickEvent = useCallback(() => {
+        const mappedCards = waste[0].map((card): MappedCard => [card, 0, 0]);
+        const reversedWasteCards = _reverse(mappedCards);
+
+        dispatch({
+            type: ActionTypes.MOVE_CARDS,
+            payload: {
+                cards: reversedWasteCards,
+                sourcePile: PileName.WASTE,
+                targetPile: PileName.STOCK,
+            },
+        });
+    }, [waste]);
+
+    const handleStockCardClick: CardClickEvent = (event, card) => {
+        dispatch({
+            type: ActionTypes.MOVE_CARDS,
+            payload: {
+                cards: [[card, 0, 0]],
+                sourcePile: PileName.STOCK,
+                targetPile: PileName.WASTE,
+            },
+        });
+    };
+
+    const handleCardDoubleClick: CardClickEvent = useCallback(
+        (event, card, source) => {
+            const [sourceName, sourceIndex] = source;
+            const targetIndex = getFoundationTargetIndex(card);
+            const { status, statusText } = validateMultiple(
+                [card],
+                foundation[targetIndex],
+                [isLowerRank],
+            );
+
+            if (status) {
+                dispatch({
+                    type: ActionTypes.MOVE_CARDS,
+                    payload: {
+                        cards: [[card, sourceIndex, targetIndex]],
+                        sourcePile: sourceName,
+                        targetPile: PileName.FOUNDATION,
+                    },
+                });
+            }
+
+            setMessage(statusText);
+        },
+        [foundation, setMessage],
+    );
+
+    const handleDrop: DropEvent = useCallback(
+        (event, target) => {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text/plain");
+            const [targetName, targetIndex] = target;
+
+            try {
+                const json: CardTransferObject = JSON.parse(data);
+                const [sourceName, sourceIndex] = json.source;
+
+                const cards: Card[] = json.cards.map((cardJson) =>
+                    Card.fromJSON(cardJson),
+                );
+                const mappedCards: MappedCard[] = cards.map((card) => [
+                    card,
+                    sourceIndex,
+                    targetIndex,
+                ]);
+                let validationResult = validResult;
+
+                if (targetName === PileName.TABLEAU) {
+                    validationResult = validateMultiple(
+                        cards,
+                        tableau[targetIndex],
+                        [isHigherRank, isDifferentColor, isKingOnEmpty],
+                    );
+                }
+
+                if (targetName === PileName.FOUNDATION) {
+                    validationResult = validateMultiple(
+                        cards,
+                        foundation[targetIndex],
+                        [isLowerRank],
+                    );
+                }
+
+                const { status, statusText } = validationResult;
+
+                if (status) {
+                    dispatch({
+                        type: ActionTypes.MOVE_CARDS,
+                        payload: {
+                            cards: mappedCards,
+                            sourcePile: sourceName,
+                            targetPile: targetName,
+                        },
+                    });
+                }
+
+                setMessage(statusText);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        [foundation, setMessage, tableau],
+    );
+
+    const handleReset: MenuEvent = () => {
+        dispatch({
+            type: ActionTypes.RESET,
+        });
+    };
+
+    const handleFinish: MenuEvent = useCallback(() => {
+        let validationResult = hasNoStock(stock[0], waste[0]);
+
+        if (validationResult.status) {
+            validationResult = isAllRevealed(tableau);
         }
-    }, [message]);
+
+        const { status, statusText } = validationResult;
+
+        if (status) {
+            dispatch({
+                type: ActionTypes.FINISH,
+            });
+        }
+
+        setMessage(statusText);
+    }, [stock, waste, tableau, setMessage]);
 
     useEffect(() => {
         if (isFinished) {
             setMessage("Congratulations!");
         }
-    }, [isFinished]);
+    }, [isFinished, setMessage]);
 
     useEffect(() => {
         tableau.forEach((pile, i) => {
@@ -125,132 +256,6 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
             }
         }
     }, [stock]);
-
-    const handleStockClick: PileClickEvent = () => {
-        const mappedCards = waste[0].map((card): MappedCard => [card, 0, 0]);
-        const reversedWasteCards = _reverse(mappedCards);
-
-        dispatch({
-            type: ActionTypes.MOVE_CARDS,
-            payload: {
-                cards: reversedWasteCards,
-                sourcePile: PileName.WASTE,
-                targetPile: PileName.STOCK,
-            },
-        });
-    };
-
-    const handleStockCardClick: CardClickEvent = (event, card) => {
-        dispatch({
-            type: ActionTypes.MOVE_CARDS,
-            payload: {
-                cards: [[card, 0, 0]],
-                sourcePile: PileName.STOCK,
-                targetPile: PileName.WASTE,
-            },
-        });
-    };
-
-    const handleCardDoubleClick: CardClickEvent = (event, card, source) => {
-        const [sourceName, sourceIndex] = source;
-        const targetIndex = getFoundationTargetIndex(card);
-        const { status, statusText } = validateMultiple(
-            [card],
-            foundation[targetIndex],
-            [isLowerRank],
-        );
-
-        if (status) {
-            dispatch({
-                type: ActionTypes.MOVE_CARDS,
-                payload: {
-                    cards: [[card, sourceIndex, targetIndex]],
-                    sourcePile: sourceName,
-                    targetPile: PileName.FOUNDATION,
-                },
-            });
-        }
-
-        setMessage(statusText);
-    };
-
-    const handleDrop: DropEvent = (event, target) => {
-        event.preventDefault();
-        const data = event.dataTransfer.getData("text/plain");
-        const [targetName, targetIndex] = target;
-
-        try {
-            const json: CardTransferObject = JSON.parse(data);
-            const [sourceName, sourceIndex] = json.source;
-
-            const cards: Card[] = json.cards.map((cardJson) =>
-                Card.fromJSON(cardJson),
-            );
-            const mappedCards: MappedCard[] = cards.map((card) => [
-                card,
-                sourceIndex,
-                targetIndex,
-            ]);
-            let validationResult = validResult;
-
-            if (targetName === PileName.TABLEAU) {
-                validationResult = validateMultiple(
-                    cards,
-                    tableau[targetIndex],
-                    [isHigherRank, isDifferentColor, isKingOnEmpty],
-                );
-            }
-
-            if (targetName === PileName.FOUNDATION) {
-                validationResult = validateMultiple(
-                    cards,
-                    foundation[targetIndex],
-                    [isLowerRank],
-                );
-            }
-
-            const { status, statusText } = validationResult;
-
-            if (status) {
-                dispatch({
-                    type: ActionTypes.MOVE_CARDS,
-                    payload: {
-                        cards: mappedCards,
-                        sourcePile: sourceName,
-                        targetPile: targetName,
-                    },
-                });
-            }
-
-            setMessage(statusText);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const handleReset: MenuEvent = () => {
-        dispatch({
-            type: ActionTypes.RESET,
-        });
-    };
-
-    const handleFinish: MenuEvent = () => {
-        let validationResult = hasNoStock(stock[0], waste[0]);
-
-        if (validationResult.status) {
-            validationResult = isAllRevealed(tableau);
-        }
-
-        const { status, statusText } = validationResult;
-
-        if (status) {
-            dispatch({
-                type: ActionTypes.FINISH,
-            });
-        }
-
-        setMessage(statusText);
-    };
 
     return (
         <Flex

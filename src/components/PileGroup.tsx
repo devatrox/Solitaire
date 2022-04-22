@@ -1,4 +1,5 @@
 import { Box, ThemeUIStyleObject } from "theme-ui";
+import _capitalize from "lodash/capitalize";
 
 import Pile from "./Pile";
 import { GenericPileProps, PileClickEvent, PileName } from "../types";
@@ -34,7 +35,7 @@ const PileGroup: React.FC<GroupProps> = ({
 }) => (
     <Box
         sx={{
-            label: name,
+            label: _capitalize(name),
             gridArea: name,
             position: "relative",
             ...(name === PileName.FOUNDATION ? foundationStyles : {}),

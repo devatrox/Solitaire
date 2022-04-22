@@ -1,6 +1,6 @@
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, useSprings, animated } from "@react-spring/web";
 import { Box, BoxProps, Flex, ThemeUIStyleObject } from "theme-ui";
 
 const Dot = animated(Box);
@@ -16,6 +16,8 @@ const dotStyles: ThemeUIStyleObject = {
     background: "white",
 };
 
+const dotDelays = [40, 20, 0];
+
 const Loader: React.FC<BoxProps> = ({ sx, ...boxProps }) => {
     const springConfig = {
         loop: { reverse: true },
@@ -28,6 +30,14 @@ const Loader: React.FC<BoxProps> = ({ sx, ...boxProps }) => {
             opacity: 1,
         },
     };
+
+    const dotSprings = useSprings(
+        3,
+        dotDelays.map((delay) => ({
+            ...springConfig,
+            delay,
+        })),
+    );
 
     const dot1Styles = useSpring({
         ...springConfig,
@@ -54,9 +64,9 @@ const Loader: React.FC<BoxProps> = ({ sx, ...boxProps }) => {
             }}
             {...boxProps}
         >
-            <Dot sx={dotStyles} style={dot1Styles} />
-            <Dot sx={dotStyles} style={dot2Styles} />
-            <Dot sx={dotStyles} style={dot3Styles} />
+            {dotSprings.map((style, i) => (
+                <Dot sx={dotStyles} style={style} key={i} />
+            ))}
         </Flex>
     );
 };
