@@ -1,8 +1,16 @@
-import styled from "styled-components";
-import SvgCards from "../svg-cards.svg";
+/** @jsxImportSource theme-ui */
+import { forwardRef } from "react";
+import { SxProp } from "theme-ui";
+import SvgCardsRaw from "../svg-cards.svg";
 
-const StyledSvg = styled(SvgCards)`
-    display: none;
-`;
+type SvgProps = React.SVGProps<SVGSVGElement> & SxProp;
 
-export default StyledSvg;
+const SvgCards = forwardRef<SVGSVGElement, SvgProps>(
+    ({ sx, ...props }, ref) => (
+        <SvgCardsRaw ref={ref} sx={{ display: "none", ...sx }} {...props} />
+    ),
+);
+
+SvgCards.displayName = "SvgCards";
+
+export default SvgCards;

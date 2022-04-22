@@ -43,23 +43,25 @@ export enum ActionTypes {
     FINISH = "finish",
 }
 
-export type CardClickEvent = (
-    event: React.SyntheticEvent,
+export type CardClickEvent<T = HTMLDivElement> = (
+    event: React.SyntheticEvent<T>,
     card: Card,
     source: [PileName, number],
 ) => void;
 
-export type PileClickEvent = (
-    event: React.SyntheticEvent,
+export type PileClickEvent<T = HTMLDivElement> = (
+    event: React.SyntheticEvent<T>,
     name: PileName,
 ) => void;
 
-export type DropEvent = (
-    event: React.DragEvent<HTMLDivElement>,
+export type DropEvent<T = HTMLDivElement> = (
+    event: React.DragEvent<T>,
     target: [PileName, number],
 ) => void;
 
-export type MenuEvent = (event: React.SyntheticEvent) => void;
+export type MenuEvent<T = HTMLDivElement> = (
+    event: React.SyntheticEvent<T>,
+) => void;
 
 export interface GameState {
     stock: Card[][];
@@ -68,51 +70,12 @@ export interface GameState {
     tableau: Card[][];
 }
 
-export interface GameProps {
-    initialState: GameState;
-}
-
-export interface CardProps {
-    card: Card;
-    source: [PileName, number];
-    isTop?: boolean;
-    isBottom?: boolean;
-    isStackDown?: boolean;
-    childCards?: Card[];
-    style?: React.CSSProperties;
-    key?: string;
-    onClick?: CardClickEvent;
-    onDoubleClick?: CardClickEvent;
-    onDrop?: DropEvent;
-}
-
 export interface GenericPileProps {
     name: PileName;
     stackDown?: boolean;
     onCardClick?: CardClickEvent;
     onCardDoubleClick?: CardClickEvent;
     onDrop?: DropEvent;
-}
-
-export interface PileProps extends GenericPileProps {
-    className?: string;
-    cards: Card[];
-    index?: number;
-    onClick?: PileClickEvent;
-}
-
-export interface GroupProps extends GenericPileProps {
-    piles: Card[][];
-    onPileClick?: PileClickEvent;
-}
-
-export interface MenuProps {
-    className?: string;
-    message: string;
-    isDone: boolean;
-    isFinished: boolean;
-    onFinish?: MenuEvent;
-    onReset?: MenuEvent;
 }
 
 export type ValidationResult = {

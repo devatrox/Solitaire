@@ -1,10 +1,11 @@
 import _shuffle from "lodash/shuffle";
 import _last from "lodash/last";
-import Card from "./Card";
-import { Suit, Rank, GameState } from "./definitions";
 
-const suits = [Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club];
-const ranks = [
+import Card from "./Card";
+import { Suit, Rank, GameState } from "./types";
+
+export const suits = [Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club];
+export const ranks = [
     Rank.Ace,
     Rank.Two,
     Rank.Three,
@@ -20,9 +21,9 @@ const ranks = [
     Rank.King,
 ];
 
-const cardCount: number = suits.length * ranks.length;
+export const cardCount: number = suits.length * ranks.length;
 
-const createNewStack = (): Card[] => {
+export const createNewStack = (): Card[] => {
     const stack = suits
         .map((suit) => ranks.map((rank) => new Card(suit, rank)))
         .flat();
@@ -30,7 +31,7 @@ const createNewStack = (): Card[] => {
 };
 
 // For testing purposes
-const createSolvedState = (): GameState => {
+export const createSolvedState = (): GameState => {
     const stack = createNewStack();
     const revealedStack: Card[] = stack.map((card) => {
         card.reveal();
@@ -55,7 +56,7 @@ const createSolvedState = (): GameState => {
     return state;
 };
 
-const createInitialState = (): GameState => {
+export const createInitialState = (): GameState => {
     const stack = createNewStack();
 
     const state: GameState = {
@@ -82,5 +83,3 @@ const createInitialState = (): GameState => {
 
     return state;
 };
-
-export { suits, ranks, cardCount, createInitialState, createSolvedState };

@@ -1,40 +1,27 @@
-import React from "react";
-import styled from "styled-components";
-import Pile from "./Pile";
-import { GroupProps, PileName } from "../definitions";
+import { Box, ThemeUIStyleObject } from "theme-ui";
 
-interface StyledContainerProps {
-    $name: string;
+import Pile from "./Pile";
+import { GenericPileProps, PileClickEvent, PileName } from "../types";
+import Card from "../Card";
+
+export interface GroupProps extends GenericPileProps {
+    piles: Card[][];
+    onPileClick?: PileClickEvent;
 }
 
-const StyledContainer = styled.div<StyledContainerProps>`
-    grid-area: ${(props) => props.$name};
-    position: relative;
-    ${(props) =>
-        props.$name === PileName.FOUNDATION &&
-        `
-    display: grid;
-    grid-gap: var(--grid-gap);
-    grid-template-columns: repeat(4, 1fr);
+const foundationStyles: ThemeUIStyleObject = {
+    display: "grid",
+    gap: [2, 3],
+    gridTemplateColumns: ["auto", "repeat(4, 1fr)"],
+    gridTemplateRows: ["repeat(4, 1fr)", "none"],
+};
 
-    @media (max-width: 768px) {
-        grid-template-columns: auto;
-        grid-template-rows: repeat(4, 1fr);
-    }
-    `}
-    ${(props) =>
-        props.$name === PileName.TABLEAU &&
-        `
-    display: grid;
-    grid-gap: var(--grid-gap);
-    grid-template-columns: repeat(7, 1fr);
-
-    @media (max-width: 768px) {
-        grid-template-columns: auto;
-        grid-template-rows: repeat(7, 1fr);
-    }
-    `}
-`;
+const tableauStyles: ThemeUIStyleObject = {
+    display: "grid",
+    gap: [2, 3],
+    gridTemplateColumns: ["auto", "repeat(7, 1fr)"],
+    gridTemplateRows: ["repeat(7, 1fr)", "none"],
+};
 
 const PileGroup: React.FC<GroupProps> = ({
     piles = [],
@@ -45,7 +32,15 @@ const PileGroup: React.FC<GroupProps> = ({
     onCardDoubleClick,
     onPileClick,
 }) => (
-    <StyledContainer $name={name}>
+    <Box
+        sx={{
+            label: name,
+            gridArea: name,
+            position: "relative",
+            ...(name === PileName.FOUNDATION ? foundationStyles : {}),
+            ...(name === PileName.TABLEAU ? tableauStyles : {}),
+        }}
+    >
         {piles.map((pile, i) => (
             <Pile
                 name={name}
@@ -59,7 +54,7 @@ const PileGroup: React.FC<GroupProps> = ({
                 key={i} // eslint-disable-line react/no-array-index-key
             />
         ))}
-    </StyledContainer>
+    </Box>
 );
 
 export default PileGroup;

@@ -9,7 +9,7 @@ import {
     ActionPayloadSourceName,
     ActionPayloadTargetName,
     MappedCard,
-} from "./definitions";
+} from "./types";
 import Card from "./Card";
 import { createInitialState } from "./setup";
 

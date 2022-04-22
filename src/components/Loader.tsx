@@ -1,24 +1,22 @@
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
 import { useSpring, animated } from "@react-spring/web";
-import React from "react";
-import styled from "styled-components";
+import { Box, BoxProps, Flex, ThemeUIStyleObject } from "theme-ui";
 
-const Dot = styled(animated.div)`
-    font-size: 2rem;
-    display: inline-block;
-    margin: auto 0.25em;
-    height: 0.75em;
-    width: 0.75em;
-    border-radius: 0.375em;
-    background: #fff;
-`;
+const Dot = animated(Box);
 
-interface LoaderProps {
-    className?: string;
-}
+const dotStyles: ThemeUIStyleObject = {
+    fontSize: "2rem",
+    display: "inline-block",
+    marginY: "auto",
+    marginX: "0.25em",
+    height: "0.75em",
+    width: "0.75em",
+    borderRadius: "0.375em",
+    background: "white",
+};
 
-const Loader: React.FC<LoaderProps> = ({ className }) => {
+const Loader: React.FC<BoxProps> = ({ sx, ...boxProps }) => {
     const springConfig = {
         loop: { reverse: true },
         from: {
@@ -46,20 +44,21 @@ const Loader: React.FC<LoaderProps> = ({ className }) => {
     });
 
     return (
-        <div className={className}>
-            <Dot style={dot1Styles} />
-            <Dot style={dot2Styles} />
-            <Dot style={dot3Styles} />
-        </div>
+        <Flex
+            sx={{
+                width: "100%",
+                height: "100vh",
+                justifyContent: "center",
+                alignItems: "center",
+                ...sx,
+            }}
+            {...boxProps}
+        >
+            <Dot sx={dotStyles} style={dot1Styles} />
+            <Dot sx={dotStyles} style={dot2Styles} />
+            <Dot sx={dotStyles} style={dot3Styles} />
+        </Flex>
     );
 };
 
-const StyledLoader = styled(Loader)`
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-`;
-
-export default StyledLoader;
+export default Loader;

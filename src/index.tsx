@@ -1,25 +1,39 @@
-import React, { lazy, Fragment, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { Normalize } from "styled-normalize";
-import { GameProps } from "./definitions";
+import { ThemeProvider } from "theme-ui";
+import { Global } from "@emotion/react";
+
+import { GameState } from "./types";
 import { createInitialState } from "./setup";
-import { GlobalStyle } from "./styles";
 import Loader from "./components/Loader";
+import { theme } from "./theme";
 
-const App: React.FC<GameProps> = ({ initialState }) => {
+export interface AppProps {
+    initialState: GameState;
+}
+
+const App: React.FC<AppProps> = ({ initialState }) => {
     const Game = lazy(() => import("./Game"));
-
     const SvgCards = lazy(() => import("./components/SvgCards"));
 
     return (
-        <Fragment>
-            <Normalize />
-            <GlobalStyle />
+        <ThemeProvider theme={theme}>
             <Suspense fallback={<Loader />}>
+                <Global
+                    styles={(theme) => ({
+                        body: {
+                            position: "fixed",
+                            overflow: "hidden",
+                            width: "100%",
+                            backgroundImage:
+                                "radial-gradient(transparent, rgba(0, 0, 0, 0.4))",
+                        },
+                    })}
+                />
                 <SvgCards />
                 <Game initialState={initialState} />
             </Suspense>
-        </Fragment>
+        </ThemeProvider>
     );
 };
 

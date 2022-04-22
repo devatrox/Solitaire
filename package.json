@@ -6,7 +6,7 @@
         "build": "parcel build ./src/index.html",
         "clean": "rm -rf dist/",
         "lint": "eslint --ext .jsx,.js,.tsx,.ts src",
-        "lint-fix": "npm run lint -- --fix"
+        "lint-fix": "yarn run lint --fix"
     },
     "author": {
         "name": "Jason Nickel",
@@ -20,12 +20,13 @@
         "trailingComma": "all"
     },
     "dependencies": {
+        "@emotion/react": "^11.9.0",
+        "@mdx-js/react": "^2.1.1",
         "@react-spring/web": "^9.4.4",
         "lodash": "^4.17.21",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
-        "styled-components": "^5.3.5",
-        "styled-normalize": "^8.0.7"
+        "theme-ui": "^0.14.2"
     },
     "devDependencies": {
         "@parcel/config-default": "^2.4.1",
@@ -33,7 +34,6 @@
         "@types/lodash": "^4.14.182",
         "@types/react": "^18.0.5",
         "@types/react-dom": "^18.0.1",
-        "@types/styled-components": "^5.1.25",
         "@typescript-eslint/eslint-plugin": "^5.20.0",
         "@typescript-eslint/parser": "^5.20.0",
         "eslint": "^8.13.0",

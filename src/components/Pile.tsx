@@ -1,12 +1,21 @@
-import React, { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import _reverse from "lodash/reverse";
-import CardElement from "./CardElement";
-import { PileProps, CardProps } from "../definitions";
-import styled from "styled-components";
+import { Box, BoxProps } from "theme-ui";
 import { useTransition } from "@react-spring/web";
 
+import CardElement, { CardProps } from "./CardElement";
+import Card from "../Card";
+import { GenericPileProps, PileClickEvent } from "../types";
+
+export interface PileProps
+    extends GenericPileProps,
+        Omit<BoxProps, "name" | "onDrop" | "onClick"> {
+    cards: Card[];
+    index?: number;
+    onClick?: PileClickEvent;
+}
+
 const Pile: React.FC<PileProps> = ({
-    className,
     cards,
     name,
     index = 0,
@@ -15,6 +24,8 @@ const Pile: React.FC<PileProps> = ({
     onCardClick,
     onCardDoubleClick,
     onClick,
+    sx,
+    ...boxProps
 }) => {
     const [isHover, setIsHover] = useState(false);
     const sortedCards = useMemo(
@@ -101,32 +112,38 @@ const Pile: React.FC<PileProps> = ({
                     onDoubleClick={onCardDoubleClick}
                 />
             )),
-        [transitions, index, name, onCardClick, onCardDoubleClick],
+        [
+            transitions,
+            index,
+            name,
+            sortedCards.length,
+            onCardClick,
+            onCardDoubleClick,
+        ],
     );
 
     return (
-        <div
-            className={className}
+        <Box
+            sx={{
+                position: "relative",
+                width: ["7vh", "100%"],
+                height: 0,
+                paddingBottom: "140%",
+                border: "2px solid rgba(255, 255, 255, 0.3)",
+                borderRadius: "8px",
+                perspective: "600px",
+                ...sx,
+            }}
             onDrop={handleDrop}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
             onClick={handleClick}
+            {...boxProps}
         >
             {stackDown ? renderStackedDownCards : renderStackedUpCards}
-        </div>
+        </Box>
     );
 };
 
-const StyledPile = styled(Pile)`
-    position: relative;
-    width: var(--card-width);
-    height: 0;
-    padding-bottom: var(--card-height);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: var(--card-border-radius);
-    perspective: 600px;
-`;
-
-export default StyledPile;
+export default Pile;

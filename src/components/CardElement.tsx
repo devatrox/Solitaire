@@ -1,117 +1,25 @@
-import React, { useState, createRef, useMemo } from "react";
-import styled from "styled-components";
+import { useState, createRef, useMemo } from "react";
 import { useSpring, animated, config } from "@react-spring/web";
+import { Box, BoxProps } from "theme-ui";
 import _reverse from "lodash/reverse";
-import { CardProps, CardTransferObject, PileName } from "../definitions";
+
+import { CardClickEvent, CardTransferObject, PileName } from "../types";
 import Card from "../Card";
+import Svg from "../elements/Svg";
 
-const Svg = styled.svg.attrs({
-    viewBox: "0 0 169.075 244.64",
-})`
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    border-radius: var(--card-border-radius);
-    backface-visibility: hidden;
-`;
-
-const SvgFront = styled(Svg)``;
-
-const SvgBack = styled(Svg)`
-    fill: var(--color-blue);
-    transform: rotateY(180deg);
-`;
-
-interface CardWrapperProps {
-    $isAnimating: boolean;
-    $isTop: boolean;
-    $isHover: boolean;
-    $card: Card;
+export interface CardProps extends Omit<BoxProps, "onClick" | "onDoubleClick"> {
+    card: Card;
+    source: [PileName, number];
+    isTop?: boolean;
+    isBottom?: boolean;
+    isStackDown?: boolean;
+    childCards?: Card[];
+    style?: any;
+    onClick?: CardClickEvent;
+    onDoubleClick?: CardClickEvent;
 }
 
-const CardWrapper = styled(animated.div)<CardWrapperProps>`
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    will-change: transform;
-    transform-origin: center center;
-    transform-style: preserve-3d;
-    border-radius: var(--card-border-radius);
-    box-shadow: ${(props) =>
-        `0 0 ${
-            props.$isAnimating && props.$isTop ? "10px" : "0"
-        } rgba(0, 0, 0, 0.3)`};
-
-    &:before,
-    &:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        z-index: 2;
-        box-shadow: inset 0 0 0 2px var(--card-border-color);
-        border-radius: var(--card-border-radius);
-    }
-
-    &:after {
-        transform: rotateY(180deg);
-    }
-`;
-
-interface DragContainerProps {
-    className?: string;
-    $cursorStyle: "not-allowed" | "grab" | "pointer";
-    $isDragging: boolean;
-    $isBottom: boolean;
-    $isStackDown: boolean;
-    $isHover: boolean;
-    $card: Card;
-}
-
-const DragContainer = styled(animated.div)<DragContainerProps>`
-    cursor: ${(props) => props.$cursorStyle};
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    border-radius: var(--card-border-radius);
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
-    perspective: 600px;
-    will-change: transform, box-shadow;
-    touch-action: manipulation;
-    opacity: ${(props) => (props.$isDragging ? "0.5;" : "1;")}
-        ${(props) =>
-            !props.$isBottom &&
-            props.$isStackDown &&
-            `
-        top: var(--card-stack-margin);
-        z-index: 3;
-
-        @media (max-width: 768px) {
-            top: auto;
-            left: var(--card-stack-margin);
-        }
-    `};
-    ${(props) =>
-        props.$isHover &&
-        props.$card.isRevealed &&
-        `
-            --card-border-color: var(--color-orange);
-        `}
-
-    @media (max-width: 768px) {
-        --card-border-color: transparent;
-    }
-`;
+const AnimatedBox = animated(Box);
 
 const CardElement: React.FC<CardProps> = ({
     card,
@@ -124,9 +32,11 @@ const CardElement: React.FC<CardProps> = ({
     children,
     onClick,
     onDoubleClick,
+    sx,
+    ...boxProps
 }) => {
-    const containerRref = createRef<HTMLDivElement>();
-    const cardRref = createRef<HTMLDivElement>();
+    const containerRef = createRef<HTMLDivElement>();
+    const cardRef = createRef<HTMLDivElement>();
 
     const [isDragging, setIsDragging] = useState(false);
 
@@ -163,7 +73,7 @@ const CardElement: React.FC<CardProps> = ({
     const handleMouseOver: React.MouseEventHandler<HTMLDivElement> = (
         event,
     ) => {
-        if (event?.target === cardRref.current) {
+        if (event?.target === cardRef.current) {
             setIsHover(true);
         }
     };
@@ -171,19 +81,19 @@ const CardElement: React.FC<CardProps> = ({
     const handleMouseLeave: React.MouseEventHandler<HTMLDivElement> = (
         event,
     ) => {
-        if (event?.target === cardRref.current) {
+        if (event?.target === cardRef.current) {
             setIsHover(false);
         }
     };
 
     const handleFocus: React.FocusEventHandler<HTMLDivElement> = (event) => {
-        if (event?.target === cardRref.current) {
+        if (event?.target === cardRef.current) {
             setIsHover(true);
         }
     };
 
     const handleBlur: React.FocusEventHandler<HTMLDivElement> = (event) => {
-        if (event?.target === cardRref.current) {
+        if (event?.target === cardRef.current) {
             setIsHover(false);
         }
     };
@@ -203,7 +113,7 @@ const CardElement: React.FC<CardProps> = ({
     };
 
     const handleDragStart: React.DragEventHandler<HTMLDivElement> = (event) => {
-        if (event?.target === containerRref.current && event?.dataTransfer) {
+        if (event?.target === containerRef.current && event?.dataTransfer) {
             const grabbedCards = _reverse([...childCards, card]);
             const payload: CardTransferObject = {
                 source: source,
@@ -220,14 +130,8 @@ const CardElement: React.FC<CardProps> = ({
     };
 
     return (
-        <DragContainer
-            ref={containerRref}
-            $card={card}
-            $cursorStyle={cursorStyle}
-            $isDragging={isDragging}
-            $isBottom={isBottom}
-            $isStackDown={isStackDown}
-            $isHover={isHover}
+        <AnimatedBox
+            ref={containerRef}
             style={{
                 ...style,
                 boxShadow,
@@ -241,29 +145,81 @@ const CardElement: React.FC<CardProps> = ({
             onMouseOut={handleMouseLeave}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            sx={{
+                label: "DragContainer",
+                cursor: cursorStyle,
+                display: "block",
+                position: "absolute",
+                top: ["auto", !isBottom && isStackDown ? "12%" : 0],
+                left: ["12%", 0],
+                height: "100%",
+                width: "100%",
+                borderRadius: "8px",
+                boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.3)",
+                perspective: "400px",
+                willChange: "transform, box-shadow",
+                touchAction: "manipulation",
+                opacity: isDragging ? 0.5 : 1,
+                zIndex: !isBottom && isStackDown ? 3 : undefined,
+                ...sx,
+            }}
+            {...boxProps}
         >
-            <CardWrapper
-                ref={cardRref}
-                $card={card}
-                $isTop={isTop}
-                $isHover={isHover}
-                $isAnimating={isFlipping}
+            <AnimatedBox
+                ref={cardRef}
                 style={{ transform: transformRotate }}
                 data-rank={card.rank}
                 data-suit={card.suit}
                 data-color={card.color}
                 onClick={handleClick}
                 onDoubleClick={handleDoubleClick}
+                sx={{
+                    label: "CardWrapper",
+                    position: "absolute",
+                    height: "100%",
+                    width: "100%",
+                    willChange: "transform",
+                    transformOrigin: "center center",
+                    transformStyle: "preserve-3d",
+                    borderRadius: "8px",
+                    boxShadow: `0 0 ${
+                        isFlipping && isTop ? "10px" : 0
+                    } rgba(0, 0, 0, 0.3)`,
+                    "&:before, &:after": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: "100%",
+                        zIndex: 2,
+                        boxShadow: [
+                            "none",
+                            `inset 0 0 0 2px ${
+                                isHover && card.isRevealed ? "orange" : "black"
+                            }`,
+                        ],
+                        borderRadius: "8px",
+                    },
+                    "&:after": {
+                        transform: "rotate(180deg)",
+                    },
+                }}
             >
-                <SvgFront>
+                <Svg>
                     <use href={`#${card.id}`} />
-                </SvgFront>
-                <SvgBack>
+                </Svg>
+                <Svg
+                    sx={{
+                        fill: "blue",
+                        transform: "rotateY(180deg)",
+                    }}
+                >
                     <use href="#SvgCards__alternate-back" />
-                </SvgBack>
-            </CardWrapper>
+                </Svg>
+            </AnimatedBox>
             {children}
-        </DragContainer>
+        </AnimatedBox>
     );
 };
 

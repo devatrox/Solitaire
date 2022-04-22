@@ -1,4 +1,4 @@
-import { Suit, Rank, Color } from "./definitions";
+import { Suit, Rank, Color } from "./types";
 
 interface CardInterface {
     suit: Suit;

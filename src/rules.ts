@@ -1,7 +1,7 @@
 import _last from "lodash/last";
 import _first from "lodash/first";
 import Card from "./Card";
-import { Rank, ValidationResult } from "./definitions";
+import { Rank, ValidationResult } from "./types";
 import { ranks } from "./setup";
 
 export const validResult = { status: true, statusText: "" };
