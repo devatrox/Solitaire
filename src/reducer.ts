@@ -55,26 +55,29 @@ const moveCardsAction = (
 };
 
 const finishAction = (draft: GameState) => {
-    const piles = draft.tableau
-        .map((pile, pileIndex) =>
-            pile.cards.map((card): MappedCard => {
-                const targetIndex = getFoundationTargetIndex(card);
-                return [card, pileIndex, targetIndex];
-            }),
-        )
-        .flat();
-    const sortedCards = _sortBy(piles, (mappedCard) => {
-        const [card] = mappedCard;
-
-        return card.rank;
-    });
-
-    moveCardsAction(
-        draft,
-        sortedCards,
+    const sourceGroups = [
+        PileGroupName.STOCK,
+        PileGroupName.WASTE,
         PileGroupName.TABLEAU,
-        PileGroupName.FOUNDATION,
-    );
+    ];
+
+    for (const group of sourceGroups) {
+        const piles = draft[group]
+            .map((pile, pileIndex) =>
+                pile.cards.map((card): MappedCard => {
+                    const targetIndex = getFoundationTargetIndex(card);
+                    return [card, pileIndex, targetIndex];
+                }),
+            )
+            .flat();
+        const sortedCards = _sortBy(piles, (mappedCard) => {
+            const [card] = mappedCard;
+
+            return card.rank;
+        });
+
+        moveCardsAction(draft, sortedCards, group, PileGroupName.FOUNDATION);
+    }
 };
 
 const flipCardAction = (

@@ -41,8 +41,6 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         initialState,
     );
 
-    console.log({ stock, waste, foundation, tableau });
-
     const [message, setMessage] = useMessage();
 
     const isDone = tableau.every((pile) =>
