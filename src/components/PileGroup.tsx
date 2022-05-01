@@ -2,11 +2,16 @@ import { Box, ThemeUIStyleObject } from "theme-ui";
 import _capitalize from "lodash/capitalize";
 
 import Pile from "./Pile";
-import { GenericPileProps, PileClickEvent, PileName } from "../types";
-import Card from "../Card";
+import {
+    GenericPileProps,
+    PileClickEvent,
+    PileGroupName,
+    PileGroupType,
+} from "../types";
+import { forwardRef } from "react";
 
 export interface GroupProps extends GenericPileProps {
-    piles: Card[][];
+    piles: PileGroupType;
     onPileClick?: PileClickEvent;
 }
 
@@ -24,38 +29,46 @@ const tableauStyles: ThemeUIStyleObject = {
     gridTemplateRows: ["repeat(7, 1fr)", "none"],
 };
 
-const PileGroup: React.FC<GroupProps> = ({
-    piles = [],
-    name,
-    stackDown,
-    onDrop,
-    onCardClick,
-    onCardDoubleClick,
-    onPileClick,
-}) => (
-    <Box
-        sx={{
-            label: _capitalize(name),
-            gridArea: name,
-            position: "relative",
-            ...(name === PileName.FOUNDATION ? foundationStyles : {}),
-            ...(name === PileName.TABLEAU ? tableauStyles : {}),
-        }}
-    >
-        {piles.map((pile, i) => (
-            <Pile
-                name={name}
-                cards={pile}
-                index={i}
-                stackDown={stackDown}
-                onClick={onPileClick}
-                onDrop={onDrop}
-                onCardClick={onCardClick}
-                onCardDoubleClick={onCardDoubleClick}
-                key={i} // eslint-disable-line react/no-array-index-key
-            />
-        ))}
-    </Box>
+const PileGroup = forwardRef<HTMLDivElement, GroupProps>(
+    (
+        {
+            piles = [],
+            name,
+            stackDown,
+            onDrop,
+            onCardClick,
+            onCardDoubleClick,
+            onPileClick,
+        },
+        ref,
+    ) => (
+        <Box
+            ref={ref}
+            sx={{
+                label: _capitalize(name),
+                gridArea: name,
+                position: "relative",
+                ...(name === PileGroupName.FOUNDATION ? foundationStyles : {}),
+                ...(name === PileGroupName.TABLEAU ? tableauStyles : {}),
+            }}
+        >
+            {piles.map((pile) => (
+                <Pile
+                    name={name}
+                    cards={pile.cards}
+                    index={pile.index}
+                    stackDown={stackDown}
+                    onClick={onPileClick}
+                    onDrop={onDrop}
+                    onCardClick={onCardClick}
+                    onCardDoubleClick={onCardDoubleClick}
+                    key={pile.index} // eslint-disable-line react/no-array-index-key
+                />
+            ))}
+        </Box>
+    ),
 );
+
+PileGroup.displayName = "PileGroup";
 
 export default PileGroup;

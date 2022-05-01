@@ -68,7 +68,7 @@ class Card implements CardInterface {
         try {
             const json = JSON.parse(jsonString);
             return Card.fromJSON(json);
-        } catch (e) {
+        } catch (e: any) {
             throw new Error(e);
         }
     };

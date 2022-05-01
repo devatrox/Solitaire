@@ -2,7 +2,7 @@ import _sortBy from "lodash/sortBy";
 import {
     Suit,
     GameState,
-    PileName,
+    PileGroupName,
     ActionTypes,
     Action,
     ActionPayloadSourceName,
@@ -42,11 +42,11 @@ const moveCardsAction = (
     for (const mappedCard of mappedCards) {
         const [sourceCard, sourceIndex, targetIndex] = mappedCard;
 
-        newSource[sourceIndex] = newSource[sourceIndex].filter(
+        newSource[sourceIndex].cards = newSource[sourceIndex].cards.filter(
             (card) => card.id !== sourceCard.id,
         );
 
-        newTarget[targetIndex].push(sourceCard);
+        newTarget[targetIndex].cards.push(sourceCard);
 
         if (targetName === sourceName) {
             newTarget[sourceIndex] = newSource[sourceIndex];
@@ -57,7 +57,7 @@ const moveCardsAction = (
 const finishAction = (draft: GameState) => {
     const piles = draft.tableau
         .map((pile, pileIndex) =>
-            pile.map((card): MappedCard => {
+            pile.cards.map((card): MappedCard => {
                 const targetIndex = getFoundationTargetIndex(card);
                 return [card, pileIndex, targetIndex];
             }),
@@ -69,7 +69,12 @@ const finishAction = (draft: GameState) => {
         return card.rank;
     });
 
-    moveCardsAction(draft, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
+    moveCardsAction(
+        draft,
+        sortedCards,
+        PileGroupName.TABLEAU,
+        PileGroupName.FOUNDATION,
+    );
 };
 
 const flipCardAction = (
@@ -81,7 +86,7 @@ const flipCardAction = (
 
     for (const mappedCard of mappedCards) {
         const [targetCard, , targetIndex] = mappedCard;
-        const cardToBeFlipped = newTarget[targetIndex].find(
+        const cardToBeFlipped = newTarget[targetIndex].cards.find(
             (card) => card.id === targetCard.id,
         );
 
@@ -108,6 +113,7 @@ const reducer = (draft: GameState, { type, payload }: Action) => {
                 payload.sourcePile &&
                 payload.targetPile
             ) {
+                console.log("move");
                 moveCardsAction(
                     draft,
                     payload.cards,
@@ -121,6 +127,7 @@ const reducer = (draft: GameState, { type, payload }: Action) => {
             break;
         case ActionTypes.FLIP_CARD:
             if (payload && payload.cards && payload.targetPile) {
+                console.log("flip");
                 flipCardAction(draft, payload.cards, payload.targetPile);
             }
             break;

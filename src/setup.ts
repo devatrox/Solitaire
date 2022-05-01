@@ -2,7 +2,7 @@ import _shuffle from "lodash/shuffle";
 import _last from "lodash/last";
 
 import Card from "./Card";
-import { Suit, Rank, GameState } from "./types";
+import { Suit, Rank, GameState, SimpleGameState, PileGroupName } from "./types";
 
 export const suits = [Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club];
 export const ranks = [
@@ -30,6 +30,20 @@ export const createNewStack = (): Card[] => {
     return _shuffle(stack);
 };
 
+export const createStateFromSimpleState = (simpleState: SimpleGameState) =>
+    (
+        Object.entries(simpleState) as [PileGroupName, Card[][]][]
+    ).reduce<GameState>(
+        (newState, [pileGroup, piles]) => ({
+            ...newState,
+            [pileGroup]: piles.map((pile, index) => ({
+                cards: pile,
+                index,
+            })),
+        }),
+        { stock: [], waste: [], tableau: [], foundation: [] },
+    );
+
 // For testing purposes
 export const createSolvedState = (): GameState => {
     const stack = createNewStack();
@@ -38,7 +52,7 @@ export const createSolvedState = (): GameState => {
         return card;
     });
 
-    const state: GameState = {
+    const state: GameState = createStateFromSimpleState({
         stock: [[]],
         waste: [[]],
         foundation: [[], [], [], []],
@@ -51,7 +65,7 @@ export const createSolvedState = (): GameState => {
             revealedStack.slice(15, 21),
             revealedStack.slice(21),
         ],
-    };
+    });
 
     return state;
 };
@@ -59,7 +73,7 @@ export const createSolvedState = (): GameState => {
 export const createInitialState = (): GameState => {
     const stack = createNewStack();
 
-    const state: GameState = {
+    const state: GameState = createStateFromSimpleState({
         stock: [stack.slice(28)],
         waste: [[]],
         foundation: [[], [], [], []],
@@ -72,10 +86,10 @@ export const createInitialState = (): GameState => {
             stack.slice(15, 21),
             stack.slice(21, 28),
         ],
-    };
+    });
 
     for (const pile of state.tableau) {
-        const lastCard = _last(pile);
+        const lastCard = _last(pile.cards);
         if (lastCard) {
             lastCard.reveal();
         }

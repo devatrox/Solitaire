@@ -39,7 +39,7 @@ export enum Rank {
     Joker = 14,
 }
 
-export enum PileName {
+export enum PileGroupName {
     STOCK = "stock",
     WASTE = "waste",
     FOUNDATION = "foundation",
@@ -61,28 +61,36 @@ export enum ActionTypes {
 export type CardClickEvent<T = HTMLDivElement> = (
     event: React.SyntheticEvent<T>,
     card: Card,
-    source: [PileName, number],
+    source: [PileGroupName, number],
 ) => void;
 
 export type PileClickEvent<T = HTMLDivElement> = (
     event: React.SyntheticEvent<T>,
-    name: PileName,
+    name: PileGroupName,
 ) => void;
 
 export type DropEvent<T = HTMLDivElement> = (
     event: React.DragEvent<T>,
-    target: [PileName, number],
+    target: [PileGroupName, number],
 ) => void;
 
-export interface GameState {
-    stock: Card[][];
-    waste: Card[][];
-    foundation: Card[][];
-    tableau: Card[][];
-}
+export type PileType = {
+    cards: Card[];
+    index: number;
+};
+
+export type PileGroupType = PileType[];
+
+export type SimpleGameState = {
+    [key in PileGroupName]: Card[][];
+};
+
+export type GameState = {
+    [key in PileGroupName]: PileGroupType;
+};
 
 export interface GenericPileProps {
-    name: PileName;
+    name: PileGroupName;
     stackDown?: boolean;
     onCardClick?: CardClickEvent;
     onCardDoubleClick?: CardClickEvent;
@@ -96,14 +104,14 @@ export type ValidationResult = {
 
 export type CardTransferObject = {
     cards: CardInterface[];
-    source: [PileName, number];
+    source: [PileGroupName, number];
 };
 
 export type MappedCard = [Card, number, number];
 
-export type ActionPayloadSourceName = PileName;
+export type ActionPayloadSourceName = PileGroupName;
 
-export type ActionPayloadTargetName = PileName;
+export type ActionPayloadTargetName = PileGroupName;
 
 export type ActionPayload = {
     cards: MappedCard[];

@@ -4,13 +4,13 @@ import { Box, BoxProps } from "theme-ui";
 import _reverse from "lodash/reverse";
 import { useImmer } from "use-immer";
 
-import { CardClickEvent, CardTransferObject, PileName } from "../types";
+import { CardClickEvent, CardTransferObject, PileGroupName } from "../types";
 import Card from "../Card";
 import Svg from "../elements/Svg";
 
 export interface CardProps extends Omit<BoxProps, "onClick" | "onDoubleClick"> {
     card: Card;
-    source: [PileName, number];
+    source: [PileGroupName, number];
     isTop?: boolean;
     isBottom?: boolean;
     isStackDown?: boolean;
@@ -65,7 +65,7 @@ const CardElement: React.FC<CardProps> = ({
     const [sourceName] = source;
 
     const cursorStyle = useMemo(() => {
-        if (!card.isRevealed && sourceName !== PileName.STOCK) {
+        if (!card.isRevealed && sourceName !== PileGroupName.STOCK) {
             return "not-allowed";
         } else if (card.isRevealed) {
             return "grab";
@@ -221,5 +221,7 @@ const CardElement: React.FC<CardProps> = ({
         </AnimatedBox>
     );
 };
+
+CardElement.displayName = "Card";
 
 export default CardElement;

@@ -1,7 +1,7 @@
 import _last from "lodash/last";
 import _first from "lodash/first";
 import Card from "./Card";
-import { Rank, ValidationResult } from "./types";
+import { PileGroupType, PileType, Rank, ValidationResult } from "./types";
 import { ranks } from "./setup";
 
 export const validResult = { status: true, statusText: "" };
@@ -93,9 +93,11 @@ export const hasNoStock = (stock: Card[], waste: Card[]): ValidationResult => ({
     statusText: "There are still cards in the stock and/or waste piles",
 });
 
-export const isAllRevealed = (tableau: Card[][]): ValidationResult => {
-    const cards = tableau.flat();
-    const result = cards.every((card) => card.isRevealed);
+export const isAllRevealed = (tableau: PileGroupType): ValidationResult => {
+    const piles = tableau.flat();
+    const result = piles.every((pile) =>
+        pile.cards.every((card) => card.isRevealed),
+    );
     console.info("isAllRevealed", result);
 
     return {
