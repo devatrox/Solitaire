@@ -1,7 +1,8 @@
-import { useState, createRef, useMemo } from "react";
+import { createRef, useMemo } from "react";
 import { useSpring, animated, config } from "@react-spring/web";
 import { Box, BoxProps } from "theme-ui";
 import _reverse from "lodash/reverse";
+import { useImmer } from "use-immer";
 
 import { CardClickEvent, CardTransferObject, PileName } from "../types";
 import Card from "../Card";
@@ -38,26 +39,28 @@ const CardElement: React.FC<CardProps> = ({
     const containerRef = createRef<HTMLDivElement>();
     const cardRef = createRef<HTMLDivElement>();
 
-    const [isDragging, setIsDragging] = useState(false);
+    const [isDragging, setIsDragging] = useImmer(false);
 
-    const [isHover, setIsHover] = useState(false);
+    const [isHover, setIsHover] = useImmer(false);
 
-    const [isFlipping, setIsFlipping] = useState(false);
+    const [isFlipping, setIsFlipping] = useImmer(false);
 
-    const { transform: transformRotate } = useSpring({
+    const { transform: transformCard, boxShadow: boxShadowCard } = useSpring({
         transform: `rotateX(${card.isRevealed ? 0 : 180}deg)`,
+        boxShadow: `0 0 ${isFlipping && isTop ? "10px" : 0} rgba(0, 0, 0, 0.3)`,
         config: config.stiff,
         onStart: () => setIsFlipping(true),
         onRest: () => setIsFlipping(false),
     });
 
-    const { transform: transformScale, boxShadow } = useSpring({
-        transform: `scale(${isHover && card.isRevealed ? "1.04" : "1"})`,
-        boxShadow: `0 0 ${
-            isHover && card.isRevealed ? "20" : "0"
-        }px rgba(0, 0, 0, 0.3)`,
-        config: config.stiff,
-    });
+    const { transform: transformContainer, boxShadow: boxShadowContainer } =
+        useSpring({
+            transform: `scale(${isHover && card.isRevealed ? "1.04" : "1"})`,
+            boxShadow: `0 0 ${
+                isHover && card.isRevealed ? "20px" : 0
+            } rgba(0, 0, 0, 0.3)`,
+            config: config.stiff,
+        });
 
     const [sourceName] = source;
 
@@ -134,8 +137,8 @@ const CardElement: React.FC<CardProps> = ({
             ref={containerRef}
             style={{
                 ...style,
-                boxShadow,
-                transform: transformScale,
+                boxShadow: boxShadowContainer,
+                transform: transformContainer,
             }}
             draggable={card.isRevealed}
             onDragStart={handleDragStart}
@@ -155,7 +158,6 @@ const CardElement: React.FC<CardProps> = ({
                 height: "100%",
                 width: "100%",
                 borderRadius: "8px",
-                boxShadow: "0 0 0 0 rgba(0, 0, 0, 0.3)",
                 perspective: "400px",
                 willChange: "transform, box-shadow",
                 touchAction: "manipulation",
@@ -167,7 +169,7 @@ const CardElement: React.FC<CardProps> = ({
         >
             <AnimatedBox
                 ref={cardRef}
-                style={{ transform: transformRotate }}
+                style={{ transform: transformCard, boxShadow: boxShadowCard }}
                 data-rank={card.rank}
                 data-suit={card.suit}
                 data-color={card.color}
@@ -182,9 +184,6 @@ const CardElement: React.FC<CardProps> = ({
                     transformOrigin: "center center",
                     transformStyle: "preserve-3d",
                     borderRadius: "8px",
-                    boxShadow: `0 0 ${
-                        isFlipping && isTop ? "10px" : 0
-                    } rgba(0, 0, 0, 0.3)`,
                     "&:before, &:after": {
                         content: '""',
                         position: "absolute",

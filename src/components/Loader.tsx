@@ -1,6 +1,6 @@
 /* Source https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/ */
 
-import { useSpring, useSprings, animated } from "@react-spring/web";
+import { useSprings, animated } from "@react-spring/web";
 import { Box, BoxProps, Flex, ThemeUIStyleObject } from "theme-ui";
 
 const Dot = animated(Box);
@@ -38,20 +38,6 @@ const Loader: React.FC<BoxProps> = ({ sx, ...boxProps }) => {
             delay,
         })),
     );
-
-    const dot1Styles = useSpring({
-        ...springConfig,
-        delay: 40,
-    });
-
-    const dot2Styles = useSpring({
-        ...springConfig,
-        delay: 20,
-    });
-
-    const dot3Styles = useSpring({
-        ...springConfig,
-    });
 
     return (
         <Flex

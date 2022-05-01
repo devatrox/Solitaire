@@ -1,3 +1,4 @@
+import { immerable } from "immer";
 import { Suit, Rank, Color, SvgRankName } from "./types";
 
 export type SvgID = `SvgCards__${Suit}_${SvgRankName}`;
@@ -6,8 +7,8 @@ interface CardInterface {
     suit: Suit;
     rank: Rank;
     isRevealed: boolean;
-    color?: Color;
-    id?: SvgID;
+    color: Color;
+    id: SvgID;
 }
 
 const names: SvgRankName[] = [
@@ -27,6 +28,8 @@ const names: SvgRankName[] = [
 ];
 
 class Card implements CardInterface {
+    [immerable] = true;
+
     constructor(
         public suit: Suit,
         public rank: Rank,

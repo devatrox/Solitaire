@@ -1,14 +1,9 @@
-import {
-    useReducer,
-    useEffect,
-    useMemo,
-    useState,
-    Fragment,
-    useCallback,
-} from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { Flex, Grid } from "theme-ui";
 import _last from "lodash/last";
 import _reverse from "lodash/reverse";
+import { useImmerReducer } from "use-immer";
+
 import PileGroup from "./components/PileGroup";
 import {
     PileName,
@@ -17,7 +12,6 @@ import {
     MappedCard,
     CardClickEvent,
     DropEvent,
-    MenuEvent,
     PileClickEvent,
     GameState,
 } from "./types";
@@ -42,7 +36,7 @@ export interface GameProps {
 }
 
 const Game: React.FC<GameProps> = ({ initialState }) => {
-    const [{ stock, waste, foundation, tableau }, dispatch] = useReducer(
+    const [{ stock, waste, foundation, tableau }, dispatch] = useImmerReducer(
         reducer,
         initialState,
     );
@@ -71,18 +65,21 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 targetPile: PileName.STOCK,
             },
         });
-    }, [waste]);
+    }, [waste, dispatch]);
 
-    const handleStockCardClick: CardClickEvent = (event, card) => {
-        dispatch({
-            type: ActionTypes.MOVE_CARDS,
-            payload: {
-                cards: [[card, 0, 0]],
-                sourcePile: PileName.STOCK,
-                targetPile: PileName.WASTE,
-            },
-        });
-    };
+    const handleStockCardClick: CardClickEvent = useCallback(
+        (event, card) => {
+            dispatch({
+                type: ActionTypes.MOVE_CARDS,
+                payload: {
+                    cards: [[card, 0, 0]],
+                    sourcePile: PileName.STOCK,
+                    targetPile: PileName.WASTE,
+                },
+            });
+        },
+        [dispatch],
+    );
 
     const handleCardDoubleClick: CardClickEvent = useCallback(
         (event, card, source) => {
@@ -107,7 +104,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
 
             setMessage(statusText);
         },
-        [foundation, setMessage],
+        [foundation, setMessage, dispatch],
     );
 
     const handleDrop: DropEvent = useCallback(
@@ -164,32 +161,33 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 console.error(error);
             }
         },
-        [foundation, setMessage, tableau],
+        [foundation, setMessage, tableau, dispatch],
     );
 
-    const handleReset: MenuEvent = () => {
+    const handleReset: React.MouseEventHandler<HTMLButtonElement> = () => {
         dispatch({
             type: ActionTypes.RESET,
         });
     };
 
-    const handleFinish: MenuEvent = useCallback(() => {
-        let validationResult = hasNoStock(stock[0], waste[0]);
+    const handleFinish: React.MouseEventHandler<HTMLButtonElement> =
+        useCallback(() => {
+            let validationResult = hasNoStock(stock[0], waste[0]);
 
-        if (validationResult.status) {
-            validationResult = isAllRevealed(tableau);
-        }
+            if (validationResult.status) {
+                validationResult = isAllRevealed(tableau);
+            }
 
-        const { status, statusText } = validationResult;
+            const { status, statusText } = validationResult;
 
-        if (status) {
-            dispatch({
-                type: ActionTypes.FINISH,
-            });
-        }
+            if (status) {
+                dispatch({
+                    type: ActionTypes.FINISH,
+                });
+            }
 
-        setMessage(statusText);
-    }, [stock, waste, tableau, setMessage]);
+            setMessage(statusText);
+        }, [stock, waste, tableau, setMessage, dispatch]);
 
     useEffect(() => {
         if (isFinished) {
@@ -211,13 +209,14 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 });
             }
         });
-    }, [tableau]);
+    }, [tableau, dispatch]);
 
     useEffect(() => {
         const pile = waste[0];
         const topCard = _last(stock[0]);
 
         if (pile.length === 0 && topCard) {
+            console.log("flip");
             dispatch({
                 type: ActionTypes.MOVE_CARDS,
                 payload: {
@@ -229,6 +228,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
         } else {
             for (const card of pile) {
                 if (!card.isRevealed) {
+                    console.log("fhgdsjk");
                     dispatch({
                         type: ActionTypes.FLIP_CARD,
                         payload: {
@@ -239,7 +239,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 }
             }
         }
-    }, [stock, waste]);
+    }, [stock, waste, dispatch]);
 
     useEffect(() => {
         const pile = stock[0];
@@ -255,7 +255,7 @@ const Game: React.FC<GameProps> = ({ initialState }) => {
                 });
             }
         }
-    }, [stock]);
+    }, [stock, dispatch]);
 
     return (
         <Flex

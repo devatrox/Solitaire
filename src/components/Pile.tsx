@@ -1,7 +1,8 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useRef } from "react";
 import _reverse from "lodash/reverse";
 import { Box, BoxProps } from "theme-ui";
 import { useTransition } from "@react-spring/web";
+import { useImmer } from "use-immer";
 
 import CardElement from "./CardElement";
 import Card from "../Card";
@@ -27,7 +28,7 @@ const Pile: React.FC<PileProps> = ({
     sx,
     ...boxProps
 }) => {
-    const [isHover, setIsHover] = useState(false);
+    const [isHover, setIsHover] = useImmer(false);
 
     const dropTarget = useRef<EventTarget>();
 

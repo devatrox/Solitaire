@@ -1,4 +1,3 @@
-import _cloneDeep from "lodash/cloneDeep";
 import _sortBy from "lodash/sortBy";
 import {
     Suit,
@@ -32,13 +31,13 @@ const getFoundationTargetIndex = (card: Card): number => {
 };
 
 const moveCardsAction = (
-    prevState: GameState,
+    draft: GameState,
     mappedCards: MappedCard[],
     sourceName: ActionPayloadSourceName,
     targetName: ActionPayloadTargetName,
-): GameState => {
-    const newSource = _cloneDeep(prevState[sourceName]);
-    const newTarget = _cloneDeep(prevState[targetName]);
+) => {
+    const newSource = draft[sourceName];
+    const newTarget = draft[targetName];
 
     for (const mappedCard of mappedCards) {
         const [sourceCard, sourceIndex, targetIndex] = mappedCard;
@@ -53,16 +52,10 @@ const moveCardsAction = (
             newTarget[sourceIndex] = newSource[sourceIndex];
         }
     }
-
-    return {
-        ...prevState,
-        [sourceName]: newSource,
-        [targetName]: newTarget,
-    };
 };
 
-const finishAction = (prevState: GameState): GameState => {
-    const piles = prevState.tableau
+const finishAction = (draft: GameState) => {
+    const piles = draft.tableau
         .map((pile, pileIndex) =>
             pile.map((card): MappedCard => {
                 const targetIndex = getFoundationTargetIndex(card);
@@ -76,20 +69,15 @@ const finishAction = (prevState: GameState): GameState => {
         return card.rank;
     });
 
-    return moveCardsAction(
-        prevState,
-        sortedCards,
-        PileName.TABLEAU,
-        PileName.FOUNDATION,
-    );
+    moveCardsAction(draft, sortedCards, PileName.TABLEAU, PileName.FOUNDATION);
 };
 
 const flipCardAction = (
-    prevState: GameState,
+    draft: GameState,
     mappedCards: MappedCard[],
     targetName: ActionPayloadTargetName,
-): GameState => {
-    const newTarget = _cloneDeep(prevState[targetName]);
+) => {
+    const newTarget = draft[targetName];
 
     for (const mappedCard of mappedCards) {
         const [targetCard, , targetIndex] = mappedCard;
@@ -101,51 +89,47 @@ const flipCardAction = (
             cardToBeFlipped.flip();
         }
     }
-
-    return {
-        ...prevState,
-        [targetName]: newTarget,
-    };
 };
 
-const resetAction = (): GameState => createInitialState();
+const resetAction = (draft: GameState) => {
+    const newState = createInitialState();
+    draft.stock = newState.stock;
+    draft.waste = newState.waste;
+    draft.foundation = newState.foundation;
+    draft.tableau = newState.tableau;
+};
 
-const reducer = (prevState: GameState, action: Action): GameState => {
-    const { type, payload } = action;
-
-    if (
-        type === ActionTypes.MOVE_CARDS &&
-        payload &&
-        payload.cards &&
-        payload.sourcePile &&
-        payload.targetPile
-    ) {
-        return moveCardsAction(
-            prevState,
-            payload.cards,
-            payload.sourcePile,
-            payload.targetPile,
-        );
+const reducer = (draft: GameState, { type, payload }: Action) => {
+    switch (type) {
+        case ActionTypes.MOVE_CARDS:
+            if (
+                payload &&
+                payload.cards &&
+                payload.sourcePile &&
+                payload.targetPile
+            ) {
+                moveCardsAction(
+                    draft,
+                    payload.cards,
+                    payload.sourcePile,
+                    payload.targetPile,
+                );
+            }
+            break;
+        case ActionTypes.FINISH:
+            finishAction(draft);
+            break;
+        case ActionTypes.FLIP_CARD:
+            if (payload && payload.cards && payload.targetPile) {
+                flipCardAction(draft, payload.cards, payload.targetPile);
+            }
+            break;
+        case ActionTypes.RESET:
+            resetAction(draft);
+            break;
+        default:
+            break;
     }
-
-    if (type === ActionTypes.FINISH) {
-        return finishAction(prevState);
-    }
-
-    if (
-        type === ActionTypes.FLIP_CARD &&
-        payload &&
-        payload.cards &&
-        payload.targetPile
-    ) {
-        return flipCardAction(prevState, payload.cards, payload.targetPile);
-    }
-
-    if (type === ActionTypes.RESET) {
-        return resetAction();
-    }
-
-    return prevState;
 };
 
 export default reducer;
