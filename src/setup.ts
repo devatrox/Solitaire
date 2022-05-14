@@ -53,8 +53,8 @@ export const createSolvedState = (): GameState => {
     });
 
     const state: GameState = createStateFromSimpleState({
-        stock: [[]],
-        waste: [[]],
+        stock: [revealedStack.slice(22, 25)],
+        waste: [revealedStack.slice(25)],
         foundation: [[], [], [], []],
         tableau: [
             revealedStack.slice(0, 1),
@@ -63,7 +63,7 @@ export const createSolvedState = (): GameState => {
             revealedStack.slice(6, 10),
             revealedStack.slice(10, 15),
             revealedStack.slice(15, 21),
-            revealedStack.slice(21),
+            revealedStack.slice(21, 22),
         ],
     });
 

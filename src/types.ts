@@ -51,11 +51,12 @@ export enum Color {
     BLACK = "black",
 }
 
-export enum ActionTypes {
+export enum ActionType {
     MOVE_CARDS = "move-cards",
     RESET = "reset",
     FLIP_CARD = "flip-card",
     FINISH = "finish",
+    CHAIN = "chain",
 }
 
 export type CardClickEvent<T = HTMLDivElement> = (
@@ -107,19 +108,42 @@ export type CardTransferObject = {
     source: [PileGroupName, number];
 };
 
-export type MappedCard = [Card, number, number];
+export type SourceIndex = number;
+export type TargetIndex = number;
+
+export type MappedCard = [Card, SourceIndex, TargetIndex];
 
 export type ActionPayloadSourceName = PileGroupName;
-
 export type ActionPayloadTargetName = PileGroupName;
 
-export type ActionPayload = {
+export type MoveActionPayload = {
     cards: MappedCard[];
     sourcePile?: ActionPayloadSourceName;
     targetPile: ActionPayloadTargetName;
 };
 
+export type FlipActionPayload = {
+    cards: MappedCard[];
+    pile: ActionPayloadTargetName;
+};
+
+export type ChainActionPayload = {
+    actions: MoveActionPayload | FlipActionPayload;
+};
+
+// export type ActionPayload = T extends ActionType.MOVE_CARDS
+//     ? MoveActionPayload
+//     : T extends ActionType.FLIP_CARD
+//     ? FlipActionPayload
+//     : ChainActionPayload;
+
+export type ActionPayload = MoveActionPayload;
+
+// export type Action<T extends ActionType> = {
+//     type: T;
+//     payload?: ActionPayload<T>;
+
 export type Action = {
-    type: ActionTypes;
+    type: ActionType;
     payload?: ActionPayload;
 };

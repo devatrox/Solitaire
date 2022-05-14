@@ -1,4 +1,4 @@
-import { immerable } from "immer";
+import { current, immerable, produce } from "immer";
 import { Suit, Rank, Color, SvgRankName } from "./types";
 
 export type SvgID = `SvgCards__${Suit}_${SvgRankName}`;
@@ -34,7 +34,11 @@ class Card implements CardInterface {
         public suit: Suit,
         public rank: Rank,
         public isRevealed: boolean = false,
-    ) {}
+    ) {
+        this.suit = suit;
+        this.rank = rank;
+        this.isRevealed = isRevealed;
+    }
 
     get color(): Color {
         if (this.suit === Suit.Diamond || this.suit === Suit.Heart) {
@@ -48,19 +52,28 @@ class Card implements CardInterface {
         return `SvgCards__${this.suit}_${names[this.rank - 1]}`;
     }
 
-    reveal(): void {
+    reveal() {
         this.isRevealed = true;
+        // return produce(this, (draft) => {
+        //     draft.isRevealed = true;
+        // });
     }
 
-    hide(): void {
+    hide() {
         this.isRevealed = false;
+        // return produce(this, (draft) => {
+        //     draft.isRevealed = false;
+        // });
     }
 
-    flip(): void {
+    flip() {
         this.isRevealed = !this.isRevealed;
+        // return produce(this, (draft) => {
+        //     draft.isRevealed = !draft.isRevealed;
+        // });
     }
 
-    static fromJSON({ suit, rank, isRevealed }: CardInterface): Card {
+    static fromJSON({ suit, rank, isRevealed }: CardInterface) {
         return new Card(suit, rank, isRevealed);
     }
 

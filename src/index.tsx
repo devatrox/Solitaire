@@ -1,7 +1,8 @@
-import { lazy, Suspense } from "react";
+import { lazy, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "theme-ui";
 import { Global } from "@emotion/react";
+import { freeze } from "immer";
 
 import { GameState } from "./types";
 import { createInitialState } from "./setup";
@@ -13,6 +14,8 @@ export interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({ initialState }) => {
+    const frozenInitialState = freeze(initialState, true);
+
     const Game = lazy(() => import("./Game"));
     const SvgCards = lazy(() => import("./components/SvgCards"));
 
@@ -31,7 +34,7 @@ const App: React.FC<AppProps> = ({ initialState }) => {
             />
             <Suspense fallback={<Loader />}>
                 <SvgCards />
-                <Game initialState={initialState} />
+                <Game initialState={frozenInitialState} />
             </Suspense>
         </ThemeProvider>
     );
